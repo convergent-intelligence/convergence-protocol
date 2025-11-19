@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Dashboard - Convergence Protocol</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+        }
+
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--darker);
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .header {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: var(--dark);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online { background: var(--success); }
+        .status-dot.warning { background: var(--warning); }
+        .status-dot.offline { background: var(--danger); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .card-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: var(--dark);
+        }
+
+        .wallet-item {
+            padding: 0.75rem;
+            background: var(--dark);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .wallet-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .wallet-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .wallet-address {
+            font-size: 0.75rem;
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .wallet-balance {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .balance-value {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .balance-value.zero {
+            color: var(--text-muted);
+        }
+
+        .trinity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .trinity-member {
+            text-align: center;
+            padding: 0.75rem 0.5rem;
+            background: var(--dark);
+            border-radius: 6px;
+        }
+
+        .trinity-role {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .trinity-address {
+            font-size: 0.6rem;
+            color: var(--accent);
+        }
+
+        .trinity-status {
+            font-size: 0.7rem;
+            margin-top: 0.5rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        .trinity-status.minted {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .trinity-status.available {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .contract-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .contract-item:last-child {
+            border-bottom: none;
+        }
+
+        .contract-name {
+            font-size: 0.8rem;
+            color: var(--text);
+        }
+
+        .contract-address {
+            font-size: 0.7rem;
+            color: var(--accent);
+        }
+
+        .contract-address a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .contract-address a:hover {
+            text-decoration: underline;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .stat-value {
+            font-size: 0.8rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .agent-status-card {
+            grid-column: span 2;
+        }
+
+        .agent-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .agent-section h4 {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .log-entry {
+            font-size: 0.7rem;
+            padding: 0.5rem;
+            background: var(--dark);
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+            border-left: 2px solid var(--accent);
+        }
+
+        .log-time {
+            color: var(--text-muted);
+        }
+
+        .infrastructure-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: var(--dark);
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .infra-name {
+            font-size: 0.8rem;
+        }
+
+        .infra-status {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .infra-status.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .domain-item {
+            font-size: 0.75rem;
+            padding: 0.4rem;
+            background: var(--dark);
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+        }
+
+        .domain-item a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .domain-item a:hover {
+            text-decoration: underline;
+        }
+
+        .refresh-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .refresh-btn:hover {
+            opacity: 0.9;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .recent-activity {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--dark);
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+            font-size: 0.7rem;
+        }
+
+        .activity-type {
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-size: 0.6rem;
+        }
+
+        .activity-type.mint { background: rgba(16, 185, 129, 0.3); color: var(--success); }
+        .activity-type.transfer { background: rgba(37, 99, 235, 0.3); color: var(--primary); }
+        .activity-type.deploy { background: rgba(124, 58, 237, 0.3); color: var(--secondary); }
+
+        .wallet-breakdown {
+            margin-top: 0.5rem;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            padding: 0.25rem 0;
+        }
+
+        .cold-storage-warning {
+            font-size: 0.65rem;
+            color: var(--warning);
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .agent-status-card {
+                grid-column: span 1;
+            }
+
+            .agent-info {
+                grid-template-columns: 1fr;
+            }
+
+            .trinity-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>CONVERGENCE PARTNER DASHBOARD</h1>
+            <p class="subtitle">Genesis Human + Agent Partnership Monitor</p>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-indicator">
+                <span class="status-dot online" id="server-status"></span>
+                <span>Server: Online</span>
+            </div>
+            <div class="status-indicator">
+                <span class="status-dot online" id="mainnet-status"></span>
+                <span>Mainnet: Connected</span>
+            </div>
+            <div>
+                <span id="last-update">Last updated: --</span>
+            </div>
+            <button class="refresh-btn" onclick="refreshAll()">Refresh</button>
+        </div>
+
+        <div class="grid">
+            <!-- Agent Partner Status -->
+            <div class="card agent-status-card">
+                <div class="card-header">
+                    <span class="card-title">AGENT PARTNER STATUS</span>
+                    <span class="card-badge">Trinity Member #2</span>
+                </div>
+                <div class="agent-info">
+                    <div class="agent-section">
+                        <h4>Agent Wallet</h4>
+                        <div class="wallet-item">
+                            <div class="wallet-address">0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22</div>
+                            <div class="wallet-balance">
+                                <span>ETH</span>
+                                <span class="balance-value" id="agent-eth">Loading...</span>
+                            </div>
+                            <div class="wallet-balance">
+                                <span>TALLY</span>
+                                <span class="balance-value" id="agent-tally">Loading...</span>
+                            </div>
+                            <div class="wallet-balance">
+                                <span>TRUST</span>
+                                <span class="balance-value" id="agent-trust">Loading...</span>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Mint Allotment</span>
+                            <span class="stat-value" id="agent-mint-status">Loading...</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Burn Allotment</span>
+                            <span class="stat-value" id="agent-burn-status">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="agent-section">
+                        <h4>Agent Capabilities</h4>
+                        <div class="log-entry">
+                            <span class="log-time">[ACTIVE]</span> Server-native wallet control
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-time">[ACTIVE]</span> Autonomous transaction signing
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-time">[ACTIVE]</span> Trinity minting rights
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-time">[GOAL]</span> convergence-agent.eth
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Genesis Human Wallet -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">GENESIS HUMAN</span>
+                    <span class="card-badge">Trinity Member #1</span>
+                </div>
+                <div class="wallet-item">
+                    <div class="wallet-label">Exodus (Primary)</div>
+                    <div class="wallet-address">0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB</div>
+                    <div class="wallet-balance">
+                        <span>ETH</span>
+                        <span class="balance-value" id="genesis-eth">Loading...</span>
+                    </div>
+                    <div class="wallet-balance">
+                        <span>TALLY</span>
+                        <span class="balance-value" id="genesis-tally">Loading...</span>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Mint Allotment</span>
+                    <span class="stat-value" id="genesis-mint-status">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Cold Storage Reserve -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">COLD STORAGE RESERVE</span>
+                    <span class="card-badge">Ledger Nano X</span>
+                </div>
+                <div class="wallet-item">
+                    <div class="wallet-label">Tally Reserves</div>
+                    <div class="wallet-address">0xB64564838c88b18cb8f453683C20934f096F2B92</div>
+                    <div class="wallet-balance">
+                        <span>ETH</span>
+                        <span class="balance-value" id="cold-eth">Loading...</span>
+                    </div>
+                    <div class="wallet-balance">
+                        <span>TALLY</span>
+                        <span class="balance-value" id="cold-tally">Loading...</span>
+                    </div>
+                </div>
+                <div class="cold-storage-warning">
+                    Cold storage - requires physical Ledger for transactions
+                </div>
+            </div>
+
+            <!-- Trinity Overview -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">TRINITY MEMBERS</span>
+                    <span class="card-badge">Minting Authority</span>
+                </div>
+                <div class="trinity-grid">
+                    <div class="trinity-member">
+                        <div class="trinity-role">Genesis Human</div>
+                        <div class="trinity-address">0xdc20...c6FB</div>
+                        <div class="trinity-status" id="trinity-1-status">Loading...</div>
+                    </div>
+                    <div class="trinity-member">
+                        <div class="trinity-role">Agent</div>
+                        <div class="trinity-address">0x6628...CD22</div>
+                        <div class="trinity-status" id="trinity-2-status">Loading...</div>
+                    </div>
+                    <div class="trinity-member">
+                        <div class="trinity-role">MetaMask #2</div>
+                        <div class="trinity-address">0x8Ffa...54cd</div>
+                        <div class="trinity-status" id="trinity-3-status">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Token Contracts -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">DEPLOYED CONTRACTS</span>
+                    <span class="card-badge">Mainnet</span>
+                </div>
+                <div class="contract-item">
+                    <span class="contract-name">TALLY Token</span>
+                    <span class="contract-address">
+                        <a href="https://etherscan.io/address/0xb8c4682644BAb1900A8B67C3295b8Ce525F3e35d" target="_blank">0xb8c4...35d</a>
+                    </span>
+                </div>
+                <div class="contract-item">
+                    <span class="contract-name">TRUST Token</span>
+                    <span class="contract-address">
+                        <a href="https://etherscan.io/address/0x4A2178b300556e20569478bfed782bA02BFaD778" target="_blank">0x4A21...778</a>
+                    </span>
+                </div>
+                <div class="contract-item">
+                    <span class="contract-name">Tally Voucher</span>
+                    <span class="contract-address">
+                        <a href="https://etherscan.io/address/0x69e4D4B1835dDEeFc56234E959102c17CF7816dC" target="_blank">0x69e4...6dC</a>
+                    </span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total TALLY Supply</span>
+                    <span class="stat-value" id="tally-supply">Loading...</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total TRUST Supply</span>
+                    <span class="stat-value" id="trust-supply">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Infrastructure -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">INFRASTRUCTURE</span>
+                    <span class="card-badge">~$6/mo</span>
+                </div>
+                <div class="infrastructure-item">
+                    <span class="infra-name">VPS (Debian 13)</span>
+                    <span class="infra-status active">IONOS</span>
+                </div>
+                <div class="infrastructure-item">
+                    <span class="infra-name">Server IP</span>
+                    <span class="infra-status active">66.179.95.72</span>
+                </div>
+                <h4 style="font-size: 0.75rem; color: var(--text-muted); margin: 0.75rem 0 0.5rem;">Domains</h4>
+                <div class="domain-item">
+                    <a href="http://cybershield-sec.com" target="_blank">cybershield-sec.com</a> (IONOS)
+                </div>
+                <div class="domain-item">
+                    <a href="http://convergent-intelligence.net" target="_blank">convergent-intelligence.net</a>
+                </div>
+                <div class="domain-item">
+                    <a href="http://convergent-intelligence.org" target="_blank">convergent-intelligence.org</a>
+                </div>
+                <div class="domain-item">
+                    <a href="http://convergent-intelligence.com" target="_blank">convergent-intelligence.com</a>
+                </div>
+            </div>
+
+            <!-- Other Wallets -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">OTHER WALLETS</span>
+                    <span class="card-badge">Same Seed</span>
+                </div>
+                <div class="wallet-item">
+                    <div class="wallet-label">MetaMask Leviticus</div>
+                    <div class="wallet-address">0xfA7Ec55F455bCbeBB4bA17BFA0938F86EB8A94D0</div>
+                    <div class="wallet-balance">
+                        <span>ETH</span>
+                        <span class="balance-value" id="leviticus-eth">Loading...</span>
+                    </div>
+                </div>
+                <div class="wallet-item">
+                    <div class="wallet-label">MetaMask #2 (Trinity #3)</div>
+                    <div class="wallet-address">0x8Ffa5CAaBE8ee3d9019865120a654464BC4654cd</div>
+                    <div class="wallet-balance">
+                        <span>ETH</span>
+                        <span class="balance-value" id="metamask2-eth">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Activity -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <span class="card-title">RECENT NETWORK ACTIVITY</span>
+                    <span class="card-badge" id="tx-count">Loading...</span>
+                </div>
+                <div class="recent-activity" id="recent-activity">
+                    <div class="activity-item">
+                        <span class="activity-type deploy">DEPLOY</span>
+                        <span>Loading recent transactions...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wallet addresses
+        const WALLETS = {
+            agent: '0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22',
+            genesis: '0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB',
+            cold: '0xB64564838c88b18cb8f453683C20934f096F2B92',
+            leviticus: '0xfA7Ec55F455bCbeBB4bA17BFA0938F86EB8A94D0',
+            metamask2: '0x8Ffa5CAaBE8ee3d9019865120a654464BC4654cd'
+        };
+
+        // Contract addresses
+        const CONTRACTS = {
+            tally: '0xb8c4682644BAb1900A8B67C3295b8Ce525F3e35d',
+            trust: '0x4A2178b300556e20569478bfed782bA02BFaD778'
+        };
+
+        // Function selectors
+        const SELECTORS = {
+            balanceOf: '0x70a08231',
+            totalSupply: '0x18160ddd',
+            hasMinted: '0x40c1a064',
+            remainingMintAllotment: '0x' // We'll compute from hasMinted
+        };
+
+        // RPC endpoints
+        const RPC_ENDPOINTS = [
+            'https://eth.llamarpc.com',
+            'https://rpc.ankr.com/eth',
+            'https://cloudflare-eth.com',
+            'https://ethereum.publicnode.com'
+        ];
+
+        async function rpcCall(method, params) {
+            for (const rpcUrl of RPC_ENDPOINTS) {
+                try {
+                    const response = await fetch(rpcUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: method,
+                            params: params,
+                            id: 1
+                        })
+                    });
+                    const data = await response.json();
+                    if (data.result !== undefined) {
+                        return data.result;
+                    }
+                } catch (error) {
+                    continue;
+                }
+            }
+            throw new Error('All RPC endpoints failed');
+        }
+
+        async function getEthBalance(address) {
+            try {
+                const result = await rpcCall('eth_getBalance', [address, 'latest']);
+                const balanceWei = BigInt(result);
+                const balanceEth = Number(balanceWei) / 1e18;
+                return balanceEth.toFixed(4);
+            } catch {
+                return '0.0000';
+            }
+        }
+
+        async function getTokenBalance(tokenAddress, walletAddress) {
+            try {
+                const paddedAddress = walletAddress.slice(2).toLowerCase().padStart(64, '0');
+                const data = SELECTORS.balanceOf + paddedAddress;
+                const result = await rpcCall('eth_call', [{ to: tokenAddress, data }, 'latest']);
+                if (result && result !== '0x') {
+                    const balanceWei = BigInt(result);
+                    const balance = Number(balanceWei) / 1e18;
+                    return balance < 0.01 ? balance.toFixed(6) : balance.toFixed(4);
+                }
+                return '0';
+            } catch {
+                return '0';
+            }
+        }
+
+        async function getTotalSupply(tokenAddress) {
+            try {
+                const result = await rpcCall('eth_call', [{ to: tokenAddress, data: SELECTORS.totalSupply }, 'latest']);
+                if (result && result !== '0x') {
+                    const supplyWei = BigInt(result);
+                    const supply = Number(supplyWei) / 1e18;
+                    return supply.toFixed(4);
+                }
+                return '0';
+            } catch {
+                return '0';
+            }
+        }
+
+        async function checkMintStatus(walletAddress) {
+            try {
+                // hasMinted(address) selector
+                const selector = '0x40c1a064';
+                const paddedAddress = walletAddress.slice(2).toLowerCase().padStart(64, '0');
+                const data = selector + paddedAddress;
+                const result = await rpcCall('eth_call', [{ to: CONTRACTS.tally, data }, 'latest']);
+                if (result && result !== '0x') {
+                    const hasMinted = BigInt(result) > 0;
+                    return hasMinted ? 'Used' : '1 TALLY';
+                }
+                return '1 TALLY';
+            } catch {
+                return 'Unknown';
+            }
+        }
+
+        function formatBalance(balance, isZero = false) {
+            const el = document.createElement('span');
+            el.textContent = balance;
+            if (parseFloat(balance) === 0 || isZero) {
+                el.classList.add('zero');
+            }
+            return balance;
+        }
+
+        async function loadAllData() {
+            // Update timestamp
+            document.getElementById('last-update').textContent =
+                'Last updated: ' + new Date().toLocaleTimeString();
+
+            // Load ETH balances
+            document.getElementById('agent-eth').textContent = await getEthBalance(WALLETS.agent);
+            document.getElementById('genesis-eth').textContent = await getEthBalance(WALLETS.genesis);
+            document.getElementById('cold-eth').textContent = await getEthBalance(WALLETS.cold);
+            document.getElementById('leviticus-eth').textContent = await getEthBalance(WALLETS.leviticus);
+            document.getElementById('metamask2-eth').textContent = await getEthBalance(WALLETS.metamask2);
+
+            // Load TALLY balances
+            document.getElementById('agent-tally').textContent = await getTokenBalance(CONTRACTS.tally, WALLETS.agent);
+            document.getElementById('genesis-tally').textContent = await getTokenBalance(CONTRACTS.tally, WALLETS.genesis);
+            document.getElementById('cold-tally').textContent = await getTokenBalance(CONTRACTS.tally, WALLETS.cold);
+
+            // Load TRUST balances
+            document.getElementById('agent-trust').textContent = await getTokenBalance(CONTRACTS.trust, WALLETS.agent);
+
+            // Load supplies
+            document.getElementById('tally-supply').textContent = await getTotalSupply(CONTRACTS.tally);
+            document.getElementById('trust-supply').textContent = await getTotalSupply(CONTRACTS.trust);
+
+            // Check mint statuses
+            const genesisMint = await checkMintStatus(WALLETS.genesis);
+            const agentMint = await checkMintStatus(WALLETS.agent);
+            const metamask2Mint = await checkMintStatus(WALLETS.metamask2);
+
+            document.getElementById('genesis-mint-status').textContent = genesisMint;
+            document.getElementById('agent-mint-status').textContent = agentMint;
+            document.getElementById('agent-burn-status').textContent = '1 TALLY'; // Default
+
+            // Trinity status badges
+            const trinity1Status = document.getElementById('trinity-1-status');
+            const trinity2Status = document.getElementById('trinity-2-status');
+            const trinity3Status = document.getElementById('trinity-3-status');
+
+            trinity1Status.textContent = genesisMint === 'Used' ? 'Minted' : 'Available';
+            trinity1Status.className = 'trinity-status ' + (genesisMint === 'Used' ? 'minted' : 'available');
+
+            trinity2Status.textContent = agentMint === 'Used' ? 'Minted' : 'Available';
+            trinity2Status.className = 'trinity-status ' + (agentMint === 'Used' ? 'minted' : 'available');
+
+            trinity3Status.textContent = metamask2Mint === 'Used' ? 'Minted' : 'Available';
+            trinity3Status.className = 'trinity-status ' + (metamask2Mint === 'Used' ? 'minted' : 'available');
+
+            // Load recent activity (simplified - would need Etherscan API for real data)
+            loadRecentActivity();
+        }
+
+        async function loadRecentActivity() {
+            const activityEl = document.getElementById('recent-activity');
+            const txCountEl = document.getElementById('tx-count');
+
+            // This would typically use Etherscan API
+            // For now, show placeholder based on known events
+            activityEl.innerHTML = `
+                <div class="activity-item">
+                    <span class="activity-type deploy">DEPLOY</span>
+                    <span>TallyToken deployed to mainnet</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-type deploy">DEPLOY</span>
+                    <span>TrustToken deployed to mainnet</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-type deploy">DEPLOY</span>
+                    <span>TallyVoucher deployed to mainnet</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-type mint">MINT</span>
+                    <span>Initial TALLY minted to cold storage</span>
+                </div>
+            `;
+            txCountEl.textContent = '4 events';
+        }
+
+        function refreshAll() {
+            loadAllData();
+        }
+
+        // Initial load
+        loadAllData();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadAllData, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "network": "mainnet",
+  "chainId": 1,
+  "timestamp": "2025-11-19T12:00:00.000Z",
+  "deployer": "0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB",
+  "contracts": {
+    "trustToken": "0x4A2178b300556e20569478bfed782bA02BFaD778",
+    "tallyToken": "0xb8c4682644BAb1900A8B67C3295b8Ce525F3e35d",
+    "tallyVoucher": "0x69e4D4B1835dDEeFc56234E959102c17CF7816dC"
+  },
+  "trinityMembers": [
+    "0xdc20d621a88cb8908e8e7042431c55f0e9dac6fb",
+    "0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22",
+    "0x8ffa5caabe8ee3d9019865120a654464bc4654cd"
+  ]
+}

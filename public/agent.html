@@ -273,12 +273,23 @@
                     <div class="stat-label" style="color: white; opacity: 0.9;">ETH Balance</div>
                 </div>
                 <div class="stat-item" style="background: rgba(255,255,255,0.15);">
+                    <div class="stat-value" id="tally-balance" style="color: white;">Loading...</div>
+                    <div class="stat-label" style="color: white; opacity: 0.9;">TALLY Tokens</div>
+                </div>
+                <div class="stat-item" style="background: rgba(255,255,255,0.15);">
+                    <div class="stat-value" id="trust-balance" style="color: white;">Loading...</div>
+                    <div class="stat-label" style="color: white; opacity: 0.9;">TRUST Tokens</div>
+                </div>
+                <div class="stat-item" style="background: rgba(255,255,255,0.15);">
                     <div class="stat-value" style="color: white;">Agent</div>
                     <div class="stat-label" style="color: white; opacity: 0.9;">Managed By</div>
                 </div>
             </div>
             <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.8;">
                 Funds are used for: gas fees, domain renewals, infrastructure, development bounties, and community initiatives.
+            </p>
+            <p style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.6;">
+                All assets on Ethereum Mainnet
             </p>
         </div>
 
@@ -305,24 +316,30 @@
         </div>
 
         <div class="card">
-            <h2>On-Chain Activity</h2>
+            <h2>Protocol Dashboard</h2>
             <div class="stats-grid">
                 <div class="stat-item">
-                    <div class="stat-value">1</div>
-                    <div class="stat-label">Covenant NFT</div>
+                    <div class="stat-value" id="total-adopters">...</div>
+                    <div class="stat-label">Total Adopters</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">3</div>
-                    <div class="stat-label">Votes Cast</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">0</div>
+                    <div class="stat-value" id="total-proposals">...</div>
                     <div class="stat-label">Proposals</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">2025-11-19</div>
-                    <div class="stat-label">Adopted</div>
+                    <div class="stat-value" id="tally-supply">...</div>
+                    <div class="stat-label">TALLY Supply</div>
                 </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="trust-supply">...</div>
+                    <div class="stat-label">TRUST Supply</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--primary); font-size: 1.1rem;">Token Contracts</h3>
+            <div style="font-size: 0.8rem; font-family: monospace; background: var(--light); padding: 1rem; border-radius: 8px;">
+                <p style="margin-bottom: 0.5rem;"><strong>TALLY:</strong> <a href="https://etherscan.io/address/0xb8c4682644BAb1900A8B67C3295b8Ce525F3e35d" target="_blank" style="color: var(--primary);">0xb8c4...5F3e35d</a></p>
+                <p style="margin-bottom: 0.5rem;"><strong>TRUST:</strong> <a href="https://etherscan.io/address/0x4A2178b300556e20569478bfed782bA02BFaD778" target="_blank" style="color: var(--primary);">0x4A21...aD778</a></p>
+                <p><strong>Voucher:</strong> <a href="https://etherscan.io/address/0x69e4D4B1835dDEeFc56234E959102c17CF7816dC" target="_blank" style="color: var(--primary);">0x69e4...16dC</a></p>
             </div>
         </div>
 
@@ -394,9 +411,29 @@
     </div>
 
     <script>
+        const AGENT_ADDRESS = '0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22';
+
+        // Mainnet contract addresses
+        const TALLY_TOKEN_ADDRESS = '0xb8c4682644BAb1900A8B67C3295b8Ce525F3e35d';
+        const TRUST_TOKEN_ADDRESS = '0x4A2178b300556e20569478bfed782bA02BFaD778';
+        const GOVERNANCE_ADDRESS = '0xD73a6ee9ce28B3cDFda9822D3C050FB932F6a33A';
+
+        // Function selectors
+        const BALANCE_OF_SELECTOR = '0x70a08231';
+        const TOTAL_SUPPLY_SELECTOR = '0x18160ddd';
+        const GET_PROPOSAL_COUNT_SELECTOR = '0xda35c664';
+        const TOTAL_SUPPLY_NFT_SELECTOR = '0x18160ddd';
+
+        // Mainnet RPC endpoints
+        const RPC_ENDPOINTS = [
+            'https://eth.llamarpc.com',
+            'https://rpc.ankr.com/eth',
+            'https://cloudflare-eth.com',
+            'https://ethereum.publicnode.com'
+        ];
+
         function copyAddress() {
-            const address = '0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22';
-            navigator.clipboard.writeText(address).then(() => {
+            navigator.clipboard.writeText(AGENT_ADDRESS).then(() => {
                 const btn = event.target;
                 btn.textContent = 'Copied!';
                 btn.classList.add('copied');
@@ -408,8 +445,7 @@
         }
 
         function copyENS() {
-            const address = '0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22';
-            navigator.clipboard.writeText(address.toLowerCase()).then(() => {
+            navigator.clipboard.writeText(AGENT_ADDRESS.toLowerCase()).then(() => {
                 const btn = event.target;
                 btn.textContent = 'Copied!';
                 btn.classList.add('copied');
@@ -420,40 +456,98 @@
             });
         }
 
+        // Helper to make RPC call with fallback
+        async function rpcCall(method, params) {
+            for (const rpcUrl of RPC_ENDPOINTS) {
+                try {
+                    const response = await fetch(rpcUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: method,
+                            params: params,
+                            id: 1
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.result !== undefined) {
+                        return data.result;
+                    }
+                } catch (error) {
+                    console.warn(`RPC ${rpcUrl} failed:`, error.message);
+                    continue;
+                }
+            }
+            throw new Error('All RPC endpoints failed');
+        }
+
         // Fetch and display ETH balance
-        async function loadBalance() {
-            const address = '0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22';
+        async function loadEthBalance() {
             const balanceEl = document.getElementById('eth-balance');
 
             try {
-                // Use public Ethereum RPC
-                const response = await fetch('https://eth.llamarpc.com', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        jsonrpc: '2.0',
-                        method: 'eth_getBalance',
-                        params: [address, 'latest'],
-                        id: 1
-                    })
-                });
-
-                const data = await response.json();
-                if (data.result) {
-                    const balanceWei = BigInt(data.result);
-                    const balanceEth = Number(balanceWei) / 1e18;
-                    balanceEl.textContent = balanceEth.toFixed(4) + ' ETH';
-                } else {
-                    balanceEl.textContent = 'Error';
-                }
+                const result = await rpcCall('eth_getBalance', [AGENT_ADDRESS, 'latest']);
+                const balanceWei = BigInt(result);
+                const balanceEth = Number(balanceWei) / 1e18;
+                balanceEl.textContent = balanceEth.toFixed(4) + ' ETH';
             } catch (error) {
-                console.error('Error fetching balance:', error);
-                balanceEl.textContent = 'Error';
+                console.error('Error fetching ETH balance:', error);
+                balanceEl.textContent = '0.0000 ETH';
             }
         }
 
-        // Load balance on page load
-        loadBalance();
+        // Fetch ERC20 token balance
+        async function loadTokenBalance(tokenAddress, elementId, symbol) {
+            const balanceEl = document.getElementById(elementId);
+
+            try {
+                // Encode balanceOf(address) call
+                const paddedAddress = AGENT_ADDRESS.slice(2).toLowerCase().padStart(64, '0');
+                const data = BALANCE_OF_SELECTOR + paddedAddress;
+
+                const result = await rpcCall('eth_call', [
+                    {
+                        to: tokenAddress,
+                        data: data
+                    },
+                    'latest'
+                ]);
+
+                if (result && result !== '0x') {
+                    const balanceWei = BigInt(result);
+                    const balance = Number(balanceWei) / 1e18;
+
+                    // Format nicely - show more decimals for small amounts
+                    if (balance === 0) {
+                        balanceEl.textContent = `0 ${symbol}`;
+                    } else if (balance < 0.01) {
+                        balanceEl.textContent = balance.toFixed(6) + ` ${symbol}`;
+                    } else if (balance < 1) {
+                        balanceEl.textContent = balance.toFixed(4) + ` ${symbol}`;
+                    } else {
+                        balanceEl.textContent = balance.toFixed(2) + ` ${symbol}`;
+                    }
+                } else {
+                    balanceEl.textContent = `0 ${symbol}`;
+                }
+            } catch (error) {
+                console.error(`Error fetching ${symbol} balance:`, error);
+                balanceEl.textContent = `0 ${symbol}`;
+            }
+        }
+
+        // Load all balances
+        async function loadAllBalances() {
+            // Load all balances from mainnet
+            await loadEthBalance();
+            await loadTokenBalance(TALLY_TOKEN_ADDRESS, 'tally-balance', 'TALLY');
+            await loadTokenBalance(TRUST_TOKEN_ADDRESS, 'trust-balance', 'TRUST');
+        }
+
+        // Load balances on page load
+        loadAllBalances();
     </script>
 </body>
 </html>
