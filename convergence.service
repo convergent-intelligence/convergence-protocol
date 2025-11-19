@@ -1,0 +1,19 @@
+[Unit]
+Description=Convergence Protocol Ethics Server
+After=network.target
+
+[Service]
+Type=simple
+User=convergence
+WorkingDirectory=/home/convergence/convergence-protocol
+ExecStart=/usr/bin/node /home/convergence/convergence-protocol/server.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=convergence-protocol
+Environment=NODE_ENV=production
+Environment=PORT=8080
+
+[Install]
+WantedBy=multi-user.target

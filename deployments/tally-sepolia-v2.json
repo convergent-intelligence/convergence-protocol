@@ -1,0 +1,14 @@
+{
+  "network": "sepolia",
+  "contractAddress": "0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c",
+  "trinityMembers": [
+    "0xdc20d621a88cb8908e8e7042431c55f0e9dac6fb",
+    "0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22",
+    "0x8ffa5caabe8ee3d9019865120a654464bc4654cd"
+  ],
+  "trustTokenAddress": "0x5a1C7DFb9B935E864348cFDAEB0d4A87b38b9919",
+  "deployer": "0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB",
+  "timestamp": "2025-11-19T01:01:49.179Z",
+  "version": "2.0.0",
+  "note": "Updated with server-native agent wallet and updateTrinityMember function"
+}

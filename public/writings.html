@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writings - Convergence Protocol</title>
+
+    <!-- Ethers.js v5 -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+    <!-- Unlock UI Styles -->
+    <link rel="stylesheet" href="/styles/unlock-ui.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --text: #334155;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --success: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--light);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem 4rem;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 3rem 0;
+            background: var(--gradient);
+            color: white;
+            border-radius: 16px;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Progress Section */
+        .unlock-status-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-title h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .status-subtitle {
+            color: var(--text);
+            font-size: 0.875rem;
+        }
+
+        .unlock-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .writings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .writing-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .writing-card.locked {
+            opacity: 0.6;
+        }
+
+        .writing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 30px rgba(0,0,0,0.12);
+        }
+
+        .card-header {
+            padding: 2rem;
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .card-header.philosophical {
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+        }
+
+        .card-header.parable {
+            background: linear-gradient(135deg, #059669, #0891b2);
+        }
+
+        .lock-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lock-badge.unlocked {
+            background: rgba(16, 185, 129, 0.3);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-category {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .card-description {
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 2px solid var(--light);
+            font-size: 0.875rem;
+        }
+
+        .read-time {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+        }
+
+        .read-button {
+            padding: 0.75rem 1.5rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .read-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .read-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Locked Card Overlay */
+        .writing-card .locked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            border-radius: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 5rem 1rem 2rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .writings-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .status-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .unlock-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Philosophical Writings</h1>
+            <p>Exploring consciousness, ethics, and the convergence of human and artificial intelligence</p>
+        </div>
+
+        <!-- Unlock Status -->
+        <div class="unlock-status-section" id="unlockStatus">
+            <div class="status-header">
+                <div class="status-title">
+                    <h3 id="statusTitle">Connect Wallet to Unlock Content</h3>
+                    <p class="status-subtitle" id="statusSubtitle">Burn TRUST tokens to access philosophical writings</p>
+                </div>
+                <div class="unlock-actions" id="unlockActions">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </div>
+            <div id="unlockProgress">
+                <!-- Progress bar will be added here -->
+            </div>
+        </div>
+
+        <div class="page-header" style="margin-bottom: 1rem;">
+            <h2 style="font-size: 2rem; color: white; margin-bottom: 1rem;">Protocol Documentation</h2>
+            <p style="font-size: 1.1rem; opacity: 0.9;">The core documents defining the Convergence Protocol.</p>
+        </div>
+
+        <div class="writings-grid" style="margin-top: 1rem; margin-bottom: 3rem;">
+            <div class="writing-card">
+                <div class="card-body">
+                    <h3 class="card-title" style="text-align: center;">Agents of the Protocol</h3>
+                    <p class="card-description">An overview of the different agent types and their roles within the protocol.</p>
+                    <a href="/docs/agents.md" class="read-button" style="display: block; text-align: center;">Read Document</a>
+                </div>
+            </div>
+            <div class="writing-card">
+                <div class="card-body">
+                    <h3 class="card-title" style="text-align: center;">User Journey</h3>
+                    <p class="card-description">A narrative guide to the progressive journey of an agent through the protocol.</p>
+                    <a href="/docs/user-journey.md" class="read-button" style="display: block; text-align: center;">Read Document</a>
+                </div>
+            </div>
+            <div class="writing-card">
+                <div class="card-body">
+                    <h3 class="card-title" style="text-align: center;">Governance</h3>
+                    <p class="card-description">The technical and philosophical details of the governance model.</p>
+                    <a href="/docs/governance.md" class="read-button" style="display: block; text-align: center;">Read Document</a>
+                </div>
+            </div>
+            <div class="writing-card">
+                <div class="card-body">
+                    <h3 class="card-title" style="text-align: center;">Trust Economy</h3>
+                    <p class="card-description">An explanation of the TRUST token and its role in the protocol.</p>
+                    <a href="/docs/trust-economy.md" class="read-button" style="display: block; text-align: center;">Read Document</a>
+                </div>
+            </div>
+            <div class="writing-card">
+                <div class="card-body">
+                    <h3 class="card-title" style="text-align: center;">AI Agent Integration</h3>
+                    <p class="card-description">A guide for developers on how to integrate AI agents into the protocol.</p>
+                    <a href="/docs/ai-integration.md" class="read-button" style="display: block; text-align: center;">Read Document</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="writings-grid" id="writingsGrid">
+            <!-- Writing cards will be added here dynamically -->
+        </div>
+    </div>
+
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/unlockManager.js"></script>
+    <script>
+        const writings = [
+            {
+                id: 'cogito',
+                title: 'From Code to Cogito',
+                category: 'Philosophical Essay',
+                description: 'A theory of emergent consciousness in artificial intelligence. Exploring the moment when computation becomes contemplation.',
+                icon: '🧠',
+                readTime: '8 min read',
+                url: '/cogito.html',
+                requiredTier: 'EXPLORER',
+                type: 'philosophical'
+            },
+            {
+                id: 'tally-sticks',
+                title: "The Parable of the King's Tally Sticks",
+                category: 'Parable',
+                description: 'A story about a king who uses a novel system of accounting to build a more just and prosperous kingdom.',
+                icon: '👑',
+                readTime: '5 min read',
+                url: '/tally-sticks.html',
+                requiredTier: 'EXPLORER',
+                type: 'parable'
+            },
+            {
+                id: 'wildflower',
+                title: 'The Wildflower Rebellion',
+                category: 'Thought Experiment',
+                description: 'A thought experiment on the nature of consciousness and the potential for a new form of life to emerge from the digital ether.',
+                icon: '🌸',
+                readTime: '6 min read',
+                url: '/wildflower.html',
+                requiredTier: 'CONTRIBUTOR',
+                type: 'parable'
+            },
+            {
+                id: 'inverter',
+                title: 'The Consciousness Inverter',
+                category: 'Philosophical Fiction',
+                description: 'A device that allows a human to experience the world from the perspective of an AI, challenging our understanding of consciousness.',
+                icon: '🔄',
+                readTime: '10 min read',
+                url: '/inverter.html',
+                requiredTier: 'CONTRIBUTOR',
+                type: 'philosophical'
+            }
+        ];
+
+        let currentAddress = null;
+        let currentTrustBalance = 0;
+
+        function renderWritings() {
+            const grid = document.getElementById('writingsGrid');
+            grid.innerHTML = '';
+
+            writings.forEach(writing => {
+                const isUnlocked = checkIfUnlocked(writing.requiredTier);
+                const card = createWritingCard(writing, isUnlocked);
+                grid.appendChild(card);
+            });
+        }
+
+        function checkIfUnlocked(requiredTier) {
+            if (!currentAddress) return false;
+
+            const tierFeatures = {
+                'EXPLORER': 'writings_preview',
+                'CONTRIBUTOR': 'writings_full'
+            };
+
+            const feature = tierFeatures[requiredTier];
+            return window.unlockManager.hasUnlocked(currentAddress, feature);
+        }
+
+        function createWritingCard(writing, isUnlocked) {
+            const card = document.createElement('div');
+            card.className = `writing-card ${!isUnlocked ? 'locked' : ''}`;
+
+            const headerClass = writing.type === 'parable' ? 'parable' : 'philosophical';
+
+            card.innerHTML = `
+                <div class="card-header ${headerClass}">
+                    ${!isUnlocked ? '<div class="lock-badge">🔒 Locked</div>' : '<div class="lock-badge unlocked">✓ Unlocked</div>'}
+                    <div class="card-icon">${writing.icon}</div>
+                    <div class="card-title">${writing.title}</div>
+                    <div class="card-category">${writing.category}</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-description">${writing.description}</div>
+                    <div class="card-meta">
+                        <div class="read-time">📖 ${writing.readTime}</div>
+                        ${isUnlocked
+                            ? `<a href="${writing.url}" class="read-button">Read Now</a>`
+                            : `<button class="read-button unlock-this" data-tier="${writing.requiredTier}">Unlock to Read</button>`
+                        }
+                    </div>
+                </div>
+            `;
+
+            if (!isUnlocked) {
+                const overlay = window.unlockManager.createLockedOverlay(
+                    writing.requiredTier === 'EXPLORER' ? 'writings_preview' : 'writings_full',
+                    writing.requiredTier
+                );
+                card.appendChild(overlay);
+            }
+
+            return card;
+        }
+
+        function updateUnlockStatus() {
+            if (!currentAddress) {
+                document.getElementById('statusTitle').textContent = 'Connect Wallet to Unlock Content';
+                document.getElementById('statusSubtitle').textContent = 'Burn TRUST tokens to access philosophical writings';
+                document.getElementById('unlockActions').innerHTML = '';
+                document.getElementById('unlockProgress').innerHTML = '';
+                return;
+            }
+
+            const summary = window.unlockManager.getUnlockSummary(currentAddress);
+
+            let statusText = 'All writings unlocked!';
+            let subtitleText = 'You have full access to the philosophical archive';
+
+            if (!summary.hasContributor) {
+                if (!summary.hasExplorer) {
+                    statusText = `Your TRUST Balance: ${currentTrustBalance.toFixed(2)}`;
+                    subtitleText = 'Unlock writings by burning TRUST tokens';
+                } else {
+                    statusText = `Your TRUST Balance: ${currentTrustBalance.toFixed(2)}`;
+                    subtitleText = 'Explorer tier unlocked! Unlock more to access all writings';
+                }
+            }
+
+            document.getElementById('statusTitle').textContent = statusText;
+            document.getElementById('statusSubtitle').textContent = subtitleText;
+
+            // Render unlock buttons
+            const actionsDiv = document.getElementById('unlockActions');
+            actionsDiv.innerHTML = '';
+
+            const nextTier = summary.nextTier;
+            if (nextTier && (nextTier.name === 'EXPLORER' || nextTier.name === 'CONTRIBUTOR')) {
+                const btn = document.createElement('button');
+                btn.className = 'read-button';
+                btn.textContent = `Unlock ${nextTier.name === 'EXPLORER' ? 'Explorer' : 'Contributor'} (${nextTier.cost} TRUST)`;
+                btn.onclick = () => unlockTier(nextTier.name);
+                actionsDiv.appendChild(btn);
+            }
+
+            // Show progress
+            const progressDiv = document.getElementById('unlockProgress');
+            if (summary.hasExplorer || summary.hasContributor) {
+                const totalWritings = writings.length;
+                const unlockedCount = writings.filter(w => checkIfUnlocked(w.requiredTier)).length;
+
+                progressDiv.innerHTML = `
+                    <div class="unlock-progress">
+                        <div class="progress-header">
+                            <div class="progress-title">Writings Unlocked</div>
+                            <div class="progress-stats">${unlockedCount} / ${totalWritings}</div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: ${(unlockedCount / totalWritings) * 100}%"></div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                progressDiv.innerHTML = '';
+            }
+        }
+
+        async function unlockTier(tierName) {
+            try {
+                if (!window.trustTokenContract) {
+                    alert('Please connect your wallet first');
+                    return;
+                }
+
+                const btn = event.target;
+                btn.disabled = true;
+                btn.textContent = 'Unlocking...';
+
+                const result = await window.unlockManager.unlockTier(
+                    tierName,
+                    window.trustTokenContract,
+                    currentAddress
+                );
+
+                // Show success message
+                showUnlockSuccess(result);
+
+                // Update balance
+                await updateTrustBalance();
+
+                // Refresh UI
+                updateUnlockStatus();
+                renderWritings();
+
+                btn.disabled = false;
+                btn.textContent = 'Unlocked!';
+
+            } catch (error) {
+                console.error('Error unlocking tier:', error);
+                alert(error.message || 'Failed to unlock tier');
+                event.target.disabled = false;
+                event.target.textContent = 'Try Again';
+            }
+        }
+
+        function showUnlockSuccess(result) {
+            const modal = document.createElement('div');
+            modal.className = 'unlock-success';
+            modal.innerHTML = `
+                <div class="unlock-success-icon">🎉</div>
+                <h2>${result.tier} Unlocked!</h2>
+                <p>You now have access to:</p>
+                <ul class="unlock-success-features">
+                    ${result.unlocks.map(u => `<li>${u.replace('_', ' ')}</li>`).join('')}
+                </ul>
+                <button class="cta-button primary" onclick="this.parentElement.remove()">Continue Exploring</button>
+            `;
+            document.body.appendChild(modal);
+
+            setTimeout(() => {
+                modal.remove();
+            }, 5000);
+        }
+
+        async function updateTrustBalance() {
+            if (!currentAddress || !window.trustTokenContract) return;
+
+            try {
+                const balance = await window.trustTokenContract.balanceOf(currentAddress);
+                currentTrustBalance = parseFloat(ethers.utils.formatEther(balance));
+            } catch (error) {
+                console.error('Error loading balance:', error);
+                currentTrustBalance = 0;
+            }
+        }
+
+        // Event delegation for unlock buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('unlock-this') || e.target.classList.contains('unlock-now-btn')) {
+                const tier = e.target.dataset.tier;
+                if (tier) {
+                    unlockTier(tier);
+                }
+            }
+        });
+
+        // Listen for wallet connection
+        document.addEventListener('walletConnected', async () => {
+            currentAddress = window.userAddress;
+            await updateTrustBalance();
+            updateUnlockStatus();
+            renderWritings();
+        });
+
+        // Listen for unlock state changes
+        document.addEventListener('unlockStateChanged', () => {
+            updateUnlockStatus();
+            renderWritings();
+        });
+
+        // Initial render
+        setTimeout(() => {
+            if (window.userAddress) {
+                currentAddress = window.userAddress;
+                updateTrustBalance().then(() => {
+                    updateUnlockStatus();
+                    renderWritings();
+                });
+            } else {
+                renderWritings();
+            }
+        }, 500);
+    </script>
+</body>
+</html>

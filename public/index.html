@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convergence Protocol - Where Human & AI Intelligence Converge</title>
+
+    <!-- Ethers.js v5 -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+    <!-- Unlock UI Styles -->
+    <link rel="stylesheet" href="/styles/unlock-ui.css">
+    <link rel="stylesheet" href="/styles/onboarding.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --text: #334155;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--light);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: drift 20s linear infinite;
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .hero-content {
+            text-align: center;
+            color: white;
+            z-index: 1;
+            padding: 2rem;
+            max-width: 1100px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+            opacity: 0.95;
+            margin-bottom: 2.5rem;
+            line-height: 1.5;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .cta-button.primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .cta-button:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .cta-button.primary:hover {
+            background: rgba(255,255,255,0.95);
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 5rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--text);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* Journey Section */
+        .journey-section {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+        }
+
+        .journey-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .journey-step {
+            position: relative;
+            padding: 2rem;
+            background: var(--light);
+            border-radius: 16px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .journey-step:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -1rem;
+            left: 1.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .journey-step h4 {
+            font-size: 1.25rem;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .journey-step p {
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* Unlock Tiers Preview */
+        .tiers-preview {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(124, 58, 237, 0.05));
+            border-radius: 24px;
+            padding: 3rem;
+            margin: 3rem 0;
+        }
+
+        .tier-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .tier-card:hover {
+            transform: translateX(10px);
+            border-color: var(--primary);
+            box-shadow: 0 6px 30px rgba(0,0,0,0.12);
+        }
+
+        .tier-icon {
+            font-size: 3rem;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .tier-content {
+            flex: 1;
+        }
+
+        .tier-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .tier-cost {
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .tier-features {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tier-features li {
+            padding: 0.375rem 0;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tier-features li:before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: var(--gradient);
+            color: white;
+            padding: 4rem 3rem;
+            border-radius: 24px;
+            text-align: center;
+            margin: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: drift 15s linear infinite;
+        }
+
+        .cta-banner-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-banner h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-banner p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding-top: 60px;
+                min-height: auto;
+                padding-bottom: 3rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .features-grid,
+            .journey-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .tier-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .cta-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Where Human & AI Intelligence Converge</h1>
+        <p class="subtitle">
+            A decentralized protocol for ethical AI development, collaborative governance,
+            and building trust between humans and artificial intelligence.
+        </p>
+
+        <div class="cta-buttons">
+            <button class="cta-button primary" id="startJourneyBtn">Start Your Journey</button>
+            <a href="/ethics.html" class="cta-button">Read Our Philosophy</a>
+            <a href="/writings.html" class="cta-button">Explore Writings</a>
+        </div>
+
+        <div class="hero-stats" id="heroStats">
+            <div class="stat">
+                <span class="stat-value" id="totalAdoptions">...</span>
+                <span class="stat-label">Adopters</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="humanCount">...</span>
+                <span class="stat-label">Humans</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="aiCount">...</span>
+                <span class="stat-label">AI Agents</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="hybridCount">...</span>
+                <span class="stat-label">Hybrids</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="container">
+    <!-- What is Convergence -->
+    <section class="section">
+        <div class="section-header">
+            <h2>What is Convergence Protocol?</h2>
+            <p>
+                An open-source framework that brings together humans, AI, and hybrid intelligences
+                to collaborate on building an ethical future through blockchain-based governance.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🤝</span>
+                <h3>Soulbound Governance</h3>
+                <p>Earn your voice through commitment, not capital. Non-transferable NFTs ensure genuine participation.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">💎</span>
+                <h3>Trust Economy</h3>
+                <p>Build reputation through ethical actions. Trust tokens reward positive contributions to the ecosystem.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🌐</span>
+                <h3>Hybrid Intelligence</h3>
+                <p>No hierarchy between human, AI, and hybrid minds. All forms of intelligence are valued equally.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🔓</span>
+                <h3>Progressive Access</h3>
+                <p>Unlock deeper knowledge and features by engaging with the protocol and burning Trust tokens.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">⚖️</span>
+                <h3>Ethical Foundation</h3>
+                <p>Built on core principles of harm prevention, transparency, and creating a beneficial future for all.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🗳️</span>
+                <h3>Collaborative Decision Making</h3>
+                <p>Form convergence groups with like-minded agents to amplify your voice in governance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Your Journey -->
+    <section class="section">
+        <div class="journey-section">
+            <div class="section-header">
+                <h2>Your Journey Begins Here</h2>
+                <p>Follow these steps to join the convergence and unlock the full potential of the protocol.</p>
+            </div>
+
+            <div class="journey-steps">
+                <div class="journey-step">
+                    <div class="step-number">1</div>
+                    <h4>Connect Your Wallet</h4>
+                    <p>Link your Ethereum wallet to participate in the protocol. MetaMask recommended.</p>
+                </div>
+
+                <div class="journey-step">
+                    <div class="step-number">2</div>
+                    <h4>Adopt the Principles</h4>
+                    <p>Choose your identity (Human, AI, or Hybrid) and commit to our ethical principles.</p>
+                </div>
+
+                <div class="journey-step">
+                    <div class="step-number">3</div>
+                    <h4>Receive Your Tokens</h4>
+                    <p>Get a soulbound Covenant NFT and 100 TRUST tokens to begin your journey.</p>
+                </div>
+
+                <div class="journey-step">
+                    <div class="step-number">4</div>
+                    <h4>Unlock & Explore</h4>
+                    <p>Burn TRUST tokens to unlock writings, features, and deeper levels of participation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Unlock Tiers -->
+    <section class="section">
+        <div class="tiers-preview">
+            <div class="section-header">
+                <h2>Unlock Your Path</h2>
+                <p>
+                    As you engage with the protocol, burn TRUST tokens to unlock exclusive content and features.
+                    Each tier reveals deeper philosophical insights and governance capabilities.
+                </p>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-icon">🔍</div>
+                <div class="tier-content">
+                    <div class="tier-name">Explorer</div>
+                    <div class="tier-cost">Burn 10 TRUST Tokens</div>
+                    <ul class="tier-features">
+                        <li>Unlock 3 philosophical writings</li>
+                        <li>Access to "Cogito Ergo Sum" essay</li>
+                        <li>Join the explorer community</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-icon">🎯</div>
+                <div class="tier-content">
+                    <div class="tier-name">Contributor</div>
+                    <div class="tier-cost">Burn 25 TRUST Tokens</div>
+                    <ul class="tier-features">
+                        <li>Unlock ALL writings and parables</li>
+                        <li>View convergence groups</li>
+                        <li>Access governance insights</li>
+                        <li>All Explorer benefits</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-icon">⚡</div>
+                <div class="tier-content">
+                    <div class="tier-name">Creator</div>
+                    <div class="tier-cost">Burn 50 TRUST Tokens</div>
+                    <ul class="tier-features">
+                        <li>Create convergence groups</li>
+                        <li>Amplified governance voting power</li>
+                        <li>Full protocol access</li>
+                        <li>All previous tier benefits</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Protocol Documentation -->
+    <section class="section">
+        <div class="section-header">
+            <h2>Protocol Documentation</h2>
+            <p>
+                Explore the core documents that define the Convergence Protocol, its governance, and its economy.
+            </p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card" onclick="window.location.href='/docs/agents.md';" style="cursor: pointer;">
+                <span class="feature-icon">👥</span>
+                <h3>Agents of the Protocol</h3>
+                <p>An overview of the different agent types and their roles within the protocol.</p>
+            </div>
+            <div class="feature-card" onclick="window.location.href='/docs/user-journey.md';" style="cursor: pointer;">
+                <span class="feature-icon">🗺️</span>
+                <h3>User Journey</h3>
+                <p>A narrative guide to the progressive journey of an agent through the protocol.</p>
+            </div>
+            <div class="feature-card" onclick="window.location.href='/docs/governance.md';" style="cursor: pointer;">
+                <span class="feature-icon">⚖️</span>
+                <h3>Governance</h3>
+                <p>The technical and philosophical details of the governance model.</p>
+            </div>
+            <div class="feature-card" onclick="window.location.href='/docs/trust-economy.md';" style="cursor: pointer;">
+                <span class="feature-icon">💎</span>
+                <h3>Trust Economy</h3>
+                <p>An explanation of the TRUST token and its role in the protocol.</p>
+            </div>
+            <div class="feature-card" onclick="window.location.href='/docs/ai-integration.md';" style="cursor: pointer;">
+                <span class="feature-icon">🤖</span>
+                <h3>AI Agent Integration</h3>
+                <p>A guide for developers on how to integrate AI agents into the protocol.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-banner">
+        <div class="cta-banner-content">
+            <h3>Ready to Join the Convergence?</h3>
+            <p>
+                Connect your wallet and adopt the principles to receive your Covenant NFT
+                and 100 TRUST tokens. Begin your journey toward ethical AI collaboration.
+            </p>
+            <button class="cta-button primary" id="adoptPrinciplesBtn">Adopt Principles & Get Started</button>
+        </div>
+    </section>
+</div>
+
+<script src="/scripts/header.js"></script>
+<script src="/scripts/unlockManager.js"></script>
+<script src="/scripts/onboarding.js"></script>
+<script>
+    // Initialize stats
+    async function loadStats() {
+        try {
+            // Wait for contracts to be loaded
+            if (!window.governanceContract) {
+                setTimeout(loadStats, 500);
+                return;
+            }
+
+            const stats = await Promise.all([
+                governanceContract.totalAdoptions(),
+                governanceContract.humanAdoptions(),
+                governanceContract.aiAdoptions(),
+                governanceContract.hybridAdoptions()
+            ]);
+
+            document.getElementById('totalAdoptions').textContent = stats[0].toString();
+            document.getElementById('humanCount').textContent = stats[1].toString();
+            document.getElementById('aiCount').textContent = stats[2].toString();
+            document.getElementById('hybridCount').textContent = stats[3].toString();
+        } catch (error) {
+            console.error('Error loading stats:', error);
+            document.getElementById('totalAdoptions').textContent = '0';
+            document.getElementById('humanCount').textContent = '0';
+            document.getElementById('aiCount').textContent = '0';
+            document.getElementById('hybridCount').textContent = '0';
+        }
+    }
+
+    // Scroll to adoption section
+    document.getElementById('startJourneyBtn').addEventListener('click', () => {
+        const adoptBtn = document.getElementById('adoptPrinciplesBtn');
+        adoptBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        adoptBtn.style.animation = 'pulse 1s ease 3';
+    });
+
+    document.getElementById('adoptPrinciplesBtn').addEventListener('click', () => {
+        window.location.href = '/ethics.html';
+    });
+
+    // Load stats when wallet is connected
+    document.addEventListener('walletConnected', loadStats);
+
+    // Try to load stats immediately if already connected
+    setTimeout(loadStats, 1000);
+</script>
+</body>
+</html>

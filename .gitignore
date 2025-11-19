@@ -1,0 +1,46 @@
+# CRITICAL: Private keys and secrets - NEVER COMMIT
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+secrets/
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+dist/
+build/
+artifacts/
+cache/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# System files
+Thumbs.db
+.DS_Store
+
+# Claude Code config
+.claude/
+
+# Coverage
+coverage/
+.nyc_output/

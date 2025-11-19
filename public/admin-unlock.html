@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Unlock Manager - Convergence Protocol</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #856404;
+        }
+
+        .warning strong {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .section h2 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result.success {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            color: #065f46;
+            display: block;
+        }
+
+        .result.error {
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+            color: #991b1b;
+            display: block;
+        }
+
+        .trinity-quick {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .trinity-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .trinity-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .trinity-card h3 {
+            color: #2d3748;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .trinity-card .address {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: #718096;
+            word-break: break-all;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e0e7ff;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-item:last-child {
+            margin-bottom: 0;
+        }
+
+        code {
+            background: #1a202c;
+            color: #48bb78;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Admin Unlock Manager</h1>
+        <p class="subtitle">Manually unlock tiers for testing and special cases</p>
+
+        <div class="warning">
+            <strong>⚠️ Admin Only</strong>
+            This tool bypasses the normal TRUST token burning mechanism. Use only for testing, Trinity members who can't earn TRUST, or special circumstances.
+        </div>
+
+        <!-- Quick Trinity Unlock -->
+        <div class="section">
+            <h2>Quick Trinity Unlock</h2>
+            <p style="color: #718096; margin-bottom: 1rem; font-size: 0.9rem;">
+                Click a Trinity member to unlock all tiers for them
+            </p>
+            <div class="trinity-quick">
+                <div class="trinity-card" onclick="quickUnlockTrinity('GENESIS')">
+                    <h3>👤 Genesis Human</h3>
+                    <div class="address">Will be loaded...</div>
+                </div>
+                <div class="trinity-card" onclick="quickUnlockTrinity('CLAUDE')">
+                    <h3>🤖 First AI (Claude)</h3>
+                    <div class="address">Will be loaded...</div>
+                </div>
+                <div class="trinity-card" onclick="quickUnlockTrinity('HYBRID')">
+                    <h3>🔀 First Hybrid</h3>
+                    <div class="address">Will be loaded...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Unlock -->
+        <div class="section">
+            <h2>Manual Unlock by Address</h2>
+
+            <div class="form-group">
+                <label for="targetAddress">Target Address</label>
+                <input type="text" id="targetAddress" placeholder="0x..." />
+            </div>
+
+            <div class="form-group">
+                <label>Select Tier to Unlock</label>
+                <div class="button-group">
+                    <button class="btn-primary" onclick="adminUnlock('EXPLORER')">
+                        🔓 Explorer (10 TRUST)
+                    </button>
+                    <button class="btn-primary" onclick="adminUnlock('CONTRIBUTOR')">
+                        🔓 Contributor (25 TRUST)
+                    </button>
+                    <button class="btn-primary" onclick="adminUnlock('CREATOR')">
+                        🔓 Creator (50 TRUST)
+                    </button>
+                    <button class="btn-warning" onclick="adminUnlockAll()">
+                        🔓 Unlock ALL Tiers
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Danger Zone</label>
+                <div class="button-group">
+                    <button class="btn-danger" onclick="adminReset()">
+                        🗑️ Reset All Unlocks
+                    </button>
+                </div>
+            </div>
+
+            <div id="result" class="result"></div>
+        </div>
+
+        <!-- Current Status -->
+        <div class="section">
+            <h2>Current Status</h2>
+            <div class="status" id="status">
+                <div class="status-item">
+                    <span>Total Stored Unlocks:</span>
+                    <strong id="totalUnlocks">0</strong>
+                </div>
+                <div class="status-item">
+                    <span>localStorage Key:</span>
+                    <code>convergence_unlocks</code>
+                </div>
+            </div>
+            <button class="btn-secondary" onclick="viewAllUnlocks()" style="margin-top: 1rem; width: 100%;">
+                View All Unlocks (Console)
+            </button>
+        </div>
+
+        <!-- Usage Instructions -->
+        <div class="section">
+            <h2>Browser Console Commands</h2>
+            <p style="color: #718096; margin-bottom: 1rem; font-size: 0.9rem;">
+                You can also use these commands in the browser console:
+            </p>
+            <pre style="background: #1a202c; color: #48bb78; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem;">
+// Unlock specific tier for address
+unlockManager.adminUnlockTier('EXPLORER', '0x...');
+unlockManager.adminUnlockTier('CONTRIBUTOR', '0x...');
+unlockManager.adminUnlockTier('CREATOR', '0x...');
+
+// Unlock all tiers
+unlockManager.adminUnlockAll('0x...');
+
+// Reset unlocks
+unlockManager.adminResetUnlocks('0x...');
+
+// Check current unlocks
+unlockManager.getUserUnlocks('0x...');
+
+// View all unlock data
+console.log(unlockManager.unlocks);
+            </pre>
+        </div>
+    </div>
+
+    <script src="/scripts/unlockManager.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script>
+        // Trinity addresses (will be loaded from contract)
+        let TRINITY_ADDRESSES = {
+            GENESIS: '',
+            CLAUDE: '',
+            HYBRID: ''
+        };
+
+        // Load Trinity addresses on page load
+        window.addEventListener('load', async () => {
+            await loadTrinityAddresses();
+            updateStatus();
+        });
+
+        async function loadTrinityAddresses() {
+            try {
+                // Try to load from governance contract
+                if (typeof window.governanceContract !== 'undefined' && window.governanceContract) {
+                    const total = await window.governanceContract.getTotalAdoptions();
+                    if (total >= 3) {
+                        const adoption1 = await window.governanceContract.getAdoption(1);
+                        const adoption2 = await window.governanceContract.getAdoption(2);
+                        const adoption3 = await window.governanceContract.getAdoption(3);
+
+                        TRINITY_ADDRESSES.GENESIS = adoption1.consciousness;
+                        TRINITY_ADDRESSES.CLAUDE = adoption2.consciousness;
+                        TRINITY_ADDRESSES.HYBRID = adoption3.consciousness;
+
+                        // Update UI
+                        document.querySelector('.trinity-quick .trinity-card:nth-child(1) .address').textContent =
+                            TRINITY_ADDRESSES.GENESIS.slice(0, 10) + '...' + TRINITY_ADDRESSES.GENESIS.slice(-8);
+                        document.querySelector('.trinity-quick .trinity-card:nth-child(2) .address').textContent =
+                            TRINITY_ADDRESSES.CLAUDE.slice(0, 10) + '...' + TRINITY_ADDRESSES.CLAUDE.slice(-8);
+                        document.querySelector('.trinity-quick .trinity-card:nth-child(3) .address').textContent =
+                            TRINITY_ADDRESSES.HYBRID.slice(0, 10) + '...' + TRINITY_ADDRESSES.HYBRID.slice(-8);
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not load Trinity addresses:', e);
+            }
+        }
+
+        function quickUnlockTrinity(member) {
+            const address = TRINITY_ADDRESSES[member];
+            if (!address) {
+                showResult('Trinity address not loaded yet. Try refreshing the page.', 'error');
+                return;
+            }
+
+            document.getElementById('targetAddress').value = address;
+            adminUnlockAll();
+        }
+
+        function adminUnlock(tier) {
+            const address = document.getElementById('targetAddress').value.trim();
+            if (!address || !address.startsWith('0x')) {
+                showResult('Please enter a valid Ethereum address', 'error');
+                return;
+            }
+
+            try {
+                const result = unlockManager.adminUnlockTier(tier, address);
+                showResult(`✅ Successfully unlocked ${result.tier} tier for ${address}`, 'success');
+                updateStatus();
+            } catch (e) {
+                showResult(`❌ Error: ${e.message}`, 'error');
+            }
+        }
+
+        function adminUnlockAll() {
+            const address = document.getElementById('targetAddress').value.trim();
+            if (!address || !address.startsWith('0x')) {
+                showResult('Please enter a valid Ethereum address', 'error');
+                return;
+            }
+
+            try {
+                const result = unlockManager.adminUnlockAll(address);
+                showResult(`✅ Successfully unlocked ${result.unlockedTiers} tiers for ${address}`, 'success');
+                updateStatus();
+            } catch (e) {
+                showResult(`❌ Error: ${e.message}`, 'error');
+            }
+        }
+
+        function adminReset() {
+            const address = document.getElementById('targetAddress').value.trim();
+            if (!address || !address.startsWith('0x')) {
+                showResult('Please enter a valid Ethereum address', 'error');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to reset ALL unlocks for ${address}?`)) {
+                return;
+            }
+
+            try {
+                const result = unlockManager.adminResetUnlocks(address);
+                showResult(`✅ Successfully reset all unlocks for ${address}`, 'success');
+                updateStatus();
+            } catch (e) {
+                showResult(`❌ Error: ${e.message}`, 'error');
+            }
+        }
+
+        function showResult(message, type) {
+            const resultEl = document.getElementById('result');
+            resultEl.textContent = message;
+            resultEl.className = `result ${type}`;
+        }
+
+        function updateStatus() {
+            const totalUnlocks = Object.keys(unlockManager.unlocks).length;
+            document.getElementById('totalUnlocks').textContent = totalUnlocks;
+        }
+
+        function viewAllUnlocks() {
+            console.log('=== CONVERGENCE UNLOCKS DATA ===');
+            console.log(unlockManager.unlocks);
+            console.log('================================');
+            showResult('Unlock data printed to console (F12)', 'success');
+        }
+
+        // Listen for unlock events
+        document.addEventListener('unlockStateChanged', (e) => {
+            console.log('Unlock state changed:', e.detail);
+            updateStatus();
+        });
+    </script>
+</body>
+</html>

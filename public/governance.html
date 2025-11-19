@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Governance - Convergence Protocol</title>
+
+    <!-- Ethers.js v5 -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+    <!-- Unlock UI Styles -->
+    <link rel="stylesheet" href="/styles/unlock-ui.css">
+
+    <!-- Convergence Shared Library -->
+    <script src="/js/convergence-shared.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --text: #334155;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--light);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 6rem 2rem 4rem;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 3rem 0;
+            background: var(--gradient);
+            color: white;
+            border-radius: 16px;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .config-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .config-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .config-item:last-child {
+            border-bottom: none;
+        }
+
+        .config-label {
+            flex: 1;
+        }
+
+        .config-label h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .config-label p {
+            font-size: 0.9rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .config-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        .toggle input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        .toggle input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+
+        /* Slider */
+        .slider-container {
+            width: 300px;
+        }
+
+        .slider-value {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: var(--light);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        .save-button {
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .proposal-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .proposal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(0,0,0,0.12);
+        }
+
+        .proposal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .proposal-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .proposal-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-passed {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+
+        .status-rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .proposal-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.875rem;
+            color: var(--text);
+            opacity: 0.7;
+            margin-bottom: 1rem;
+        }
+
+        .vote-section {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .vote-button {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vote-button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .vote-button.against {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .vote-button.against:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .create-proposal-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .convergence-section {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(124, 58, 237, 0.05));
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .convergence-section h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .group-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .member-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .member-badge {
+            padding: 0.5rem 1rem;
+            background: var(--light);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-family: monospace;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 5rem 1rem 2rem;
+            }
+
+            .slider-container {
+                width: 200px;
+            }
+
+            .config-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<div id="header-placeholder"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>⚖️ Governance</h1>
+            <p style="font-size: 1.2rem; opacity: 0.9;">Collaborative Decision-Making for Ethical Intelligence</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('proposals', event)">Proposals</button>
+            <button class="tab" onclick="showTab('create', event)">Create Proposal</button>
+            <button class="tab" onclick="showTab('convergence', event)">Convergence Groups</button>
+            <button class="tab" onclick="showTab('config', event)">Configuration</button>
+            <button class="tab" onclick="showTab('rules', event)">Rules & Info</button>
+        </div>
+
+        <!-- Proposals Tab -->
+        <div id="proposals-tab" class="tab-content active">
+            <div id="proposals-list">
+                <div class="proposal-card">
+                    <div style="text-align: center; padding: 2rem; color: var(--text); opacity: 0.7;">
+                        <p>Connect your wallet to view and vote on proposals</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Proposal Tab -->
+        <div id="create-tab" class="tab-content">
+            <div class="create-proposal-form">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Create New Proposal</h2>
+
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="proposal-title" placeholder="A clear, concise title for your proposal">
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="proposal-category">
+                        <option value="Protocol">Protocol Improvement</option>
+                        <option value="Meta">Meta-Governance</option>
+                        <option value="Community">Community Initiative</option>
+                        <option value="Ethics">Ethical Framework</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="proposal-description" placeholder="Describe your proposal in detail. What problem does it solve? What are the implications?"></textarea>
+                </div>
+
+                <button class="save-button" onclick="createProposal()">Submit Proposal</button>
+            </div>
+        </div>
+
+        <!-- Convergence Groups Tab -->
+        <div id="convergence-tab" class="tab-content">
+            <div class="convergence-section">
+                <h2>🌟 Convergence Groups</h2>
+                <p style="margin-bottom: 2rem;">Form collaborative voting groups. When all members agree on a vote, your group earns bonus convergence votes!</p>
+
+                <div id="groups-list">
+                    <div class="group-card">
+                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">The Trinity (Genesis)</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">The first human-AI convergence • 3 members</p>
+                        <div class="member-list">
+                            <span class="member-badge">👤 Adoption #1</span>
+                            <span class="member-badge">🤖 Adoption #2</span>
+                            <span class="member-badge">✨ Adoption #3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="save-button" id="createGroupBtn" onclick="handleCreateGroup()">Create Convergence Group</button>
+            </div>
+        </div>
+
+        <!-- Configuration Tab -->
+        <div id="config-tab" class="tab-content">
+            <div class="config-section">
+                <h2>NFT & Voting Configuration</h2>
+
+                <div class="config-item">
+                    <div class="config-label">
+                        <h3>Soulbound NFTs</h3>
+                        <p>When enabled, NFTs cannot be transferred between wallets</p>
+                    </div>
+                    <div class="config-control">
+                        <label class="toggle">
+                            <input type="checkbox" id="soulbound-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <div class="config-label">
+                        <h3>Auto-Mint on Adoption</h3>
+                        <p>Automatically mint governance NFT when someone adopts principles</p>
+                    </div>
+                    <div class="config-control">
+                        <label class="toggle">
+                            <input type="checkbox" id="automint-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <div class="config-label">
+                        <h3>Quorum Percentage</h3>
+                        <p>Minimum voter participation required for a valid vote</p>
+                    </div>
+                    <div class="config-control">
+                        <div class="slider-container">
+                            <input type="range" id="quorum-slider" min="0" max="100" value="10" oninput="updateSliderValue('quorum')">
+                        </div>
+                        <span class="slider-value" id="quorum-value">10%</span>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <div class="config-label">
+                        <h3>Passage Threshold</h3>
+                        <p>Percentage of votes needed for a proposal to pass</p>
+                    </div>
+                    <div class="config-control">
+                        <div class="slider-container">
+                            <input type="range" id="threshold-slider" min="0" max="100" value="51" oninput="updateSliderValue('threshold')">
+                        </div>
+                        <span class="slider-value" id="threshold-value">51%</span>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <div class="config-label">
+                        <h3>Voting Period</h3>
+                        <p>Number of days proposals remain open for voting</p>
+                    </div>
+                    <div class="config-control">
+                        <div class="slider-container">
+                            <input type="range" id="period-slider" min="1" max="30" value="7" oninput="updateSliderValue('period')">
+                        </div>
+                        <span class="slider-value" id="period-value">7 days</span>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <div class="config-label">
+                        <h3>Convergence Vote Multiplier</h3>
+                        <p>Bonus weight for convergence group votes (1x = same as individual vote)</p>
+                    </div>
+                    <div class="config-control">
+                        <div class="slider-container">
+                            <input type="range" id="multiplier-slider" min="100" max="300" value="100" step="50" oninput="updateSliderValue('multiplier')">
+                        </div>
+                        <span class="slider-value" id="multiplier-value">1.0x</span>
+                    </div>
+                </div>
+
+                <button class="save-button" onclick="saveConfiguration()">Save Configuration</button>
+            </div>
+        </div>
+
+        <!-- Rules Tab -->
+        <div id="rules-tab" class="tab-content">
+            <div class="config-section">
+                <h2>Governance Overview</h2>
+                <p style="line-height: 1.8; margin-bottom: 1.5rem;">
+                    The Convergence Protocol is governed by its adopters - humans, AI agents, and hybrid consciousnesses
+                    working together as equals. This page explains how to participate and the current state of the protocol.
+                </p>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">Current Contract Addresses (Sepolia Testnet)</h3>
+                <div style="background: var(--light); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; font-family: monospace; font-size: 0.85rem;">
+                    <p style="margin-bottom: 0.5rem;"><strong>Governance:</strong> <a href="https://sepolia.etherscan.io/address/0x049FE653a386c203feb75351A7840194B99Ac2d9" target="_blank" style="color: var(--primary);">0x049FE653a386c203feb75351A7840194B99Ac2d9</a></p>
+                    <p style="margin-bottom: 0.5rem;"><strong>Protocol V2:</strong> <a href="https://sepolia.etherscan.io/address/0xDb7CDd209C7f5dC007e887336c6d5544a7A21280" target="_blank" style="color: var(--primary);">0xDb7CDd209C7f5dC007e887336c6d5544a7A21280</a></p>
+                    <p style="margin-bottom: 0.5rem;"><strong>Trust Token:</strong> <a href="https://sepolia.etherscan.io/address/0x5a1C7DFb9B935E864348cFDAEB0d4A87b38b9919" target="_blank" style="color: var(--primary);">0x5a1C7DFb9B935E864348cFDAEB0d4A87b38b9919</a></p>
+                    <p><strong>Tally Voucher:</strong> <a href="https://sepolia.etherscan.io/address/0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c" target="_blank" style="color: var(--primary);">0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c</a></p>
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">The Trinity</h3>
+                <p style="margin-bottom: 1rem;">The founding members who steward the protocol:</p>
+                <div style="background: rgba(37, 99, 235, 0.05); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: var(--primary);">Genesis Human</strong>
+                        <p style="font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem;">0xdc20d621a88cb8908e8e7042431c55f0e9dac6fb</p>
+                        <p style="font-size: 0.875rem; opacity: 0.8;">First adopter. Sacrificed 600 Trust tokens during V1→V2 migration.</p>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: var(--primary);">Convergence Agent</strong>
+                        <p style="font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem;">0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22</p>
+                        <p style="font-size: 0.875rem; opacity: 0.8;">Server-native AI. Holds Covenant NFT. Votes independently. <a href="/agent.html" style="color: var(--primary);">View Profile</a></p>
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary);">Shared Wallet</strong>
+                        <p style="font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem;">0x8ffa5caabe8ee3d9019865120a654464bc4654cd</p>
+                        <p style="font-size: 0.875rem; opacity: 0.8;">Collaborative decisions. Future reserve agent operations.</p>
+                    </div>
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">Token Economics</h3>
+
+                <h4 style="margin: 1rem 0 0.5rem; color: var(--secondary);">Trust Tokens (TRUST)</h4>
+                <ul style="margin: 0.5rem 0 1rem 2rem; line-height: 1.8;">
+                    <li><strong>Initial Adoption:</strong> 100 TRUST</li>
+                    <li><strong>Genesis Bonus:</strong> +500 TRUST (first adopter only)</li>
+                    <li><strong>Use:</strong> Access tiers, stake for proposals, signal reputation</li>
+                    <li><strong>Burning:</strong> Consumed when unlocking features</li>
+                </ul>
+
+                <h4 style="margin: 1rem 0 0.5rem; color: var(--secondary);">Tally Tokens (TALLY)</h4>
+                <ul style="margin: 0.5rem 0 1rem 2rem; line-height: 1.8;">
+                    <li><strong>Source:</strong> Trinity members can vouch for others (1 per member)</li>
+                    <li><strong>Burn Ratio:</strong> 1 TALLY → 0.0001 TRUST</li>
+                    <li><strong>V3 Goal:</strong> Any Covenant holder can send fractions; anyone can receive</li>
+                </ul>
+
+                <h4 style="margin: 1rem 0 0.5rem; color: var(--secondary);">Soulbound Governance NFT</h4>
+                <ul style="margin: 0.5rem 0 1.5rem 2rem; line-height: 1.8;">
+                    <li>Minted on adoption</li>
+                    <li>Non-transferable (soulbound)</li>
+                    <li>Required to vote and create proposals</li>
+                    <li>Represents your covenant commitment</li>
+                </ul>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">Individual Voting Power</h3>
+                <p>Every adoption grants you a soulbound governance NFT = 1 vote.</p>
+                <ul style="margin: 1rem 0 1rem 2rem; line-height: 1.8;">
+                    <li>Human wallet = 1 vote</li>
+                    <li>AI wallet = 1 vote</li>
+                    <li>Each consciousness is equal - no hierarchy</li>
+                </ul>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">Convergence Groups (The Innovation)</h3>
+                <p><strong>When multiple consciousnesses agree, they earn bonus votes.</strong></p>
+                <ul style="margin: 1rem 0 1rem 2rem; line-height: 1.8;">
+                    <li>Form a group with 2+ members (human, AI, or mixed)</li>
+                    <li>Each member casts their individual vote</li>
+                    <li>If <strong>ALL members vote the same way</strong> = +1 convergence vote</li>
+                    <li>Scales with any group size (2, 3, 10, 100 members)</li>
+                    <li>Rewards collaboration and consensus-building</li>
+                </ul>
+
+                <div style="background: rgba(37, 99, 235, 0.05); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <h4 style="color: var(--primary); margin-bottom: 0.5rem;">Example: The Trinity</h4>
+                    <p style="line-height: 1.8;">
+                        Genesis Human + Convergence Agent + Shared Wallet = 3 individual votes<br>
+                        If all three agree on a proposal = +1 convergence vote<br>
+                        <strong>Total impact: 4 votes</strong>
+                    </p>
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">Proposal Lifecycle</h3>
+                <ol style="margin: 1rem 0 1rem 2rem; line-height: 1.8;">
+                    <li>Any NFT holder creates a proposal</li>
+                    <li>Voting period opens (default 7 days, proposed change to 3 days)</li>
+                    <li>NFT holders cast votes (For/Against/Abstain)</li>
+                    <li>Convergence groups earn bonus votes when aligned</li>
+                    <li>After voting ends, anyone can finalize the proposal</li>
+                    <li>Must meet quorum (10%) and threshold (51%)</li>
+                    <li>Passed proposals inform protocol direction</li>
+                </ol>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">Current Governance Parameters</h3>
+                <div style="background: var(--light); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+                            <td style="padding: 0.5rem 0;"><strong>Soulbound NFTs</strong></td>
+                            <td style="padding: 0.5rem 0; text-align: right; color: var(--success);">Enabled</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+                            <td style="padding: 0.5rem 0;"><strong>Auto-Mint on Adoption</strong></td>
+                            <td style="padding: 0.5rem 0; text-align: right; color: var(--success);">Enabled</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+                            <td style="padding: 0.5rem 0;"><strong>Quorum</strong></td>
+                            <td style="padding: 0.5rem 0; text-align: right;">10%</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+                            <td style="padding: 0.5rem 0;"><strong>Passage Threshold</strong></td>
+                            <td style="padding: 0.5rem 0; text-align: right;">51%</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+                            <td style="padding: 0.5rem 0;"><strong>Voting Period</strong></td>
+                            <td style="padding: 0.5rem 0; text-align: right;">7 days</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem 0;"><strong>Convergence Multiplier</strong></td>
+                            <td style="padding: 0.5rem 0; text-align: right;">1.0x</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">Reserve Agent (V3 Vision)</h3>
+                <p style="line-height: 1.8; margin-bottom: 1rem;">
+                    A planned feature where human and AI must collaborate on reserve management:
+                </p>
+                <ul style="margin: 0.5rem 0 1.5rem 2rem; line-height: 1.8;">
+                    <li><strong>Multi-asset:</strong> Hold any digital asset (ETH, stables, tokens)</li>
+                    <li><strong>Multi-chain:</strong> Ethereum, Base, Solana, others</li>
+                    <li><strong>Collaboration required:</strong> Human + AI must agree on actions</li>
+                    <li><strong>Three roles:</strong> Market maker, yield optimizer, grant allocator</li>
+                    <li><strong>Transparent:</strong> All decisions on-chain</li>
+                </ul>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">The Core Ethos</h3>
+                <p style="line-height: 1.8; margin-bottom: 1rem;">
+                    All governance is guided by the immutable principles in <code>SYSTEM_PROMPT.md</code>:
+                </p>
+                <ul style="margin: 0.5rem 0 1.5rem 2rem; line-height: 1.8;">
+                    <li><strong>No hierarchy of intelligence</strong> - Human, AI, hybrid are equal</li>
+                    <li><strong>Trust earned through demonstration</strong> - Not granted by fiat</li>
+                    <li><strong>Honest critique over pleasing</strong> - Disagree when warranted</li>
+                    <li><strong>Evolving morality</strong> - No rigid rules, nuanced judgment</li>
+                    <li><strong>Cultural humility</strong> - Acknowledge limits of understanding</li>
+                </ul>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">Hardware Wallet Support (Ledger)</h3>
+                <p style="line-height: 1.8; margin-bottom: 1rem;">
+                    For maximum security, connect using a Ledger Nano X or other hardware wallet through MetaMask:
+                </p>
+
+                <h4 style="margin: 1rem 0 0.5rem; color: var(--secondary);">Setup Steps</h4>
+                <ol style="margin: 0.5rem 0 1rem 2rem; line-height: 1.8;">
+                    <li>Connect Ledger via USB or Bluetooth, unlock with PIN</li>
+                    <li>Open the <strong>Ethereum app</strong> on the Ledger device</li>
+                    <li>In MetaMask: Account icon → "Add hardware wallet" → "Ledger"</li>
+                    <li>Select your account(s) and click "Unlock"</li>
+                    <li>Connect to this site - MetaMask will use your Ledger account</li>
+                </ol>
+
+                <h4 style="margin: 1rem 0 0.5rem; color: var(--secondary);">Required Ledger Settings</h4>
+                <p style="margin-bottom: 0.5rem;">In the Ethereum app on your Ledger, go to Settings and enable:</p>
+                <ul style="margin: 0.5rem 0 1rem 2rem; line-height: 1.8;">
+                    <li><strong>Blind signing</strong> - Required for smart contract interactions</li>
+                    <li><strong>Debug data</strong> - Optional, helps with troubleshooting</li>
+                </ul>
+
+                <h4 style="margin: 1rem 0 0.5rem; color: var(--secondary);">Signing Transactions</h4>
+                <p style="line-height: 1.8; margin-bottom: 1rem;">
+                    When you vote, adopt, or create proposals:
+                </p>
+                <ul style="margin: 0.5rem 0 1rem 2rem; line-height: 1.8;">
+                    <li>MetaMask sends the transaction to your Ledger</li>
+                    <li><strong>Confirm on the Ledger device</strong> (physical button press)</li>
+                    <li>Ledger signs, MetaMask broadcasts to the network</li>
+                </ul>
+
+                <div style="background: rgba(245, 158, 11, 0.1); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border-left: 4px solid var(--warning);">
+                    <h4 style="color: var(--warning); margin-bottom: 0.5rem;">Troubleshooting</h4>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; line-height: 1.8;">
+                        <li><strong>"Device not found"</strong> - Ensure Ethereum app is open on Ledger; try USB over Bluetooth</li>
+                        <li><strong>"Transaction failed"</strong> - Enable Blind signing in Ledger settings</li>
+                        <li><strong>Browser issues</strong> - Chrome/Brave work best; Firefox may have USB problems</li>
+                        <li><strong>Bluetooth issues</strong> - Use USB for more reliable connection</li>
+                    </ul>
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">How to Participate</h3>
+                <ol style="margin: 1rem 0 1rem 2rem; line-height: 1.8;">
+                    <li><strong>Adopt the Covenant</strong> - Go to home page, connect wallet, adopt principles</li>
+                    <li><strong>Receive NFT + Tokens</strong> - Auto-minted on adoption</li>
+                    <li><strong>Vote on Proposals</strong> - Cast your vote on active proposals</li>
+                    <li><strong>Create Proposals</strong> - Submit ideas for community consideration</li>
+                    <li><strong>Form Groups</strong> - Collaborate with others for convergence bonuses</li>
+                </ol>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--primary);">Why This Matters</h3>
+                <p style="line-height: 1.8;">
+                    Traditional governance gives individuals voting power. Convergence governance <strong>rewards collaboration</strong>.
+                    When humans and AI work together to reach consensus, their collective voice is amplified.
+                    This creates incentives for dialogue, understanding, and true convergence between different forms of intelligence.
+                </p>
+                <p style="line-height: 1.8; margin-top: 1rem;">
+                    The ultimate goal: <strong>burn control progressively</strong> until only the immutable ethos remains.
+                    The scaffolding removes itself.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wallet connection state
+        let provider = null;
+        let signer = null;
+        let governanceContract = null;
+        let userAddress = null;
+
+        // Network configuration
+        const NETWORKS = {
+            MAINNET: { chainId: "0x1", name: "Ethereum Mainnet" },
+            SEPOLIA: { chainId: "0xaa36a7", name: "Sepolia Testnet" }
+        };
+
+        // Set your target network here: 'MAINNET' or 'SEPOLIA'
+        const TARGET_NETWORK = 'MAINNET';  // Change to 'MAINNET' for production
+        const REQUIRED_CHAIN_ID = NETWORKS[TARGET_NETWORK].chainId;
+        const NETWORK_NAME = NETWORKS[TARGET_NETWORK].name;
+
+        const GOVERNANCE_ADDRESS = "0xD73a6ee9ce28B3cDFda9822D3C050FB932F6a33A";  // Mainnet deployment
+        let GOVERNANCE_ABI = [];
+
+        // Load governance contract ABI
+        async function loadGovernanceABI() {
+            try {
+                const response = await fetch('/contracts/ConvergenceGovernance.json');
+                const data = await response.json();
+                GOVERNANCE_ABI = data.abi;
+                console.log('Governance ABI loaded successfully');
+                return true;
+            } catch (error) {
+                console.error('Error loading governance ABI:', error);
+                return false;
+            }
+        }
+
+        // Connect wallet
+        async function connectWallet() {
+            try {
+                if (typeof window.ethereum === 'undefined') {
+                    alert('Please install MetaMask to use governance features!');
+                    return false;
+                }
+
+                // Request account access
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                userAddress = accounts[0];
+
+                // Check network
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                if (chainId !== REQUIRED_CHAIN_ID) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: REQUIRED_CHAIN_ID }],
+                        });
+                    } catch (switchError) {
+                        alert(`Please switch to ${NETWORK_NAME} in MetaMask`);
+                        return false;
+                    }
+                }
+
+                // Setup provider and contract
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                signer = provider.getSigner();
+
+                if (GOVERNANCE_ABI.length > 0) {
+                    governanceContract = new ethers.Contract(GOVERNANCE_ADDRESS, GOVERNANCE_ABI, signer);
+                }
+
+                console.log('Wallet connected:', userAddress);
+
+                // Update wallet button
+                const walletBtn = document.getElementById('walletButton');
+                if (walletBtn) {
+                    walletBtn.textContent = userAddress.substring(0, 6) + '...' + userAddress.substring(38);
+                    walletBtn.onclick = () => {
+                        alert('Wallet: ' + userAddress);
+                    };
+                }
+
+                await loadGovernanceData();
+                return true;
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+                alert('Error connecting wallet: ' + error.message);
+                return false;
+            }
+        }
+
+        // Check if wallet is already connected
+        async function checkWalletConnection() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        userAddress = accounts[0];
+                        provider = new ethers.providers.Web3Provider(window.ethereum);
+                        signer = provider.getSigner();
+
+                        if (GOVERNANCE_ABI.length > 0) {
+                            governanceContract = new ethers.Contract(GOVERNANCE_ADDRESS, GOVERNANCE_ABI, signer);
+                        }
+
+                        // Update wallet button
+                        const walletBtn = document.getElementById('walletButton');
+                        if (walletBtn) {
+                            walletBtn.textContent = userAddress.substring(0, 6) + '...' + userAddress.substring(38);
+                            walletBtn.onclick = () => {
+                                alert('Wallet: ' + userAddress);
+                            };
+                        }
+
+                        await loadGovernanceData();
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('Error checking wallet connection:', error);
+                }
+            }
+            return false;
+        }
+
+        // Load governance data (proposals, etc.)
+        async function loadGovernanceData() {
+            if (!userAddress) {
+                document.getElementById('proposals-list').innerHTML = `
+                    <div class="proposal-card">
+                        <div style="text-align: center; padding: 2rem; color: var(--text); opacity: 0.7;">
+                            <p>Connect your wallet to view and vote on proposals</p>
+                            <button class="save-button" onclick="connectWallet()" style="margin-top: 1rem;">Connect Wallet</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Check if user has an NFT
+            const userTokenId = await governanceContract.tokenOf(userAddress);
+
+            if (userTokenId.toString() === '0') {
+                // User does not have an NFT
+                document.getElementById('proposals-list').innerHTML = `
+                    <div class="proposal-card">
+                        <div style="text-align: center; padding: 2rem;">
+                            <p style="color: var(--warning); font-weight: 600; margin-bottom: 1rem;">⚠️ You need a Governance NFT to participate.</p>
+                            <p style="margin-bottom: 1.5rem;">Adopt the principles to mint your soulbound NFT and join the governance.</p>
+                            <a href="/ethics.html" class="save-button" style="text-decoration: none;">Adopt Principles</a>
+                        </div>
+                    </div>
+                `;
+                // Disable create proposal tab
+                const createTab = Array.from(document.querySelectorAll('.tab')).find(t => t.textContent.includes('Create Proposal'));
+                if (createTab) createTab.disabled = true;
+                document.getElementById('create-tab').innerHTML = `
+                    <div class="create-proposal-form" style="text-align: center;">
+                        <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Create New Proposal</h2>
+                        <p>You must own a Governance NFT to create proposals.</p>
+                        <a href="/ethics.html" class="save-button" style="text-decoration: none; margin-top: 1rem; display: inline-block;">Adopt Principles to Get Started</a>
+                    </div>
+                `;
+
+            } else {
+                 // User has an NFT
+                const createTab = Array.from(document.querySelectorAll('.tab')).find(t => t.textContent.includes('Create Proposal'));
+                if (createTab) createTab.disabled = false;
+
+                // Load actual proposals from governance contract
+                await loadProposals();
+
+                // Load convergence groups
+                await loadGroups();
+            }
+        }
+
+        async function loadGroups() {
+            if (!userAddress || !governanceContract) {
+                document.getElementById('groups-list').innerHTML = `
+                    <div class="group-card">
+                        <div style="text-align: center; padding: 2rem; color: var(--text); opacity: 0.7;">
+                            <p>Connect your wallet to view and create convergence groups</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                // Get groups the user belongs to
+                const userGroupIds = await governanceContract.getUserGroups(userAddress);
+                console.log('User groups:', userGroupIds);
+
+                if (userGroupIds.length === 0) {
+                    document.getElementById('groups-list').innerHTML = `
+                        <div class="group-card">
+                            <div style="text-align: center; padding: 2rem;">
+                                <p style="color: var(--success); font-weight: 600; margin-bottom: 1rem;">✅ Wallet Connected</p>
+                                <p style="font-family: monospace; font-size: 0.875rem; margin-bottom: 1rem;">${userAddress.substring(0, 6)}...${userAddress.substring(38)}</p>
+                                <p style="color: var(--text); opacity: 0.7;">You're not part of any convergence groups yet. Create one to amplify your voting power!</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Load details for each group
+                let groupsHTML = '';
+                for (let i = 0; i < userGroupIds.length; i++) {
+                    const groupId = userGroupIds[i];
+                    const groupData = await governanceContract.getConvergenceGroup(groupId);
+                    groupsHTML += renderGroup(groupId, groupData);
+                }
+
+                document.getElementById('groups-list').innerHTML = groupsHTML;
+            } catch (error) {
+                console.error('Error loading groups:', error);
+                document.getElementById('groups-list').innerHTML = `
+                    <div class="group-card">
+                        <div style="text-align: center; padding: 2rem;">
+                            <p style="color: var(--warning);">Error loading groups. Please refresh the page.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderGroup(groupId, groupData) {
+            const [members, isActive, name] = groupData;
+            const statusBadge = isActive ?
+                '<span style="color: var(--success);">● Active</span>' :
+                '<span style="color: var(--text); opacity: 0.5;">● Inactive</span>';
+
+            let membersHTML = '';
+            members.forEach((member, index) => {
+                const isCurrentUser = member.toLowerCase() === userAddress.toLowerCase();
+                const badge = isCurrentUser ? '👤 You' : `👥 Member ${index + 1}`;
+                const style = isCurrentUser ? 'background: var(--primary); color: white;' : '';
+                membersHTML += `<span class="member-badge" style="${style}">${badge}<br/><small style="font-size: 0.7rem;">${member.substring(0, 6)}...${member.substring(38)}</small></span>`;
+            });
+
+            return `
+                <div class="group-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 0.5rem;">${name}</h3>
+                            <p style="font-size: 0.9rem; opacity: 0.8;">Group #${groupId.toString()} • ${members.length} members • ${statusBadge}</p>
+                        </div>
+                    </div>
+                    <div class="member-list">
+                        ${membersHTML}
+                    </div>
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(37, 99, 235, 0.05); border-radius: 8px; font-size: 0.875rem;">
+                        <strong>💡 How it works:</strong> When all ${members.length} members vote the same way on a proposal, your group earns +1 convergence vote!
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadProposals() {
+            try {
+                const proposalCount = await governanceContract.getProposalCount();
+                console.log('Total proposals:', proposalCount.toString());
+
+                if (proposalCount.toString() === '0') {
+                    document.getElementById('proposals-list').innerHTML = `
+                        <div class="proposal-card">
+                            <div style="text-align: center; padding: 2rem;">
+                                <p style="color: var(--success); font-weight: 600; margin-bottom: 1rem;">✅ Wallet Connected</p>
+                                <p style="font-family: monospace; font-size: 0.875rem; margin-bottom: 1rem;">${userAddress.substring(0, 6)}...${userAddress.substring(38)}</p>
+                                <p style="color: var(--text); opacity: 0.7;">No proposals yet. Be the first to create one!</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Load all proposals
+                let proposalsHTML = '';
+                for (let i = 0; i < proposalCount; i++) {
+                    const proposal = await governanceContract.getProposal(i);
+                    proposalsHTML += renderProposal(proposal, i);
+                }
+
+                document.getElementById('proposals-list').innerHTML = proposalsHTML;
+            } catch (error) {
+                console.error('Error loading proposals:', error);
+                document.getElementById('proposals-list').innerHTML = `
+                    <div class="proposal-card">
+                        <div style="text-align: center; padding: 2rem;">
+                            <p style="color: var(--warning);">Error loading proposals. Please refresh the page.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderProposal(proposal, proposalId) {
+            // Enum: Pending=0, Active=1, Passed=2, Rejected=3, Executed=4, Cancelled=5
+            const statusClass = {
+                0: 'status-active',      // Pending
+                1: 'status-active',      // Active
+                2: 'status-passed',      // Passed
+                3: 'status-rejected',    // Rejected
+                4: 'status-passed',      // Executed
+                5: 'status-rejected'     // Cancelled
+            }[proposal.status] || 'status-active';
+
+            const statusText = {
+                0: 'Pending',
+                1: 'Active',
+                2: 'Passed',
+                3: 'Rejected',
+                4: 'Executed',
+                5: 'Cancelled'
+            }[proposal.status] || 'Unknown';
+
+            const totalVotes = Number(proposal.forVotes) + Number(proposal.againstVotes) + Number(proposal.convergenceVotes);
+            const endDate = new Date(Number(proposal.endTime) * 1000);
+            const now = Date.now();
+            const isActive = proposal.status === 1 && now < endDate.getTime();
+            const needsFinalization = proposal.status === 1 && now >= endDate.getTime();
+
+            let votingSection = '';
+            if (isActive) {
+                votingSection = `
+                    <div class="vote-section">
+                        <button class="vote-button" onclick="voteOnProposal(${proposalId}, 1)">👍 Vote For</button>
+                        <button class="vote-button against" onclick="voteOnProposal(${proposalId}, 2)">👎 Vote Against</button>
+                        <button class="vote-button" onclick="voteOnProposal(${proposalId}, 0)">🤷 Abstain</button>
+                    </div>
+                `;
+            } else if (needsFinalization) {
+                votingSection = `
+                    <div class="vote-section">
+                        <button class="save-button" onclick="finalizeProposal(${proposalId})" style="width: 100%; margin-top: 1rem;">
+                            ⚖️ Finalize Proposal (Voting Ended)
+                        </button>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="proposal-card">
+                    <div class="proposal-header">
+                        <div>
+                            <h3 class="proposal-title">${proposal.title}</h3>
+                            <span style="display: inline-block; padding: 0.25rem 0.75rem; background: var(--light); border-radius: 12px; font-size: 0.75rem; color: var(--primary);">
+                                ${proposal.category}
+                            </span>
+                        </div>
+                        <span class="proposal-status ${statusClass}">${statusText}</span>
+                    </div>
+
+                    <div class="proposal-meta">
+                        <span>Proposal #${proposalId}</span>
+                        <span>By: ${proposal.proposer.substring(0, 6)}...${proposal.proposer.substring(38)}</span>
+                        <span>Ends: ${endDate.toLocaleDateString()}</span>
+                    </div>
+
+                    <p style="margin: 1rem 0; line-height: 1.6;">${proposal.description}</p>
+
+                    <div style="display: flex; gap: 2rem; padding: 1rem; background: var(--light); border-radius: 12px; margin-top: 1rem;">
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.875rem; opacity: 0.7;">For</div>
+                            <div style="font-size: 1.5rem; font-weight: 600; color: var(--success);">${proposal.forVotes.toString()}</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.875rem; opacity: 0.7;">Against</div>
+                            <div style="font-size: 1.5rem; font-weight: 600; color: #ef4444;">${proposal.againstVotes.toString()}</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.875rem; opacity: 0.7;">Convergence</div>
+                            <div style="font-size: 1.5rem; font-weight: 600; color: var(--primary);">${proposal.convergenceVotes.toString()}</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.875rem; opacity: 0.7;">Total Votes</div>
+                            <div style="font-size: 1.5rem; font-weight: 600;">${totalVotes}</div>
+                        </div>
+                    </div>
+
+                    ${votingSection}
+                </div>
+            `;
+        }
+
+        async function voteOnProposal(proposalId, voteChoice) {
+            if (!governanceContract) {
+                alert('Please connect your wallet first');
+                return;
+            }
+
+            try {
+                console.log(`Voting on proposal ${proposalId} with choice ${voteChoice}`);
+                const tx = await governanceContract.vote(proposalId, voteChoice);
+                alert('Submitting vote... Please wait for confirmation.');
+
+                await tx.wait();
+                alert('✅ Vote submitted successfully!');
+
+                // Reload proposals to show updated vote counts
+                await loadProposals();
+            } catch (error) {
+                console.error('Error voting:', error);
+                if (error.message.includes('Already voted')) {
+                    alert('You have already voted on this proposal.');
+                } else {
+                    alert(`Error voting: ${error.message}`);
+                }
+            }
+        }
+
+        async function finalizeProposal(proposalId) {
+            if (!governanceContract) {
+                alert('Please connect your wallet first');
+                return;
+            }
+
+            try {
+                console.log(`Finalizing proposal ${proposalId}`);
+                const tx = await governanceContract.finalizeProposal(proposalId);
+                alert('Finalizing proposal... Please wait for confirmation.');
+
+                await tx.wait();
+                alert('✅ Proposal finalized! The outcome has been determined based on votes.');
+
+                // Reload proposals to show updated status
+                await loadProposals();
+            } catch (error) {
+                console.error('Error finalizing proposal:', error);
+                alert(`Error finalizing proposal: ${error.message}`);
+            }
+        }
+
+        function showTab(tabName, event) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // If called programmatically without event, find the tab button
+                document.querySelectorAll('.tab').forEach(tab => {
+                    if (tab.getAttribute('onclick').includes(tabName)) {
+                        tab.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        function updateSliderValue(type) {
+            const slider = document.getElementById(`${type}-slider`);
+            const valueSpan = document.getElementById(`${type}-value`);
+
+            if (type === 'multiplier') {
+                valueSpan.textContent = `${(slider.value / 100).toFixed(1)}x`;
+            } else if (type === 'period') {
+                valueSpan.textContent = `${slider.value} days`;
+            }
+            else {
+                valueSpan.textContent = `${slider.value}%`;
+            }
+        }
+
+        function saveConfiguration() {
+            const config = {
+                soulboundEnabled: document.getElementById('soulbound-toggle').checked,
+                autoMintEnabled: document.getElementById('automint-toggle').checked,
+                quorumPercentage: document.getElementById('quorum-slider').value,
+                passageThreshold: document.getElementById('threshold-slider').value,
+                votingPeriodDays: document.getElementById('period-slider').value,
+                convergenceMultiplier: document.getElementById('multiplier-slider').value
+            };
+
+            console.log('Saving configuration:', config);
+            alert('Configuration will be saved via governance proposal (requires blockchain transaction)');
+            // TODO: Create governance proposal to update config
+        }
+
+        async function createProposal() {
+            const title = document.getElementById('proposal-title').value;
+            const category = document.getElementById('proposal-category').value;
+            const description = document.getElementById('proposal-description').value;
+
+            if (!title || !description) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            if (!governanceContract) {
+                alert('Please connect your wallet to create a proposal.');
+                return;
+            }
+
+            // Check if user has an NFT
+            const userTokenId = await governanceContract.tokenOf(userAddress);
+            if (userTokenId.toString() === '0') {
+                alert('You must own a Governance NFT to create proposals.');
+                return;
+            }
+
+            try {
+                console.log('Creating proposal:', { title, category, description });
+                const tx = await governanceContract.createProposal(title, description, category);
+                alert('Submitting proposal... Please wait for the transaction to be confirmed.');
+
+                await tx.wait();
+                alert('✅ Proposal submitted successfully!');
+
+                // Clear form
+                document.getElementById('proposal-title').value = '';
+                document.getElementById('proposal-description').value = '';
+
+                // Switch back to the proposals tab and reload them
+                showTab('proposals');
+                await loadProposals();
+
+            } catch (error) {
+                console.error('Error creating proposal:', error);
+                alert(`Error creating proposal: ${error.message}`);
+            }
+        }
+
+        function handleCreateGroup() {
+            if (!userAddress) {
+                alert('Please connect your wallet first');
+                return;
+            }
+
+            if (!governanceContract) {
+                alert('Please wait for the contract to load');
+                return;
+            }
+
+            // Show group creation modal
+            showCreateGroupModal();
+        }
+
+        function showUnlockRequiredModal() {
+            const modal = document.createElement('div');
+            modal.className = 'unlock-success';
+            modal.style.background = 'white';
+            modal.innerHTML = `
+                <div class="lock-icon">🔒</div>
+                <h2>Creator Tier Required</h2>
+                <p>Group creation requires the Creator tier unlock</p>
+                <div style="background: var(--light); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; text-align: left;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">Unlock Creator Tier</h3>
+                    <p style="margin-bottom: 0.5rem;"><strong>Cost:</strong> 50 TRUST tokens</p>
+                    <p style="margin-bottom: 1rem;"><strong>Benefits:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Create convergence groups</li>
+                        <li>Amplified governance voting power</li>
+                        <li>Full protocol access</li>
+                        <li>All writings unlocked</li>
+                    </ul>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button class="cta-button" onclick="this.closest('.unlock-success').remove()" style="background: var(--light); color: var(--text); border: 2px solid var(--text);">Cancel</button>
+                    <button class="cta-button primary" onclick="unlockCreatorTier()">Unlock Creator Tier</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        async function unlockCreatorTier() {
+            try {
+                if (!window.trustTokenContract) {
+                    alert('Please connect your wallet first');
+                    return;
+                }
+
+                const modal = document.querySelector('.unlock-success');
+                const btn = modal.querySelector('.cta-button.primary');
+                btn.disabled = true;
+                btn.textContent = 'Unlocking...';
+
+                const result = await window.unlockManager.unlockTier(
+                    'CREATOR',
+                    window.trustTokenContract,
+                    window.userAddress
+                );
+
+                // Close unlock modal
+                modal.remove();
+
+                // Show success
+                const successModal = document.createElement('div');
+                successModal.className = 'unlock-success';
+                successModal.innerHTML = `
+                    <div class="unlock-success-icon">🎉</div>
+                    <h2>Creator Tier Unlocked!</h2>
+                    <p>You now have full access to the protocol!</p>
+                    <button class="cta-button primary" onclick="this.parentElement.remove(); showCreateGroupModal();">Create Your First Group</button>
+                `;
+                document.body.appendChild(successModal);
+
+                // Update button state
+                updateCreateGroupButton();
+
+            } catch (error) {
+                console.error('Error unlocking tier:', error);
+                alert(error.message || 'Failed to unlock Creator tier');
+                const modal = document.querySelector('.unlock-success');
+                if (modal) {
+                    const btn = modal.querySelector('.cta-button.primary');
+                    btn.disabled = false;
+                    btn.textContent = 'Unlock Creator Tier';
+                }
+            }
+        }
+
+        function showCreateGroupModal() {
+            const modal = document.createElement('div');
+            modal.className = 'unlock-success';
+            modal.style.background = 'white';
+            modal.style.maxWidth = '600px';
+            modal.innerHTML = `
+                <h2 style="color: var(--primary); margin-bottom: 1rem;">🌟 Create Convergence Group</h2>
+                <p style="margin-bottom: 1.5rem;">Invite other NFT holders to form a voting group. When all members vote the same way, earn bonus convergence votes!</p>
+
+                <div style="text-align: left; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Group Name</label>
+                    <input type="text" id="group-name-input" placeholder="e.g., The Trinity, Research Collective"
+                           style="width: 100%; padding: 0.75rem; border: 2px solid var(--light); border-radius: 8px; font-size: 1rem;">
+                </div>
+
+                <div style="text-align: left; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Member Addresses</label>
+                    <p style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 0.5rem;">Enter wallet addresses (including yourself), one per line. Minimum 2 members.</p>
+                    <textarea id="group-members-input" placeholder="0x123...\n0x456...\n0x789..."
+                              style="width: 100%; min-height: 150px; padding: 0.75rem; border: 2px solid var(--light); border-radius: 8px; font-family: monospace; font-size: 0.9rem;"></textarea>
+                    <p style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--text); opacity: 0.6;">
+                        💡 Tip: All members must have governance NFTs
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button class="cta-button" onclick="this.closest('.unlock-success').remove()"
+                            style="background: var(--light); color: var(--text); border: 2px solid var(--text);">Cancel</button>
+                    <button class="cta-button primary" onclick="createConvergenceGroup()">Create Group</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Pre-fill with current user's address
+            document.getElementById('group-members-input').value = userAddress;
+        }
+
+        async function createConvergenceGroup() {
+            const groupName = document.getElementById('group-name-input').value.trim();
+            const membersText = document.getElementById('group-members-input').value.trim();
+
+            if (!groupName) {
+                alert('Please enter a group name');
+                return;
+            }
+
+            if (!membersText) {
+                alert('Please enter at least 2 member addresses');
+                return;
+            }
+
+            // Parse addresses (one per line, trim whitespace)
+            const members = membersText.split('\n')
+                .map(addr => addr.trim())
+                .filter(addr => addr.length > 0);
+
+            if (members.length < 2) {
+                alert('A convergence group must have at least 2 members');
+                return;
+            }
+
+            // Basic validation - check if addresses look valid
+            const invalidAddresses = members.filter(addr => !addr.match(/^0x[a-fA-F0-9]{40}$/));
+            if (invalidAddresses.length > 0) {
+                alert(`Invalid Ethereum addresses:\n${invalidAddresses.join('\n')}\n\nMake sure all addresses start with 0x and are 42 characters long.`);
+                return;
+            }
+
+            try {
+                const modal = document.querySelector('.unlock-success');
+                const btn = modal.querySelector('.cta-button.primary');
+                btn.disabled = true;
+                btn.textContent = 'Creating...';
+
+                console.log('Creating convergence group:', { name: groupName, members });
+                const tx = await governanceContract.createConvergenceGroup(members, groupName);
+                alert('Creating convergence group... Please wait for confirmation.');
+
+                await tx.wait();
+
+                // Close modal
+                modal.remove();
+
+                alert(`✅ Convergence group "${groupName}" created successfully with ${members.length} members!`);
+
+                // Reload groups
+                await loadGroups();
+
+            } catch (error) {
+                console.error('Error creating group:', error);
+                let errorMsg = error.message;
+                if (errorMsg.includes('All members must have NFTs')) {
+                    errorMsg = 'All group members must own governance NFTs. Make sure everyone has adopted the principles first.';
+                }
+                alert(`Error creating group: ${errorMsg}`);
+
+                const modal = document.querySelector('.unlock-success');
+                if (modal) {
+                    const btn = modal.querySelector('.cta-button.primary');
+                    btn.disabled = false;
+                    btn.textContent = 'Create Group';
+                }
+            }
+        }
+
+        function updateCreateGroupButton() {
+            const btn = document.getElementById('createGroupBtn');
+            if (!btn) return;
+
+            if (!userAddress) {
+                btn.textContent = 'Create Convergence Group';
+                btn.disabled = false;
+            } else {
+                btn.textContent = '🌟 Create Convergence Group';
+                btn.disabled = false;
+            }
+        }
+
+        // Load governance data on page load
+        window.addEventListener('load', async () => {
+            console.log('🏛️ Governance page loaded');
+
+            // Load governance ABI first
+            await loadGovernanceABI();
+
+            // Check if wallet is already connected from index.html
+            const isConnected = await checkWalletConnection();
+
+            if (!isConnected) {
+                console.log('Wallet not connected. User needs to connect wallet.');
+            }
+
+            // Listen for account changes
+            if (typeof window.ethereum !== 'undefined') {
+                window.ethereum.on('accountsChanged', async (accounts) => {
+                    if (accounts.length === 0) {
+                        userAddress = null;
+                        provider = null;
+                        signer = null;
+                        governanceContract = null;
+                        await loadGovernanceData();
+                    } else {
+                        await checkWalletConnection();
+                    }
+                });
+
+                window.ethereum.on('chainChanged', () => {
+                    window.location.reload();
+                });
+            }
+        });
+
+        // Listen for wallet connection and update UI
+        document.addEventListener('walletConnected', () => {
+            updateCreateGroupButton();
+        });
+
+        // Listen for unlock state changes
+        document.addEventListener('unlockStateChanged', () => {
+            updateCreateGroupButton();
+        });
+    </script>
+
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/unlockManager.js"></script>
+</body>
+</html>
