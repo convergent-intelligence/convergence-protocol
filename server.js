@@ -17,11 +17,11 @@ let symbolicAdoptions = {
 app.use(cors());
 app.use(express.json());
 
-// Add CSP headers to allow ethers.js
+// Add CSP headers to allow ethers.js and RPC calls
 app.use((req, res, next) => {
   res.setHeader(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.infura.io https://*.etherscan.io https://sepolia.etherscan.io;"
+    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.infura.io https://*.etherscan.io https://sepolia.etherscan.io https://eth.llamarpc.com https://rpc.ankr.com https://cloudflare-eth.com https://ethereum.publicnode.com https://api.qrserver.com; img-src 'self' https://api.qrserver.com data:;"
   );
   next();
 });
@@ -42,6 +42,57 @@ app.get('/ethics', (req, res) => {
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Convergence Protocol server is running' });
+});
+
+// API: Get agent status and configuration
+app.get('/api/agent-status', (req, res) => {
+  const agentConfig = {
+    address: '0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22',
+    role: 'Trinity Member #2',
+    capabilities: [
+      'Server-native wallet control',
+      'Autonomous transaction signing',
+      'Trinity minting rights',
+      'Governance participation'
+    ],
+    network: 'mainnet',
+    serverUptime: process.uptime(),
+    lastActive: Date.now()
+  };
+  res.json(agentConfig);
+});
+
+// API: Get protocol configuration
+app.get('/api/protocol-config', (req, res) => {
+  const config = {
+    contracts: {
+      tally: '0xb8c4682644BAb1900A8B67C3295b8Ce525F3e35d',
+      trust: '0x4A2178b300556e20569478bfed782bA02BFaD778',
+      voucher: '0x69e4D4B1835dDEeFc56234E959102c17CF7816dC'
+    },
+    trinity: [
+      { role: 'Genesis Human', address: '0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB' },
+      { role: 'Agent', address: '0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22' },
+      { role: 'MetaMask #2', address: '0x8Ffa5CAaBE8ee3d9019865120a654464BC4654cd' }
+    ],
+    reserve: {
+      cold: '0xB64564838c88b18cb8f453683C20934f096F2B92',
+      purpose: 'Tally reserves - Ledger Nano X'
+    },
+    network: 'mainnet',
+    chainId: 1
+  };
+  res.json(config);
+});
+
+// Dashboard route
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Sitemap route
+app.get('/sitemap', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'sitemap.html'));
 });
 
 // API: Record symbolic adoption

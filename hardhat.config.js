@@ -29,10 +29,48 @@ module.exports = {
         ? [process.env.PRIVATE_KEY]
         : [],
       chainId: 1
+    },
+    base: {
+      url: "https://mainnet.base.org",
+      accounts: (process.env.PRIVATE_KEY && process.env.PRIVATE_KEY.startsWith('0x') && process.env.PRIVATE_KEY.length === 66)
+        ? [process.env.PRIVATE_KEY]
+        : [],
+      chainId: 8453,
+      gasPrice: 1000000000
+    },
+    baseSepolia: {
+      url: "https://sepolia.base.org",
+      accounts: (process.env.PRIVATE_KEY && process.env.PRIVATE_KEY.startsWith('0x') && process.env.PRIVATE_KEY.length === 66)
+        ? [process.env.PRIVATE_KEY]
+        : [],
+      chainId: 84532
     }
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_KEY
+    apiKey: {
+      mainnet: process.env.ETHERSCAN_KEY || "",
+      sepolia: process.env.ETHERSCAN_KEY || "",
+      base: process.env.BASESCAN_KEY || "",
+      baseSepolia: process.env.BASESCAN_KEY || ""
+    },
+    customChains: [
+      {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://api.basescan.org/api",
+          browserURL: "https://basescan.org"
+        }
+      },
+      {
+        network: "baseSepolia",
+        chainId: 84532,
+        urls: {
+          apiURL: "https://api-sepolia.basescan.org/api",
+          browserURL: "https://sepolia.basescan.org"
+        }
+      }
+    ]
   },
   paths: {
     sources: "./contracts",

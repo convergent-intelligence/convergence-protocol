@@ -101,11 +101,11 @@
             }
 
             try {
-                // Load TallyVoucher ABI
+                // Load TallyVoucher ABI (Mainnet address)
                 const tallyResponse = await fetch('/contracts/TallyVoucher.json');
                 const tallyData = await tallyResponse.json();
                 tallyVoucherContract = new ethers.Contract(
-                    '0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c',
+                    '0x69e4D4B1835dDEeFc56234E959102c17CF7816dC',
                     tallyData.abi,
                     window.signer
                 );
