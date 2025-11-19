@@ -1,0 +1,11 @@
+{
+  "network": "sepolia",
+  "contractAddress": "0x196D5f3E59DFA2042A6883BA34679613aE8702D5",
+  "trinityMembers": [
+    "0xdc20d621a88cb8908e8e7042431c55f0e9dac6fb",
+    "0xfa7ec55f455bcbebb4ba17bfa0938f86eb8a94d0",
+    "0x8ffa5caabe8ee3d9019865120a654464bc4654cd"
+  ],
+  "deployer": "0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB",
+  "timestamp": "2025-11-14T03:53:24.942Z"
+}

@@ -1,0 +1,16 @@
+{
+  "network": "sepolia",
+  "contractAddress": "0x049FE653a386c203feb75351A7840194B99Ac2d9",
+  "deployer": "0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB",
+  "deploymentTime": "2025-11-14T02:55:49.327Z",
+  "transactionHash": "0x620775adc20f3bdf47aad4dab51059c804c335f1a5dc91d9630a7b287e4449e6",
+  "blockNumber": null,
+  "configuration": {
+    "soulboundEnabled": true,
+    "autoMintEnabled": true,
+    "quorumPercentage": "10",
+    "passageThreshold": "51",
+    "votingPeriodDays": "7",
+    "convergenceMultiplier": "100"
+  }
+}

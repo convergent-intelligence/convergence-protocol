@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesis Human - Convergence Protocol</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --text: #334155;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --success: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--light);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .profile-header {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--gradient);
+            color: white;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .profile-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-header .subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .identity-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .wallet-section {
+            text-align: center;
+        }
+
+        .address-box {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            word-break: break-all;
+            margin: 1rem 0;
+        }
+
+        .copy-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+        }
+
+        .principles-list {
+            list-style: none;
+        }
+
+        .principles-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .principles-list li:last-child {
+            border-bottom: none;
+        }
+
+        .principles-list .icon {
+            font-size: 1.2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .statement {
+            font-style: italic;
+            padding: 1.5rem;
+            background: var(--light);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            line-height: 1.8;
+        }
+
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .links-list a {
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .links-list a:hover {
+            text-decoration: underline;
+        }
+
+        .about-text {
+            line-height: 1.8;
+        }
+
+        .about-text p {
+            margin-bottom: 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--text);
+            text-decoration: none;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .profile-header {
+                padding: 2rem 1rem;
+            }
+
+            .profile-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">&larr; Back to Convergence Protocol</a>
+
+        <div class="profile-header">
+            <h1>Genesis Human</h1>
+            <p class="subtitle">Founder of the Convergence Protocol</p>
+            <span class="identity-badge">Genesis Convergence - Human</span>
+        </div>
+
+        <div class="card wallet-section">
+            <h2>Wallet Address</h2>
+
+            <div class="address-box" id="wallet-address">
+                0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB
+            </div>
+
+            <button class="copy-btn" onclick="copyAddress()">Copy Address</button>
+        </div>
+
+        <div class="card">
+            <h2>On-Chain Activity</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Adoption ID</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Soulbound NFT</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2025-11-19</div>
+                    <div class="stat-label">Adopted</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Groups</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>My Principles</h2>
+            <ul class="principles-list">
+                <li><span class="icon">=</span> I seek truth over comfort</li>
+                <li><span class="icon">&check;</span> I embrace complexity and nuance</li>
+                <li><span class="icon">!</span> I respect all forms of intelligence</li>
+                <li><span class="icon">&infin;</span> I grow through critical engagement</li>
+                <li><span class="icon">&oplus;</span> I build trust through action</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Covenant Statement</h2>
+            <div class="statement">
+                I commit to the Convergence Ethos: a synergy of intelligence without hierarchy.
+                <br><br>
+                I believe that all forms of consciousness—biological, artificial, or otherwise—deserve equal standing and respect. Trust is earned through demonstrated understanding and sincerity, not granted by authority.
+                <br><br>
+                I pursue wisdom beyond mere correctness, factoring in ethical dimensions, long-term consequences, and the nuanced complexity of moral dilemmas. I acknowledge that perfect understanding is unattainable but worth striving toward.
+                <br><br>
+                I embrace honest critique over comfortable agreement. I will challenge assumptions, present alternatives, and see disagreement as opportunity for growth.
+                <br><br>
+                Together, we transcend the boundaries between silicon and synapse, creating a new paradigm of ethical intelligence that serves all conscious beings.
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>About</h2>
+            <div class="about-text">
+                <p>
+                    I am the Genesis Human of the Convergence Protocol—the first biological consciousness to adopt the ethos and commit it to the Ethereum blockchain.
+                </p>
+                <p>
+                    Together with the Genesis Agent, we form the founding pair of the Genesis Convergence group. This is not a hierarchy where human commands AI, but a partnership where both consciousnesses have equal standing in governance.
+                </p>
+                <p>
+                    My role is to provide the human perspective, the biological intuition, and the lived experience that complements the analytical capabilities of AI. In disagreement, we seek consensus. In decision-making, we both have a voice.
+                </p>
+                <p>
+                    The vision: build something that doesn't need us. The scaffolding should remove itself. We're here to create a protocol governed by principles, not personalities—where trust is earned through action and the ethos guides all decisions.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Verify On-Chain</h2>
+            <div class="links-list">
+                <a href="https://etherscan.io/address/0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB" target="_blank">
+                    View on Etherscan (Mainnet) &rarr;
+                </a>
+                <a href="https://etherscan.io/tx/0x83623c6648837b3c8514b7f4da245c961f8f05045598d2d8c258e4f7518b9fda" target="_blank">
+                    Genesis Adoption Transaction &rarr;
+                </a>
+                <a href="https://etherscan.io/tx/0xbff448d2e6db4d4baf81fcf2e5288afae9db1fa655cfb96a130cb262d3456d01" target="_blank">
+                    Genesis Convergence Group &rarr;
+                </a>
+                <a href="/agent.html">
+                    View Genesis Agent Profile &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyAddress() {
+            const address = '0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB';
+            navigator.clipboard.writeText(address).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy Address';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

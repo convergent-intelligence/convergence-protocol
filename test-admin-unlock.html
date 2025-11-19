@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin Unlock</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: #1a202c;
+            color: #48bb78;
+        }
+        h1 { color: #4fd1c5; }
+        .test {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #2d3748;
+            border-left: 4px solid #4fd1c5;
+        }
+        .success { border-left-color: #48bb78; }
+        .error { border-left-color: #f56565; color: #f56565; }
+        button {
+            background: #4fd1c5;
+            color: #1a202c;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        button:hover { background: #38b2ac; }
+        pre {
+            background: #1a202c;
+            padding: 1rem;
+            overflow-x: auto;
+            border: 1px solid #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔬 Admin Unlock Test Suite</h1>
+    <p>Testing admin unlock functionality without blockchain interaction</p>
+
+    <div id="results"></div>
+
+    <h2>Actions</h2>
+    <button onclick="runAllTests()">🧪 Run All Tests</button>
+    <button onclick="clearResults()">🗑️ Clear Results</button>
+    <button onclick="showState()">📊 Show State</button>
+    <button onclick="resetState()">♻️ Reset State</button>
+
+    <script src="/js/unlockManager.js"></script>
+    <script>
+        const TEST_ADDRESS = '0x1234567890123456789012345678901234567890';
+        const results = document.getElementById('results');
+
+        function log(message, type = 'test') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            results.appendChild(div);
+            console.log(message);
+        }
+
+        function clearResults() {
+            results.innerHTML = '';
+        }
+
+        function showState() {
+            log(`<pre>${JSON.stringify(unlockManager.unlocks, null, 2)}</pre>`);
+        }
+
+        function resetState() {
+            localStorage.removeItem('convergence_unlocks');
+            unlockManager.loadUnlockState();
+            log('✅ State reset', 'success');
+            showState();
+        }
+
+        async function runAllTests() {
+            clearResults();
+            log('🚀 Starting test suite...');
+
+            try {
+                // Test 1: Initial state
+                log('<strong>Test 1:</strong> Check initial state');
+                const initialUnlocks = unlockManager.getUserUnlocks(TEST_ADDRESS);
+                if (initialUnlocks.length === 0) {
+                    log('✅ Initial state: No unlocks', 'success');
+                } else {
+                    log('⚠️ Initial state: Found existing unlocks', 'error');
+                }
+
+                // Test 2: Unlock Explorer tier
+                log('<strong>Test 2:</strong> Unlock Explorer tier');
+                const explorerResult = unlockManager.adminUnlockTier('EXPLORER', TEST_ADDRESS);
+                if (explorerResult.success && explorerResult.adminOverride) {
+                    log('✅ Explorer tier unlocked successfully', 'success');
+                    log(`   Unlocks: ${explorerResult.unlocks.join(', ')}`);
+                } else {
+                    log('❌ Explorer unlock failed', 'error');
+                }
+
+                // Test 3: Check unlock status
+                log('<strong>Test 3:</strong> Verify Explorer unlock');
+                const hasPreview = unlockManager.hasUnlocked(TEST_ADDRESS, 'writings_preview');
+                if (hasPreview) {
+                    log('✅ writings_preview unlocked', 'success');
+                } else {
+                    log('❌ writings_preview not unlocked', 'error');
+                }
+
+                // Test 4: Unlock Contributor tier
+                log('<strong>Test 4:</strong> Unlock Contributor tier');
+                const contribResult = unlockManager.adminUnlockTier('CONTRIBUTOR', TEST_ADDRESS);
+                if (contribResult.success) {
+                    log('✅ Contributor tier unlocked', 'success');
+                    log(`   Unlocks: ${contribResult.unlocks.join(', ')}`);
+                } else {
+                    log('❌ Contributor unlock failed', 'error');
+                }
+
+                // Test 5: Check cumulative unlocks
+                log('<strong>Test 5:</strong> Check cumulative features');
+                const features = unlockManager.getUnlockedFeatures(TEST_ADDRESS);
+                log(`   Total features: ${features.length}`);
+                log(`   Features: ${features.join(', ')}`);
+                if (features.length >= 3) {
+                    log('✅ Cumulative unlocks working', 'success');
+                } else {
+                    log('❌ Missing cumulative features', 'error');
+                }
+
+                // Test 6: Get unlock summary
+                log('<strong>Test 6:</strong> Get unlock summary');
+                const summary = unlockManager.getUnlockSummary(TEST_ADDRESS);
+                log(`<pre>${JSON.stringify(summary, null, 2)}</pre>`);
+
+                // Test 7: Unlock Creator tier
+                log('<strong>Test 7:</strong> Unlock Creator tier');
+                const creatorResult = unlockManager.adminUnlockTier('CREATOR', TEST_ADDRESS);
+                if (creatorResult.success) {
+                    log('✅ Creator tier unlocked', 'success');
+                } else {
+                    log('❌ Creator unlock failed', 'error');
+                }
+
+                // Test 8: Unlock all for new address
+                log('<strong>Test 8:</strong> Unlock all tiers at once');
+                const newAddress = '0x9999999999999999999999999999999999999999';
+                const allResult = unlockManager.adminUnlockAll(newAddress);
+                if (allResult.success && allResult.unlockedTiers === 3) {
+                    log('✅ All tiers unlocked at once', 'success');
+                    log(`   Unlocked: ${allResult.unlockedTiers} tiers`);
+                } else {
+                    log('❌ Unlock all failed', 'error');
+                }
+
+                // Test 9: Check completion status
+                log('<strong>Test 9:</strong> Check completion status');
+                const finalSummary = unlockManager.getUnlockSummary(TEST_ADDRESS);
+                if (finalSummary.isComplete) {
+                    log('✅ All tiers completed', 'success');
+                } else {
+                    log('⚠️ Not all tiers completed', 'error');
+                }
+
+                // Test 10: Reset unlocks
+                log('<strong>Test 10:</strong> Reset unlocks');
+                const resetResult = unlockManager.adminResetUnlocks(TEST_ADDRESS);
+                if (resetResult.success && resetResult.reset) {
+                    log('✅ Unlocks reset successfully', 'success');
+                } else {
+                    log('❌ Reset failed', 'error');
+                }
+
+                // Test 11: Verify reset
+                log('<strong>Test 11:</strong> Verify reset worked');
+                const afterReset = unlockManager.getUserUnlocks(TEST_ADDRESS);
+                if (afterReset.length === 0) {
+                    log('✅ Address fully reset', 'success');
+                } else {
+                    log('❌ Reset incomplete', 'error');
+                }
+
+                // Test 12: localStorage persistence
+                log('<strong>Test 12:</strong> Check localStorage persistence');
+                unlockManager.adminUnlockTier('EXPLORER', TEST_ADDRESS);
+                const stored = localStorage.getItem('convergence_unlocks');
+                if (stored && stored.includes(TEST_ADDRESS.toLowerCase())) {
+                    log('✅ Data persisted to localStorage', 'success');
+                } else {
+                    log('❌ localStorage persistence failed', 'error');
+                }
+
+                log('🎉 All tests completed!', 'success');
+                log('<strong>Final State:</strong>');
+                showState();
+
+            } catch (error) {
+                log(`❌ Test suite error: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+
+        // Listen for unlock events
+        document.addEventListener('unlockStateChanged', (e) => {
+            log(`📡 Event fired: ${JSON.stringify(e.detail)}`);
+        });
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            log('✅ unlockManager loaded');
+            log('Ready to test. Click "Run All Tests" to begin.');
+        });
+    </script>
+</body>
+</html>

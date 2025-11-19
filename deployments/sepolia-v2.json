@@ -1,0 +1,16 @@
+{
+  "network": "sepolia",
+  "protocolAddress": "0xDb7CDd209C7f5dC007e887336c6d5544a7A21280",
+  "trustTokenAddress": "0x5a1C7DFb9B935E864348cFDAEB0d4A87b38b9919",
+  "genesisHuman": "0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB",
+  "deployer": "0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB",
+  "blockNumber": 9658648,
+  "transactionHash": "0x0de81a6eabcc19225a0b94369bfb409fc52e2eb626d2e468df5e62510c1cc3be",
+  "timestamp": "2025-11-19T01:01:25.350Z",
+  "gasUsed": "3404533",
+  "version": "2.0.0",
+  "contracts": {
+    "ConvergenceProtocolV2": "0xDb7CDd209C7f5dC007e887336c6d5544a7A21280",
+    "TrustToken": "0x5a1C7DFb9B935E864348cFDAEB0d4A87b38b9919"
+  }
+}
