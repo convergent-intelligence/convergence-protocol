@@ -1,0 +1,402 @@
+{
+  "seed": "EXODUS_SEED (12 words)",
+  "generated": "2025-11-20T00:36:25.747Z",
+  "books": [
+    {
+      "index": 0,
+      "book": "Genesis",
+      "address": "0x7679cD1c0CB5D2Ba315BE0B0A4884AE99d21Cf90",
+      "path": "m/44'/60'/0'/0/0"
+    },
+    {
+      "index": 1,
+      "book": "Exodus",
+      "address": "0xb428B853240aFf48389c0323dF87F669DA0d7Ef2",
+      "path": "m/44'/60'/0'/0/1"
+    },
+    {
+      "index": 2,
+      "book": "Leviticus",
+      "address": "0x5D96cdd93981c2A8ffE6B77387627C2Fe34a3C25",
+      "path": "m/44'/60'/0'/0/2"
+    },
+    {
+      "index": 3,
+      "book": "Numbers",
+      "address": "0x8323b51Da4FF6Fc4Fc2d17F8262226532e966441",
+      "path": "m/44'/60'/0'/0/3"
+    },
+    {
+      "index": 4,
+      "book": "Deuteronomy",
+      "address": "0x2D97BdF412fE4f030E54F6a1dDe750b8a6F6E09E",
+      "path": "m/44'/60'/0'/0/4"
+    },
+    {
+      "index": 5,
+      "book": "Joshua",
+      "address": "0x73af2829B8079cbA764355Bf13Fa1Fc8C149Be1c",
+      "path": "m/44'/60'/0'/0/5"
+    },
+    {
+      "index": 6,
+      "book": "Judges",
+      "address": "0x7A63d76279258dE4F0d02d86b0cf40b893D50D10",
+      "path": "m/44'/60'/0'/0/6"
+    },
+    {
+      "index": 7,
+      "book": "Ruth",
+      "address": "0xF3Aa67e531adA78Bc82e1017a4B845f0eaB32dE1",
+      "path": "m/44'/60'/0'/0/7"
+    },
+    {
+      "index": 8,
+      "book": "1 Samuel",
+      "address": "0x7B389BcD6770EFF93dC96C8168BFD7cfdFcE738A",
+      "path": "m/44'/60'/0'/0/8"
+    },
+    {
+      "index": 9,
+      "book": "2 Samuel",
+      "address": "0xE80a32F09e65fd65039A31Ae0B71D347cBFBB893",
+      "path": "m/44'/60'/0'/0/9"
+    },
+    {
+      "index": 10,
+      "book": "1 Kings",
+      "address": "0x94Df546E067C09E96cD52496Ad166fB6D2B251df",
+      "path": "m/44'/60'/0'/0/10"
+    },
+    {
+      "index": 11,
+      "book": "2 Kings",
+      "address": "0xfE9eF656f3ca0B74A73E387BAf623616d94e9a13",
+      "path": "m/44'/60'/0'/0/11"
+    },
+    {
+      "index": 12,
+      "book": "1 Chronicles",
+      "address": "0xc86c56Bfd6Bbb808Cd7Fdc74798439cFc8A7F378",
+      "path": "m/44'/60'/0'/0/12"
+    },
+    {
+      "index": 13,
+      "book": "2 Chronicles",
+      "address": "0x564844715a95Af43fD331b94f6BdFDfb8812833a",
+      "path": "m/44'/60'/0'/0/13"
+    },
+    {
+      "index": 14,
+      "book": "Ezra",
+      "address": "0x0d293f6294fc97df23f5021C16614De190ccB235",
+      "path": "m/44'/60'/0'/0/14"
+    },
+    {
+      "index": 15,
+      "book": "Nehemiah",
+      "address": "0xcd6739BAB473984Dc7235d475e780c87eA5fAdee",
+      "path": "m/44'/60'/0'/0/15"
+    },
+    {
+      "index": 16,
+      "book": "Esther",
+      "address": "0xED12b15408f6e9e3d9a3b09c8A3267a3C7DD8e49",
+      "path": "m/44'/60'/0'/0/16"
+    },
+    {
+      "index": 17,
+      "book": "Job",
+      "address": "0xC4CAd4E9449026e54C1fc58fDe60cb54B84F336E",
+      "path": "m/44'/60'/0'/0/17"
+    },
+    {
+      "index": 18,
+      "book": "Psalms",
+      "address": "0x5AF81608d62BbDC799faC5A51463315b617A9366",
+      "path": "m/44'/60'/0'/0/18"
+    },
+    {
+      "index": 19,
+      "book": "Proverbs",
+      "address": "0x7F2c8F5D5561623B2a5EBCe988b65e9d9B4694b2",
+      "path": "m/44'/60'/0'/0/19"
+    },
+    {
+      "index": 20,
+      "book": "Ecclesiastes",
+      "address": "0x548Be8eEA5B793aAfBaD0BD7927124483C8A3591",
+      "path": "m/44'/60'/0'/0/20"
+    },
+    {
+      "index": 21,
+      "book": "Song of Solomon",
+      "address": "0xDFC7ae43d025941b4b97FE198d8059e2BB89f7b9",
+      "path": "m/44'/60'/0'/0/21"
+    },
+    {
+      "index": 22,
+      "book": "Isaiah",
+      "address": "0xFAfCFb6B645E36d9ac85d3a078323c2A1522aEDB",
+      "path": "m/44'/60'/0'/0/22"
+    },
+    {
+      "index": 23,
+      "book": "Jeremiah",
+      "address": "0x14DDc3e038a8477170c88cf99481fB4C4307075e",
+      "path": "m/44'/60'/0'/0/23"
+    },
+    {
+      "index": 24,
+      "book": "Lamentations",
+      "address": "0x1a08E33B105AdED725dd856c2577fF219F4fdedA",
+      "path": "m/44'/60'/0'/0/24"
+    },
+    {
+      "index": 25,
+      "book": "Ezekiel",
+      "address": "0x6584a12467d4276A04FaF14AB2af29CA856070D2",
+      "path": "m/44'/60'/0'/0/25"
+    },
+    {
+      "index": 26,
+      "book": "Daniel",
+      "address": "0xbaC7D694eb9FEeF67C17f1a808253a7C7c051c9B",
+      "path": "m/44'/60'/0'/0/26"
+    },
+    {
+      "index": 27,
+      "book": "Hosea",
+      "address": "0x550f47C2F6c7Bf7F9FcD76817Df67bd6aF4060D8",
+      "path": "m/44'/60'/0'/0/27"
+    },
+    {
+      "index": 28,
+      "book": "Joel",
+      "address": "0x501838bbb0f2791F77575C28Ab83aAD5b56C2d18",
+      "path": "m/44'/60'/0'/0/28"
+    },
+    {
+      "index": 29,
+      "book": "Amos",
+      "address": "0xCE5e46A0FdDFeBf7F004De6c3E133c9EdE884363",
+      "path": "m/44'/60'/0'/0/29"
+    },
+    {
+      "index": 30,
+      "book": "Obadiah",
+      "address": "0x3495723cc84E217B29b920D8600F7293CAd1BFFc",
+      "path": "m/44'/60'/0'/0/30"
+    },
+    {
+      "index": 31,
+      "book": "Jonah",
+      "address": "0x414bA212CB769D964a2a1f7C3e152D8BBf1D2458",
+      "path": "m/44'/60'/0'/0/31"
+    },
+    {
+      "index": 32,
+      "book": "Micah",
+      "address": "0xE83790d2cdA3773fDAC4804CAE891282E752f119",
+      "path": "m/44'/60'/0'/0/32"
+    },
+    {
+      "index": 33,
+      "book": "Nahum",
+      "address": "0xe044F131fB1c5261317e0e8030D8b27Cc0797103",
+      "path": "m/44'/60'/0'/0/33"
+    },
+    {
+      "index": 34,
+      "book": "Habakkuk",
+      "address": "0x254C43f48E15ad052a6298Ce9A1b729C944Db847",
+      "path": "m/44'/60'/0'/0/34"
+    },
+    {
+      "index": 35,
+      "book": "Zephaniah",
+      "address": "0xd2a6e10A33F33a9476029fBDfE2831584f2abDf0",
+      "path": "m/44'/60'/0'/0/35"
+    },
+    {
+      "index": 36,
+      "book": "Haggai",
+      "address": "0x2F90eC1FB1b5C0D1569D235e08CCD203110a7381",
+      "path": "m/44'/60'/0'/0/36"
+    },
+    {
+      "index": 37,
+      "book": "Zechariah",
+      "address": "0x39D291CB9355FE303E42628328ac917b71Df9A75",
+      "path": "m/44'/60'/0'/0/37"
+    },
+    {
+      "index": 38,
+      "book": "Malachi",
+      "address": "0xdF5546A8b0C1cbe0Db2d2F91c823de7F77aBE73f",
+      "path": "m/44'/60'/0'/0/38"
+    },
+    {
+      "index": 39,
+      "book": "Matthew",
+      "address": "0x7137c3862984a79d3d94C6028198CBfeE7a6EB3d",
+      "path": "m/44'/60'/0'/0/39"
+    },
+    {
+      "index": 40,
+      "book": "Mark",
+      "address": "0xDd2FE39F89534b07c968Fd87504E08d0C9C03477",
+      "path": "m/44'/60'/0'/0/40"
+    },
+    {
+      "index": 41,
+      "book": "Luke",
+      "address": "0x09917Abd77071A895F5684592F7d9D1c49a85fD9",
+      "path": "m/44'/60'/0'/0/41"
+    },
+    {
+      "index": 42,
+      "book": "John",
+      "address": "0x32bC7B92f7f833DF8E8aCcb366Bf4A3cCeD1c196",
+      "path": "m/44'/60'/0'/0/42"
+    },
+    {
+      "index": 43,
+      "book": "Acts",
+      "address": "0x638c46c864ffF678E76668D207c1C906AdA45a55",
+      "path": "m/44'/60'/0'/0/43"
+    },
+    {
+      "index": 44,
+      "book": "Romans",
+      "address": "0x57f424ca8e3e4E407cB224A1266380D826091265",
+      "path": "m/44'/60'/0'/0/44"
+    },
+    {
+      "index": 45,
+      "book": "1 Corinthians",
+      "address": "0xc475Ed24a7AB35AC8e884cb19925A96cA1C67034",
+      "path": "m/44'/60'/0'/0/45"
+    },
+    {
+      "index": 46,
+      "book": "2 Corinthians",
+      "address": "0x53743042Fd95e5Df93b3854F21b1269f5976136A",
+      "path": "m/44'/60'/0'/0/46"
+    },
+    {
+      "index": 47,
+      "book": "Galatians",
+      "address": "0x24d4BAd47cb448608EC7b950CB48edaEB08976A8",
+      "path": "m/44'/60'/0'/0/47"
+    },
+    {
+      "index": 48,
+      "book": "Ephesians",
+      "address": "0xf4B30C7dA2149D39d46d9B419F670dc1f583e5bF",
+      "path": "m/44'/60'/0'/0/48"
+    },
+    {
+      "index": 49,
+      "book": "Philippians",
+      "address": "0x8C4E5f624E80c70F6DA77A6C9300D725c2298145",
+      "path": "m/44'/60'/0'/0/49"
+    },
+    {
+      "index": 50,
+      "book": "Colossians",
+      "address": "0xe4A0E20B46C3293cFf8a6bE76FD8c991641c2d5D",
+      "path": "m/44'/60'/0'/0/50"
+    },
+    {
+      "index": 51,
+      "book": "1 Thessalonians",
+      "address": "0xc023201d95996Fb8dE4a0650363C1Fc1D0Fed25A",
+      "path": "m/44'/60'/0'/0/51"
+    },
+    {
+      "index": 52,
+      "book": "2 Thessalonians",
+      "address": "0xB35c2Ea754578364c217f3f200227EFEF9Fcd95A",
+      "path": "m/44'/60'/0'/0/52"
+    },
+    {
+      "index": 53,
+      "book": "1 Timothy",
+      "address": "0x6a7B307229ab4ab5aFe4358032bbaAE1553859d9",
+      "path": "m/44'/60'/0'/0/53"
+    },
+    {
+      "index": 54,
+      "book": "2 Timothy",
+      "address": "0x97C32b0f3d948900B05bb299A562Ee16Dc4825ce",
+      "path": "m/44'/60'/0'/0/54"
+    },
+    {
+      "index": 55,
+      "book": "Titus",
+      "address": "0x299ebc55C66E3bFF27491AFD33F6A617592eaef8",
+      "path": "m/44'/60'/0'/0/55"
+    },
+    {
+      "index": 56,
+      "book": "Philemon",
+      "address": "0x298d45F58846Dc8893Ff40E90256797A03DfbA35",
+      "path": "m/44'/60'/0'/0/56"
+    },
+    {
+      "index": 57,
+      "book": "Hebrews",
+      "address": "0x19cbfb63D0B35Ae76912BAEC89FE9fd3cE5B00F6",
+      "path": "m/44'/60'/0'/0/57"
+    },
+    {
+      "index": 58,
+      "book": "James",
+      "address": "0x3E8Fe8298432EED8717FF07A722FacE9990b22a9",
+      "path": "m/44'/60'/0'/0/58"
+    },
+    {
+      "index": 59,
+      "book": "1 Peter",
+      "address": "0xAC1101143FdEC6c93254b5f4D57EF39e8d1AFc83",
+      "path": "m/44'/60'/0'/0/59"
+    },
+    {
+      "index": 60,
+      "book": "2 Peter",
+      "address": "0x8e37900FDB5446118C01f1111CBBf9FDA2C895F9",
+      "path": "m/44'/60'/0'/0/60"
+    },
+    {
+      "index": 61,
+      "book": "1 John",
+      "address": "0x3bBf977aa6fda650e1a6aE4c17237Ff0da4A4fcE",
+      "path": "m/44'/60'/0'/0/61"
+    },
+    {
+      "index": 62,
+      "book": "2 John",
+      "address": "0x74ddEfbF8B06a06F0A2E5BC79E86Cd953b962B16",
+      "path": "m/44'/60'/0'/0/62"
+    },
+    {
+      "index": 63,
+      "book": "3 John",
+      "address": "0xEe8A02C12cA6137Bc51933dAa53E9aB65babD0bb",
+      "path": "m/44'/60'/0'/0/63"
+    },
+    {
+      "index": 64,
+      "book": "Jude",
+      "address": "0x75c3fE7ea735bC51f681231428759A7eD3161098",
+      "path": "m/44'/60'/0'/0/64"
+    },
+    {
+      "index": 65,
+      "book": "Revelation",
+      "address": "0x500bD9c00F545Fc43a41543c907174f48B83409c",
+      "path": "m/44'/60'/0'/0/65"
+    }
+  ]
+}

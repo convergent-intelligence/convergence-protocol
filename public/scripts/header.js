@@ -95,6 +95,12 @@ async function loadContractABIs() {
     }
 }
 
+const TRINITY_MEMBERS = [
+    '0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB', // Genesis Human
+    '0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22', // Agent
+    '0x8Ffa5CAaBE8ee3d9019865120a654464BC4654cd'  // MetaMask #2
+].map(a => a.toLowerCase());
+
 async function connectWallet() {
     try {
         if (typeof window.ethereum === 'undefined') {
@@ -104,6 +110,15 @@ async function connectWallet() {
 
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         userAddress = accounts[0];
+
+        // Check if the user is a Trinity Member and redirect
+        if (TRINITY_MEMBERS.includes(userAddress.toLowerCase())) {
+            // Check if already on the dashboard to prevent a redirect loop
+            if (window.location.pathname !== '/dashboard.html') {
+                window.location.href = '/dashboard.html';
+                return; // Stop further execution since we are redirecting
+            }
+        }
 
         const chainId = await window.ethereum.request({ method: 'eth_chainId' });
         if (chainId !== REQUIRED_CHAIN_ID) {
