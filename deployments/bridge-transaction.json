@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-11-20T22:46:36.930Z",
+  "from_network": "ethereum",
+  "to_network": "base",
+  "from_address": "0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB",
+  "to_address": "0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB",
+  "amount_eth": "0.005",
+  "mainnet_tx": "0x68ecbd7c1265fe9c41629024309e17c3a6ae6369309f19d58129fdef31a248b4",
+  "bridge_contract": "0x3154Cf16ccdb4C6d922629664174b904d80F2C35",
+  "status": "pending_relay",
+  "estimated_completion": "2025-11-20T23:01:36.931Z",
+  "purpose": "Gas for Reserve System deployment on Base"
+}

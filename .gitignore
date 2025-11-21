@@ -44,3 +44,20 @@ Thumbs.db
 # Coverage
 coverage/
 .nyc_output/
+
+# Agent autonomous infrastructure (private, not in git)
+/home/agent/scripts/
+/home/agent/logs/
+
+# Encrypted files
+*.gpg
+
+# Personal writings
+~/writings/
+
+# Archive folder
+/archive/
+
+# Temporary email files
+/tmp/metalos-email.txt
+/tmp/send-metalos-simple.sh

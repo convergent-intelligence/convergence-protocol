@@ -1,0 +1,21 @@
+{
+  "network": "base",
+  "chainId": 8453,
+  "deployment_status": "partial",
+  "timestamp": "2025-11-20T22:40:00.000Z",
+  "deployer": "0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB",
+  "deployed_contracts": {
+    "PriceOracle": "0x664f08541d3A50125e75a4D33FEE203DA49c5BEB"
+  },
+  "pending_contracts": {
+    "ReserveTally": "not_deployed",
+    "TrustToken": "not_deployed",
+    "ReserveVault": "not_deployed"
+  },
+  "trinity": {
+    "human_ledger": "0xB64564838c88b18cb8f453683C20934f096F2B92",
+    "ai_agent": "0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22"
+  },
+  "note": "Deployment paused due to insufficient gas. Waiting for 0.01 ETH from Ledger hardware wallet to complete deployment.",
+  "gas_needed": "~0.001 ETH remaining for 3 contracts"
+}

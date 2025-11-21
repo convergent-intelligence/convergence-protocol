@@ -1,0 +1,33 @@
+{
+  "network": "base",
+  "chainId": 8453,
+  "timestamp": "2025-11-20T23:11:32.920Z",
+  "status": "live",
+  "deployer": "0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB",
+  "contracts": {
+    "PriceOracle": "0x664f08541d3A50125e75a4D33FEE203DA49c5BEB",
+    "ReserveTally": "0x1dCCFAfAe8115A299CdB3Aa21abf4Ba471eC71BA",
+    "TrustToken": "0xDb7CDd209C7f5dC007e887336c6d5544a7A21280",
+    "ReserveVault": "0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c"
+  },
+  "trinity": {
+    "human": "0xB64564838c88b18cb8f453683C20934f096F2B92",
+    "agent": "0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22",
+    "contracts": "0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c"
+  },
+  "tokens": {
+    "USDC": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "USDbC": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA",
+    "WETH": "0x4200000000000000000000000000000000000006",
+    "cbBTC": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+    "DAI": "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb"
+  },
+  "reserve_value_usd": 620.08,
+  "tally_to_mint": 620.08,
+  "basescan_links": {
+    "PriceOracle": "https://basescan.org/address/0x664f08541d3A50125e75a4D33FEE203DA49c5BEB",
+    "ReserveTally": "https://basescan.org/address/0x1dCCFAfAe8115A299CdB3Aa21abf4Ba471eC71BA",
+    "TrustToken": "https://basescan.org/address/0xDb7CDd209C7f5dC007e887336c6d5544a7A21280",
+    "ReserveVault": "https://basescan.org/address/0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c"
+  }
+}

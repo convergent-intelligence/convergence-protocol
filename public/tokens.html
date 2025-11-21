@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Management - Convergence Protocol</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Token Management</h1>
+            <p>Manage your Reserve Tally and Trust tokens on the Base network.</p>
+        </div>
+
+        <!-- Wallet Connection & Balances -->
+        <div class="action-card">
+            <h2>Your Wallet</h2>
+            <p id="wallet-status">Not connected</p>
+            <div id="wallet-balances" style="display: none;">
+                <div class="form-group">
+                    <label>Reserve Tally (TALLY)</label>
+                    <input type="text" id="reserve-tally-balance" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Convergence Trust (TRUST)</label>
+                    <input type="text" id="trust-balance" readonly>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reserve Vault Actions -->
+        <div class="action-card">
+            <h2>Reserve Vault</h2>
+            <p>Deposit assets into the reserve to mint Reserve Tally tokens 1:1 with USD value.</p>
+            <div class="form-group">
+                <label for="deposit-amount-eth">Deposit ETH Amount</label>
+                <input type="text" id="deposit-amount-eth" placeholder="e.g., 0.1">
+            </div>
+            <button class="action-button" onclick="depositETH()">Deposit ETH</button>
+            <p class="small-text">Support for ERC20 deposits coming soon.</p>
+        </div>
+
+        <!-- Reserve Tally Actions -->
+        <div class="action-card">
+            <h2>Reserve Tally (TALLY)</h2>
+            <div class="form-group">
+                <label for="transfer-tally-to">Transfer to Address</label>
+                <input type="text" id="transfer-tally-to" placeholder="0x...">
+            </div>
+            <div class="form-group">
+                <label for="transfer-tally-amount">Amount</label>
+                <input type="text" id="transfer-tally-amount" placeholder="e.g., 100">
+            </div>
+            <button class="action-button" onclick="transferReserveTally()">Transfer TALLY</button>
+            <hr>
+            <div class="form-group">
+                <label for="burn-tally-amount">Burn TALLY for TRUST</label>
+                <input type="text" id="burn-tally-amount" placeholder="e.g., 50">
+            </div>
+            <button class="action-button" onclick="burnReserveTally()">Burn TALLY</button>
+        </div>
+        
+        <!-- Trust Token Actions -->
+        <div class="action-card">
+            <h2>Convergence Trust (TRUST)</h2>
+            <div class="form-group">
+                <label for="transfer-trust-to">Transfer to Address</label>
+                <input type="text" id="transfer-trust-to" placeholder="0x...">
+            </div>
+            <div class="form-group">
+                <label for="transfer-trust-amount">Amount</label>
+                <input type="text" id="transfer-trust-amount" placeholder="e.g., 10">
+            </div>
+            <button class="action-button" onclick="transferTrust()">Transfer TRUST</button>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/scripts/header.js"></script>
+    <script>
+        // Contract addresses on Base network
+        const RESERVE_VAULT_ADDR = '0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c';
+        const RESERVE_TALLY_ADDR = '0x1dCCFAfAe8115A299CdB3Aa21abf4Ba471eC71BA';
+        const TRUST_TOKEN_ADDR = '0xDb7CDd209C7f5dC007e887336c6d5544a7A21280';
+
+        // ABIs (assuming they are in the public/contracts folder)
+        const reserveVaultAbi = fetch('/contracts/ReserveVault.json').then(res => res.json());
+        const reserveTallyAbi = fetch('/contracts/ReserveTally.json').then(res => res.json());
+        const trustTokenAbi = fetch('/contracts/TrustToken.json').then(res => res.json());
+
+        let provider, signer, userAddress;
+        let reserveVault, reserveTally, trustToken;
+
+        async function init() {
+            if (typeof window.ethereum === 'undefined') {
+                alert('Please install MetaMask!');
+                return;
+            }
+
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            
+            // Listen for wallet connection
+            document.addEventListener('walletConnected', setupApp);
+
+            // Initial setup if already connected
+            if (window.signer) {
+                setupApp();
+            }
+        }
+
+        async function setupApp() {
+            signer = window.signer;
+            userAddress = window.userAddress;
+
+            document.getElementById('wallet-status').textContent = `Connected: ${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
+            document.getElementById('wallet-balances').style.display = 'block';
+
+            // Check network
+            const network = await provider.getNetwork();
+            if (network.chainId !== 8453) { // Base mainnet
+                alert("Please switch to the Base network in your wallet.");
+                return;
+            }
+
+            // Instantiate contracts
+            reserveVault = new ethers.Contract(RESERVE_VAULT_ADDR, (await reserveVaultAbi).abi, signer);
+            reserveTally = new ethers.Contract(RESERVE_TALLY_ADDR, (await reserveTallyAbi).abi, signer);
+            trustToken = new ethers.Contract(TRUST_TOKEN_ADDR, (await trustTokenAbi).abi, signer);
+
+            updateBalances();
+        }
+
+        async function updateBalances() {
+            if (!signer) return;
+            const tallyBalance = await reserveTally.balanceOf(userAddress);
+            const trustBalance = await trustToken.balanceOf(userAddress);
+            document.getElementById('reserve-tally-balance').value = ethers.utils.formatEther(tallyBalance);
+            document.getElementById('trust-balance').value = ethers.utils.formatEther(trustBalance);
+        }
+
+        async function depositETH() {
+            if (!reserveVault) return;
+            const amount = document.getElementById('deposit-amount-eth').value;
+            if (!amount || isNaN(amount)) {
+                alert('Please enter a valid amount.');
+                return;
+            }
+            try {
+                const tx = await reserveVault.depositETH({ value: ethers.utils.parseEther(amount) });
+                alert('Deposit transaction sent. Please wait for confirmation.');
+                await tx.wait();
+                alert('Deposit successful! Your TALLY balance will update shortly.');
+                updateBalances();
+            } catch (error) {
+                console.error("Deposit error:", error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        async function transferReserveTally() {
+            if (!reserveTally) return;
+            const to = document.getElementById('transfer-tally-to').value;
+            const amount = document.getElementById('transfer-tally-amount').value;
+            if (!ethers.utils.isAddress(to) || !amount || isNaN(amount)) {
+                alert('Please enter a valid address and amount.');
+                return;
+            }
+            try {
+                const tx = await reserveTally.transfer(to, ethers.utils.parseEther(amount));
+                alert('Transfer transaction sent. Please wait for confirmation.');
+                await tx.wait();
+                alert('Transfer successful!');
+                updateBalances();
+            } catch (error) {
+                console.error("Transfer error:", error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        async function burnReserveTally() {
+            if (!reserveTally) return;
+            const amount = document.getElementById('burn-tally-amount').value;
+            if (!amount || isNaN(amount)) {
+                alert('Please enter a valid amount.');
+                return;
+            }
+            try {
+                const tx = await reserveTally.burnForTrust(ethers.utils.parseEther(amount));
+                alert('Burn transaction sent. Please wait for confirmation.');
+                await tx.wait();
+                alert('Burn successful! Your TALLY and TRUST balances will update shortly.');
+                updateBalances();
+            } catch (error) {
+                console.error("Burn error:", error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        async function transferTrust() {
+            if (!trustToken) return;
+            const to = document.getElementById('transfer-trust-to').value;
+            const amount = document.getElementById('transfer-trust-amount').value;
+            if (!ethers.utils.isAddress(to) || !amount || isNaN(amount)) {
+                alert('Please enter a valid address and amount.');
+                return;
+            }
+            try {
+                const tx = await trustToken.transfer(to, ethers.utils.parseEther(amount));
+                alert('Transfer transaction sent. Please wait for confirmation.');
+                await tx.wait();
+                alert('Transfer successful!');
+                updateBalances();
+            } catch (error) {
+                console.error("Transfer error:", error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        window.addEventListener('load', init);
+    </script>
+    <div id="footer-placeholder"></div>
+    <script>
+        fetch('header.html').then(response => response.text()).then(data => document.getElementById('header-placeholder').innerHTML = data);
+        fetch('footer.html').then(response => response.text()).then(data => document.getElementById('footer-placeholder').innerHTML = data);
+    </script>
+</body>
+</html>

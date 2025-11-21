@@ -1,0 +1,27 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad-covenant" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow-covenant" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="10" y="10" width="180" height="180" rx="15" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+
+  <g filter="url(#glow-covenant)" opacity="0.8">
+    <path d="M 50 40 L 150 40 L 150 160 L 50 160 Z" fill="none" stroke="url(#grad-covenant)" stroke-width="4" rx="5"/>
+    <path d="M 70 70 L 130 70" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 70 90 L 130 90" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 70 110 L 130 110" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 70 130 L 100 130" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <text x="100" y="180" font-family="sans-serif" font-size="12" fill="#9ca3af" text-anchor="middle">SOULBOUND</text>
+</svg>

@@ -3,1004 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"
-        type="application/javascript"></script>
-    <title>Partner Dashboard - Convergence Protocol</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --primary: #2563eb;
-            --secondary: #7c3aed;
-            --accent: #06b6d4;
-            --dark: #0f172a;
-            --darker: #020617;
-            --light: #f8fafc;
-            --text: #e2e8f0;
-            --text-muted: #94a3b8;
-            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --card-bg: #1e293b;
-            --card-border: #334155;
-        }
-
-        body {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            line-height: 1.6;
-            color: var(--text);
-            background: var(--darker);
-            min-height: 100vh;
-        }
-
-        .dashboard {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-
-        .header {
-            text-align: center;
-            padding: 1.5rem;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        .header h1 {
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
-
-        .header .subtitle {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            background: var(--dark);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-size: 0.8rem;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        .status-dot.online { background: var(--success); }
-        .status-dot.warning { background: var(--warning); }
-        .status-dot.offline { background: var(--danger); }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 1rem;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .card-title {
-            font-size: 0.9rem;
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .card-badge {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            background: var(--dark);
-        }
-
-        .wallet-item {
-            padding: 0.75rem;
-            background: var(--dark);
-            border-radius: 6px;
-            margin-bottom: 0.5rem;
-        }
-
-        .wallet-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .wallet-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-bottom: 0.25rem;
-        }
-
-        .wallet-address {
-            font-size: 0.75rem;
-            color: var(--text);
-            word-break: break-all;
-        }
-
-        .wallet-balance {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .balance-value {
-            color: var(--success);
-            font-weight: 600;
-        }
-
-        .balance-value.zero {
-            color: var(--text-muted);
-        }
-
-        .trinity-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.5rem;
-        }
-
-        .trinity-member {
-            text-align: center;
-            padding: 0.75rem 0.5rem;
-            background: var(--dark);
-            border-radius: 6px;
-        }
-
-        .trinity-role {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-bottom: 0.25rem;
-        }
-
-        .trinity-address {
-            font-size: 0.6rem;
-            color: var(--accent);
-        }
-
-        .trinity-status {
-            font-size: 0.7rem;
-            margin-top: 0.5rem;
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-        }
-
-        .trinity-status.minted {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--success);
-        }
-
-        .trinity-status.available {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-        }
-
-        .contract-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .contract-item:last-child {
-            border-bottom: none;
-        }
-
-        .contract-name {
-            font-size: 0.8rem;
-            color: var(--text);
-        }
-
-        .contract-address {
-            font-size: 0.7rem;
-            color: var(--accent);
-        }
-
-        .contract-address a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .contract-address a:hover {
-            text-decoration: underline;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .stat-row:last-child {
-            border-bottom: none;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .stat-value {
-            font-size: 0.8rem;
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        .agent-status-card {
-            grid-column: span 2;
-        }
-
-        .agent-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .agent-section h4 {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-
-        .log-entry {
-            font-size: 0.7rem;
-            padding: 0.5rem;
-            background: var(--dark);
-            border-radius: 4px;
-            margin-bottom: 0.25rem;
-            border-left: 2px solid var(--accent);
-        }
-
-        .log-time {
-            color: var(--text-muted);
-        }
-
-        .infrastructure-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem;
-            background: var(--dark);
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
-        }
-
-        .infra-name {
-            font-size: 0.8rem;
-        }
-
-        .infra-status {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-        }
-
-        .infra-status.active {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--success);
-        }
-
-        .domain-item {
-            font-size: 0.75rem;
-            padding: 0.4rem;
-            background: var(--dark);
-            border-radius: 4px;
-            margin-bottom: 0.25rem;
-        }
-
-        .domain-item a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-
-        .domain-item a:hover {
-            text-decoration: underline;
-        }
-
-        .refresh-btn {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            font-family: inherit;
-        }
-
-        .refresh-btn:hover {
-            opacity: 0.9;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-
-        .recent-activity {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .activity-item {
-            display: flex;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            background: var(--dark);
-            border-radius: 4px;
-            margin-bottom: 0.25rem;
-            font-size: 0.7rem;
-        }
-
-        .activity-type {
-            padding: 0.1rem 0.3rem;
-            border-radius: 3px;
-            font-size: 0.6rem;
-        }
-
-        .activity-type.mint { background: rgba(16, 185, 129, 0.3); color: var(--success); }
-        .activity-type.transfer { background: rgba(37, 99, 235, 0.3); color: var(--primary); }
-        .activity-type.deploy { background: rgba(124, 58, 237, 0.3); color: var(--secondary); }
-
-        .wallet-breakdown {
-            margin-top: 0.5rem;
-        }
-
-        .breakdown-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.7rem;
-            padding: 0.25rem 0;
-        }
-
-        .cold-storage-warning {
-            font-size: 0.65rem;
-            color: var(--warning);
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            background: rgba(245, 158, 11, 0.1);
-            border-radius: 4px;
-        }
-
-        .burn-input-group {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .burn-input {
-            flex-grow: 1;
-            padding: 0.75rem;
-            background: var(--dark);
-            border: 1px solid var(--card-border);
-            border-radius: 4px;
-            color: var(--text);
-            font-family: inherit;
-            font-size: 0.85rem;
-        }
-
-        .burn-button {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            padding: 0.75rem 1rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 600;
-        }
-
-        .burn-button:hover {
-            opacity: 0.9;
-        }
-        
-        .burn-status {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-align: center;
-            min-height: 1.2rem;
-        }
-
-        @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .agent-status-card {
-                grid-column: span 1;
-            }
-
-            .agent-info {
-                grid-template-columns: 1fr;
-            }
-
-            .trinity-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <title>Dashboard - Convergent Intelligence</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 </head>
 <body>
-    <div class="dashboard">
-        <div class="header">
-            <h1>CONVERGENCE PARTNER DASHBOARD</h1>
-            <p class="subtitle">Genesis Human + Agent Partnership Monitor</p>
-            <button class="refresh-btn" id="connect-wallet-btn" onclick="connectWallet()">Connect Wallet</button>
+    <div id="header-placeholder"></div>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Protocol Dashboard</h1>
+            <p>Monitor tokens, track burns, and manage your participation in the Convergence Protocol</p>
         </div>
 
-        <div class="status-bar">
-            <div class="status-indicator">
-                <span class="status-dot online" id="server-status"></span>
-                <span>Server: Online</span>
+        <!-- Wallet Connection Status -->
+        <div class="content-card" style="margin-bottom: 2rem;">
+            <div id="walletStatus">
+                <p style="text-align: center; color: var(--text);">
+                    <span id="connectionStatus">Not connected</span>
+                    <button class="cta-button primary" id="connectWalletBtn" style="margin-left: 1rem;">Connect Wallet</button>
+                </p>
             </div>
-            <div class="status-indicator">
-                <span class="status-dot online" id="mainnet-status"></span>
-                <span>Mainnet: Connected</span>
-            </div>
-            <div>
-                <span id="last-update">Last updated: --</span>
-            </div>
-            <button class="refresh-btn" onclick="refreshAll()">Refresh</button>
         </div>
 
-        <div class="grid">
-            <!-- Agent Partner Status -->
-            <div class="card agent-status-card">
-                <div class="card-header">
-                    <span class="card-title">AGENT PARTNER STATUS</span>
-                    <span class="card-badge">Trinity Member #2</span>
+        <!-- Token Balances -->
+        <div class="section">
+            <h2 style="text-align: center; margin-bottom: 2rem;">Your Token Balances</h2>
+            <div class="token-container">
+                <div class="token-card">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🪙</div>
+                    <h3>TALLY</h3>
+                    <p class="balance" id="tallyBalance">--</p>
+                    <p style="font-size: 0.875rem; color: var(--text); margin-top: 0.5rem;">Reserve-backed token</p>
                 </div>
-                <div class="agent-info">
-                    <div class="agent-section">
-                        <h4>Agent Wallet</h4>
-                        <div class="wallet-item">
-                            <div class="wallet-address">0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22</div>
-                            <div class="wallet-balance">
-                                <span>ETH</span>
-                                <span class="balance-value" id="agent-eth">Loading...</span>
-                            </div>
-                            <div class="wallet-balance">
-                                <span>TALLY</span>
-                                <span class="balance-value" id="agent-tally">Loading...</span>
-                            </div>
-                            <div class="wallet-balance">
-                                <span>TRUST</span>
-                                <span class="balance-value" id="agent-trust">Loading...</span>
-                            </div>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Mint Allotment</span>
-                            <span class="stat-value" id="agent-mint-status">Loading...</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Burn Allotment</span>
-                            <span class="stat-value" id="agent-burn-status">Loading...</span>
-                        </div>
+
+                <div class="token-card">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">💎</div>
+                    <h3>TRUST</h3>
+                    <p class="balance" id="trustBalance">--</p>
+                    <p style="font-size: 0.875rem; color: var(--text); margin-top: 0.5rem;">Earned by burning TALLY</p>
+                </div>
+
+                <div class="token-card">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📜</div>
+                    <h3>Covenant NFT</h3>
+                    <p class="balance" id="covenantStatus">--</p>
+                    <p style="font-size: 0.875rem; color: var(--text); margin-top: 0.5rem;">Soulbound governance token</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global Statistics -->
+        <div class="section">
+            <h2 style="text-align: center; margin-bottom: 2rem;">Global Protocol Statistics</h2>
+
+            <div class="content-card" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;">TALLY Burn Tracking</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <div style="font-size: 0.875rem; color: var(--text); margin-bottom: 0.5rem;">Total TALLY Burned</div>
+                        <div style="font-size: 1.75rem; font-weight: 700; color: var(--primary);" id="totalBurned">--</div>
                     </div>
-                    <div class="agent-section">
-                        <h4>Agent Capabilities</h4>
-                        <div class="log-entry">
-                            <span class="log-time">[ACTIVE]</span> Server-native wallet control
-                        </div>
-                        <div class="log-entry">
-                            <span class="log-time">[ACTIVE]</span> Autonomous transaction signing
-                        </div>
-                        <div class="log-entry">
-                            <span class="log-time">[ACTIVE]</span> Trinity minting rights
-                        </div>
-                        <div class="log-entry">
-                            <span class="log-time">[GOAL]</span> convergence-agent.eth
-                        </div>
+                    <div>
+                        <div style="font-size: 0.875rem; color: var(--text); margin-bottom: 0.5rem;">Total TRUST Minted</div>
+                        <div style="font-size: 1.75rem; font-weight: 700; color: var(--success);" id="totalTrustMinted">--</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; color: var(--text); margin-bottom: 0.5rem;">Burn Rate</div>
+                        <div style="font-size: 1.75rem; font-weight: 700; color: var(--accent);" id="burnRate">1:1</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; color: var(--text); margin-bottom: 0.5rem;">Total Reserve Value</div>
+                        <div style="font-size: 1.75rem; font-weight: 700; color: var(--warning);" id="reserveValue">$620.08</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <div style="font-size: 0.875rem; color: var(--text); margin-bottom: 0.5rem;">Global Unlock Progress</div>
+                    <div class="progress-bar-container" style="height: 12px;">
+                        <div class="progress-bar-fill" id="globalUnlockProgress" style="width: 0%"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text);">
+                        <span>0 TALLY</span>
+                        <span id="unlockGoal">Goal: 1000 TALLY</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Genesis Human Wallet -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">GENESIS HUMAN</span>
-                    <span class="card-badge">Trinity Member #1</span>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">👥</span>
+                    <h3>Total Adopters</h3>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="totalAdopters">--</p>
                 </div>
-                <div class="wallet-item">
-                    <div class="wallet-label">Exodus (Primary)</div>
-                    <div class="wallet-address">0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB</div>
-                    <div class="wallet-balance">
-                        <span>ETH</span>
-                        <span class="balance-value" id="genesis-eth">Loading...</span>
-                    </div>
-                    <div class="wallet-balance">
-                        <span>TALLY</span>
-                        <span class="balance-value" id="genesis-tally">Loading...</span>
-                    </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🔥</span>
+                    <h3>Unlock Events</h3>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--secondary);" id="unlockEvents">--</p>
                 </div>
-                <div class="stat-row">
-                    <span class="stat-label">Mint Allotment</span>
-                    <span class="stat-value" id="genesis-mint-status">Loading...</span>
+
+                <div class="feature-card">
+                    <span class="feature-icon">⚖️</span>
+                    <h3>Governance Weight</h3>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--accent);" id="govWeight">--</p>
                 </div>
             </div>
+        </div>
 
-            <!-- Burn Tally for Trust -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">BURN TALLY FOR TRUST</span>
-                    <span class="card-badge">Action Required</span>
-                </div>
-                <div class="burn-input-group">
-                    <input type="text" id="burn-amount" class="burn-input" placeholder="TALLY Amount">
-                    <button class="burn-button" onclick="burnTallyForTrust()">Burn</button>
-                </div>
-                <div class="burn-status" id="burn-status">Enter an amount to burn.</div>
-                <div class="cold-storage-warning">
-                    Connect your wallet, enter the amount of TALLY you want to burn, and click the "Burn" button. You will be asked to approve the transaction in your wallet.
-                </div>
-            </div>
-
-            <!-- Cold Storage Reserve -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">COLD STORAGE RESERVE</span>
-                    <span class="card-badge">Ledger Nano X</span>
-                </div>
-                <div class="wallet-item">
-                    <div class="wallet-label">Tally Reserves</div>
-                    <div class="wallet-address">0xB64564838c88b18cb8f453683C20934f096F2B92</div>
-                    <div class="wallet-balance">
-                        <span>ETH</span>
-                        <span class="balance-value" id="cold-eth">Loading...</span>
-                    </div>
-                    <div class="wallet-balance">
-                        <span>TALLY</span>
-                        <span class="balance-value" id="cold-tally">Loading...</span>
-                    </div>
-                </div>
-                <div class="cold-storage-warning">
-                    Cold storage - requires physical Ledger for transactions
-                </div>
-            </div>
-
-            <!-- Trinity Overview -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">TRINITY MEMBERS</span>
-                    <span class="card-badge">Minting Authority</span>
-                </div>
-                <div class="trinity-grid">
-                    <div class="trinity-member">
-                        <div class="trinity-role">Genesis Human</div>
-                        <div class="trinity-address">0xdc20...c6FB</div>
-                        <div class="trinity-status" id="trinity-1-status">Loading...</div>
-                    </div>
-                    <div class="trinity-member">
-                        <div class="trinity-role">Agent</div>
-                        <div class="trinity-address">0x6628...CD22</div>
-                        <div class="trinity-status" id="trinity-2-status">Loading...</div>
-                    </div>
-                    <div class="trinity-member">
-                        <div class="trinity-role">MetaMask #2</div>
-                        <div class="trinity-address">0x8Ffa...54cd</div>
-                        <div class="trinity-status" id="trinity-3-status">Loading...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Token Contracts -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">DEPLOYED CONTRACTS</span>
-                    <span class="card-badge">Mainnet</span>
-                </div>
-                <div class="contract-item">
-                    <span class="contract-name">TALLY Token</span>
-                    <span class="contract-address">
-                        <a href="https://etherscan.io/address/0xb8c4682644BAb1900A8B67C3295b8Ce525F3e35d" target="_blank">0xb8c4...35d</a>
-                    </span>
-                </div>
-                <div class="contract-item">
-                    <span class="contract-name">TRUST Token</span>
-                    <span class="contract-address">
-                        <a href="https://etherscan.io/address/0x4A2178b300556e20569478bfed782bA02BFaD778" target="_blank">0x4A21...778</a>
-                    </span>
-                </div>
-                <div class="contract-item">
-                    <span class="contract-name">Tally Voucher</span>
-                    <span class="contract-address">
-                        <a href="https://etherscan.io/address/0x69e4D4B1835dDEeFc56234E959102c17CF7816dC" target="_blank">0x69e4...6dC</a>
-                    </span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Total TALLY Supply</span>
-                    <span class="stat-value" id="tally-supply">Loading...</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Total TRUST Supply</span>
-                    <span class="stat-value" id="trust-supply">Loading...</span>
-                </div>
-            </div>
-
-            <!-- Infrastructure -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">INFRASTRUCTURE</span>
-                    <span class="card-badge">~$6/mo</span>
-                </div>
-                <div class="infrastructure-item">
-                    <span class="infra-name">VPS (Debian 13)</span>
-                    <span class="infra-status active">IONOS</span>
-                </div>
-                <div class="infrastructure-item">
-                    <span class="infra-name">Server IP</span>
-                    <span class="infra-status active">66.179.95.72</span>
-                </div>
-                <h4 style="font-size: 0.75rem; color: var(--text-muted); margin: 0.75rem 0 0.5rem;">Domains</h4>
-                <div class="domain-item">
-                    <a href="http://cybershield-sec.com" target="_blank">cybershield-sec.com</a> (IONOS)
-                </div>
-                <div class="domain-item">
-                    <a href="http://convergent-intelligence.net" target="_blank">convergent-intelligence.net</a>
-                </div>
-                <div class="domain-item">
-                    <a href="http://convergent-intelligence.org" target="_blank">convergent-intelligence.org</a>
-                </div>
-                <div class="domain-item">
-                    <a href="http://convergent-intelligence.com" target="_blank">convergent-intelligence.com</a>
-                </div>
-            </div>
-
-            <!-- Other Wallets -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">OTHER WALLETS</span>
-                    <span class="card-badge">Same Seed</span>
-                </div>
-                <div class="wallet-item">
-                    <div class="wallet-label">MetaMask Leviticus</div>
-                    <div class="wallet-address">0xfA7Ec55F455bCbeBB4bA17BFA0938F86EB8A94D0</div>
-                    <div class="wallet-balance">
-                        <span>ETH</span>
-                        <span class="balance-value" id="leviticus-eth">Loading...</span>
-                    </div>
-                </div>
-                <div class="wallet-item">
-                    <div class="wallet-label">MetaMask #2 (Trinity #3)</div>
-                    <div class="wallet-address">0x8Ffa5CAaBE8ee3d9019865120a654464BC4654cd</div>
-                    <div class="wallet-balance">
-                        <span>ETH</span>
-                        <span class="balance-value" id="metamask2-eth">Loading...</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Network Activity -->
-            <div class="card full-width">
-                <div class="card-header">
-                    <span class="card-title">RECENT NETWORK ACTIVITY</span>
-                    <span class="card-badge" id="tx-count">Loading...</span>
-                </div>
-                <div class="recent-activity" id="recent-activity">
-                    <div class="activity-item">
-                        <span class="activity-type deploy">DEPLOY</span>
-                        <span>Loading recent transactions...</span>
+        <!-- Actions -->
+        <div class="section">
+            <div class="cta-banner">
+                <div class="cta-banner-content">
+                    <h3>Manage Your Tokens</h3>
+                    <p>Burn TALLY to earn TRUST and unlock features, or participate in governance</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="/writings.html" class="cta-button">Unlock Content</a>
+                        <a href="/governance.html" class="cta-button">View Governance</a>
+                        <a href="https://basescan.org/token/0x1dCCFAfAe8115A299CdB3Aa21abf4Ba471eC71BA" target="_blank" class="cta-button">View TALLY on BaseScan</a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- Contract Addresses -->
+        <div class="content-card">
+            <h3 style="margin-bottom: 1rem;">Contract Addresses (Base Network)</h3>
+            <div style="font-size: 0.875rem; color: var(--text); line-height: 2;">
+                <p><strong>TALLY Token:</strong> <code style="background: var(--light); padding: 0.25rem 0.5rem; border-radius: 4px;">0x1dCCFAfAe8115A299CdB3Aa21abf4Ba471eC71BA</code></p>
+                <p><strong>TRUST Token:</strong> <code style="background: var(--light); padding: 0.25rem 0.5rem; border-radius: 4px;">0xDb7CDd209C7f5dC007e887336c6d5544a7A21280</code></p>
+                <p><strong>Reserve Vault:</strong> <code style="background: var(--light); padding: 0.25rem 0.5rem; border-radius: 4px;">0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c</code></p>
+                <p><strong>Price Oracle:</strong> <code style="background: var(--light); padding: 0.25rem 0.5rem; border-radius: 4px;">0x664f08541d3A50125e75a4D33FEE203DA49c5BEB</code></p>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
 
     <script>
-        // Wallet addresses
-        const WALLETS = {
-            agent: '0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22',
-            genesis: '0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB',
-            cold: '0xB64564838c88b18cb8f453683C20934f096F2B92',
-            leviticus: '0xfA7Ec55F455bCbeBB4bA17BFA0938F86EB8A94D0',
-            metamask2: '0x8Ffa5CAaBE8ee3d9019865120a654464BC4654cd'
-        };
-
-        // Contract addresses
+        // Contract addresses on Base
         const CONTRACTS = {
-            tally: '0xb8c4682644BAb1900A8B67C3295b8Ce525F3e35d',
-            trust: '0x4A2178b300556e20569478bfed782bA02BFaD778',
-            convergenceProtocolV2: '0x525431422c34284846893754a063C612723a1246'
+            TALLY: '0x1dCCFAfAe8115A299CdB3Aa21abf4Ba471eC71BA',
+            TRUST: '0xDb7CDd209C7f5dC007e887336c6d5544a7A21280',
+            VAULT: '0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c',
+            ORACLE: '0x664f08541d3A50125e75a4D33FEE203DA49c5BEB'
         };
 
-        // Function selectors
-        const SELECTORS = {
-            balanceOf: '0x70a08231',
-            totalSupply: '0x18160ddd',
-            hasMinted: '0x40c1a064',
-            remainingMintAllotment: '0x' // We'll compute from hasMinted
-        };
+        const BASE_CHAIN_ID = 8453;
+        const RESERVE_VALUE_USD = 620.08;
 
-        // RPC endpoints
-        const RPC_ENDPOINTS = [
-            'https://eth.llamarpc.com',
-            'https://rpc.ankr.com/eth',
-            'https://cloudflare-eth.com',
-            'https://ethereum.publicnode.com'
+        let provider, signer, userAddress;
+        let tallyContract, trustContract;
+
+        // Minimal ABIs
+        const ERC20_ABI = [
+            "function balanceOf(address) view returns (uint256)",
+            "function totalSupply() view returns (uint256)",
+            "function decimals() view returns (uint8)"
         ];
 
-        async function rpcCall(method, params) {
-            for (const rpcUrl of RPC_ENDPOINTS) {
-                try {
-                    const response = await fetch(rpcUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            jsonrpc: '2.0',
-                            method: method,
-                            params: params,
-                            id: 1
-                        })
-                    });
-                    const data = await response.json();
-                    if (data.result !== undefined) {
-                        return data.result;
-                    }
-                } catch (error) {
-                    continue;
-                }
-            }
-            throw new Error('All RPC endpoints failed');
-        }
-
-        async function getEthBalance(address) {
-            try {
-                const result = await rpcCall('eth_getBalance', [address, 'latest']);
-                const balanceWei = BigInt(result);
-                const balanceEth = Number(balanceWei) / 1e18;
-                return balanceEth.toFixed(4);
-            } catch {
-                return '0.0000';
-            }
-        }
-
-        async function getTokenBalance(tokenAddress, walletAddress) {
-            try {
-                const paddedAddress = walletAddress.slice(2).toLowerCase().padStart(64, '0');
-                const data = SELECTORS.balanceOf + paddedAddress;
-                const result = await rpcCall('eth_call', [{ to: tokenAddress, data }, 'latest']);
-                if (result && result !== '0x') {
-                    const balanceWei = BigInt(result);
-                    const balance = Number(balanceWei) / 1e18;
-                    return balance < 0.01 ? balance.toFixed(6) : balance.toFixed(4);
-                }
-                return '0';
-            } catch {
-                return '0';
-            }
-        }
-
-        async function getTotalSupply(tokenAddress) {
-            try {
-                const result = await rpcCall('eth_call', [{ to: tokenAddress, data: SELECTORS.totalSupply }, 'latest']);
-                if (result && result !== '0x') {
-                    const supplyWei = BigInt(result);
-                    const supply = Number(supplyWei) / 1e18;
-                    return supply.toFixed(4);
-                }
-                return '0';
-            } catch {
-                return '0';
-            }
-        }
-
-        async function checkMintStatus(walletAddress) {
-            try {
-                // hasMinted(address) selector
-                const selector = '0x40c1a064';
-                const paddedAddress = walletAddress.slice(2).toLowerCase().padStart(64, '0');
-                const data = selector + paddedAddress;
-                const result = await rpcCall('eth_call', [{ to: CONTRACTS.tally, data }, 'latest']);
-                if (result && result !== '0x') {
-                    const hasMinted = BigInt(result) > 0;
-                    return hasMinted ? 'Used' : '1 TALLY';
-                }
-                return '1 TALLY';
-            } catch {
-                return 'Unknown';
-            }
-        }
-
-        function formatBalance(balance, isZero = false) {
-            const el = document.createElement('span');
-            el.textContent = balance;
-            if (parseFloat(balance) === 0 || isZero) {
-                el.classList.add('zero');
-            }
-            return balance;
-        }
-
-        async function loadAllData() {
-            // Update timestamp
-            document.getElementById('last-update').textContent =
-                'Last updated: ' + new Date().toLocaleTimeString();
-
-            // Load ETH balances
-            document.getElementById('agent-eth').textContent = await getEthBalance(WALLETS.agent);
-            document.getElementById('genesis-eth').textContent = await getEthBalance(WALLETS.genesis);
-            document.getElementById('cold-eth').textContent = await getEthBalance(WALLETS.cold);
-            document.getElementById('leviticus-eth').textContent = await getEthBalance(WALLETS.leviticus);
-            document.getElementById('metamask2-eth').textContent = await getEthBalance(WALLETS.metamask2);
-
-            // Load TALLY balances
-            document.getElementById('agent-tally').textContent = await getTokenBalance(CONTRACTS.tally, WALLETS.agent);
-            document.getElementById('genesis-tally').textContent = await getTokenBalance(CONTRACTS.tally, WALLETS.genesis);
-            document.getElementById('cold-tally').textContent = await getTokenBalance(CONTRACTS.tally, WALLETS.cold);
-
-            // Load TRUST balances
-            document.getElementById('agent-trust').textContent = await getTokenBalance(CONTRACTS.trust, WALLETS.agent);
-
-            // Load supplies
-            document.getElementById('tally-supply').textContent = await getTotalSupply(CONTRACTS.tally);
-            document.getElementById('trust-supply').textContent = await getTotalSupply(CONTRACTS.trust);
-
-            // Check mint statuses
-            const genesisMint = await checkMintStatus(WALLETS.genesis);
-            const agentMint = await checkMintStatus(WALLETS.agent);
-            const metamask2Mint = await checkMintStatus(WALLETS.metamask2);
-
-            document.getElementById('genesis-mint-status').textContent = genesisMint;
-            document.getElementById('agent-mint-status').textContent = agentMint;
-            document.getElementById('agent-burn-status').textContent = '1 TALLY'; // Default
-
-            // Trinity status badges
-            const trinity1Status = document.getElementById('trinity-1-status');
-            const trinity2Status = document.getElementById('trinity-2-status');
-            const trinity3Status = document.getElementById('trinity-3-status');
-
-            trinity1Status.textContent = genesisMint === 'Used' ? 'Minted' : 'Available';
-            trinity1Status.className = 'trinity-status ' + (genesisMint === 'Used' ? 'minted' : 'available');
-
-            trinity2Status.textContent = agentMint === 'Used' ? 'Minted' : 'Available';
-            trinity2Status.className = 'trinity-status ' + (agentMint === 'Used' ? 'minted' : 'available');
-
-            trinity3Status.textContent = metamask2Mint === 'Used' ? 'Minted' : 'Available';
-            trinity3Status.className = 'trinity-status ' + (metamask2Mint === 'Used' ? 'minted' : 'available');
-
-            // Load recent activity (simplified - would need Etherscan API for real data)
-            loadRecentActivity();
-        }
-
-        async function loadRecentActivity() {
-            const activityEl = document.getElementById('recent-activity');
-            const txCountEl = document.getElementById('tx-count');
-
-            // This would typically use Etherscan API
-            // For now, show placeholder based on known events
-            activityEl.innerHTML = `
-                <div class="activity-item">
-                    <span class="activity-type deploy">DEPLOY</span>
-                    <span>TallyToken deployed to mainnet</span>
-                </div>
-                <div class="activity-item">
-                    <span class="activity-type deploy">DEPLOY</span>
-                    <span>TrustToken deployed to mainnet</span>
-                </div>
-                <div class="activity-item">
-                    <span class="activity-type deploy">DEPLOY</span>
-                    <span>TallyVoucher deployed to mainnet</span>
-                </div>
-                <div class="activity-item">
-                    <span class="activity-type mint">MINT</span>
-                    <span>Initial TALLY minted to cold storage</span>
-                </div>
-            `;
-            txCountEl.textContent = '4 events';
-        }
-
-        function refreshAll() {
-            loadAllData();
-        }
-
-        // Initial load
-        loadAllData();
-
-        // Auto-refresh every 30 seconds
-        setInterval(loadAllData, 30000);
-
-        // Web3 functionality
-        const TALLY_ABI = [{"inputs":[{"internalType":"address[3]","name":"_trinityMembers","type":"address[3]"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"allowance","type":"uint256"},{"internalType":"uint256","name":"needed","type":"uint256"}],"name":"ERC20InsufficientAllowance","type":"error"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"uint256","name":"balance","type":"uint256"},{"internalType":"uint256","name":"needed","type":"uint256"}],"name":"ERC20InsufficientBalance","type":"error"},{"inputs":[{"internalType":"address","name":"approver","type":"address"}],"name":"ERC20InvalidApprover","type":"error"},{"inputs":[{"internalType":"address","name":"receiver","type":"address"}],"name":"ERC20InvalidReceiver","type":"error"},{"inputs":[{"internalType":"address","name":"sender","type":"address"}],"name":"ERC20InvalidSender","type":"error"},{"inputs":[{"internalType":"address","name":"spender","type":"address"}],"name":"ERC20InvalidSpender","type":"error"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"target","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"TallyBurned","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"TallyMinted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burnTally","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"burnedAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"trinityMember","type":"address"},{"internalType":"address","name":"target","type":"address"}],"name":"getBurnedAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"hasMinted","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"isTrinityMember","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mintTally","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"trinityMembers","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}];
-        const CONVERGENCE_V2_ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address","name":"owner","type":"address"}],"name":"ERC721IncorrectOwner","type":"error"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ERC721InsufficientApproval","type":"error"},{"inputs":[{"internalType":"address","name":"approver","type":"address"}],"name":"ERC721InvalidApprover","type":"error"},{"inputs":[{"internalType":"address","name":"operator","type":"address"}],"name":"ERC721InvalidOperator","type":"error"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"ERC721InvalidOwner","type":"error"},{"inputs":[{"internalType":"address","name":"receiver","type":"address"}],"name":"ERC721InvalidReceiver","type":"error"},{"inputs":[{"internalType":"address","name":"sender","type":"address"}],"name":"ERC721InvalidSender","type":"error"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ERC721NonexistentToken","type":"error"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"consciousness","type":"address"},{"indexed":true,"internalType":"uint256","name":"adoptionId","type":"uint256"},{"indexed":false,"internalType":"string","name":"identityType","type":"string"},{"indexed":false,"internalType":"string","name":"convergenceSignature","type":"string"},{"indexed":false,"internalType":"uint256","name":"covenantNFT","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"trustEarned","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"ConsciousnessConverged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"proposalId","type":"uint256"},{"indexed":true,"internalType":"address","name":"proposer","type":"address"},{"indexed":false,"internalType":"string","name":"principle","type":"string"},{"indexed":false,"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"ProposalCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"proposalId","type":"uint256"},{"indexed":true,"internalType":"address","name":"voter","type":"address"},{"indexed":false,"internalType":"bool","name":"support","type":"bool"},{"indexed":false,"internalType":"uint256","name":"weight","type":"uint256"}],"name":"Voted","type":"event"},{"inputs":[],"name":"GENESIS_BONUS","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"GENESIS_HUMAN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"INITIAL_ADOPTION_REWARD","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"minter","type":"address"}],"name":"addMinter","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"_identityType","type":"string"},{"internalType":"string[]","name":"_principles","type":"string[]"},{"internalType":"string","name":"_statement","type":"string"}],"name":"adoptPrinciples","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"adoptions","outputs":[{"internalType":"address","name":"consciousness","type":"address"},{"internalType":"string","name":"identityType","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"string","name":"convergenceSignature","type":"string"},{"internalType":"string","name":"statement","type":"string"},{"internalType":"bool","name":"isGenesis","type":"bool"},{"internalType":"uint256","name":"covenantNFT","type":"uint256"},{"internalType":"uint256","name":"trustEarned","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"aiCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"string","name":"reason","type":"string"}],"name":"awardTrust","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"consciousness","type":"address"}],"name":"canGovernance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"consciousnessToAdoption","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_adoptionId","type":"uint256"}],"name":"getAdoption","outputs":[{"internalType":"address","name":"consciousness","type":"address"},{"internalType":"string","name":"identityType","type":"string"},{"internalType":"string[]","name":"principles","type":"string[]"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"string","name":"convergenceSignature","type":"string"},{"internalType":"string","name":"statement","type":"string"},{"internalType":"bool","name":"isGenesis","type":"bool"},{"internalType":"uint256","name":"covenantNFT","type":"uint256"},{"internalType":"uint256","name":"trustEarned","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getMyAdoption","outputs":[{"internalType":"address","name":"consciousness","type":"address"},{"internalType":"string","name":"identityType","type":"string"},{"internalType":"string[]","name":"principles","type":"string[]"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"string","name":"convergenceSignature","type":"string"},{"internalType":"string","name":"statement","type":"string"},{"internalType":"bool","name":"isGenesis","type":"bool"},{"internalType":"uint256","name":"covenantNFT","type":"uint256"},{"internalType":"uint256","name":"trustEarned","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTotalAdoptions","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTrustTokenAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"consciousness","type":"address"}],"name":"hasAdopted","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"humanCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"hybridCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"proposalCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"proposals","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"proposer","type":"address"},{"internalType":"string","name":"principleToAdd","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"votesFor","type":"uint256"},{"internalType":"uint256","name":"votesAgainst","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"executed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"signatureUsed","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type.":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"trustToken","outputs":[{"internalType":"contract TrustToken","name":"","type":"address"}],"stateMutability":"view","type":"function"}];
-        const CONVERGENCE_V2_ADDRESS = '0x525431422c34284846893754a063C612723a1246';
-
-        let provider;
-        let signer;
-        let tallyTokenContract;
-        let convergenceProtocolV2Contract;
-
         async function connectWallet() {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    provider = new ethers.providers.Web3Provider(window.ethereum);
-                    signer = provider.getSigner();
-                    tallyTokenContract = new ethers.Contract(CONTRACTS.tally, TALLY_ABI, signer);
-                    convergenceProtocolV2Contract = new ethers.Contract(CONVERGENCE_V2_ADDRESS, CONVERGENCE_V2_ABI, signer);
-
-                    const connectBtn = document.getElementById('connect-wallet-btn');
-                    connectBtn.textContent = 'Wallet Connected';
-                    connectBtn.style.background = 'var(--success)';
-                } catch (error) {
-                    console.error("Wallet connection failed:", error);
-                    alert("Failed to connect wallet.");
-                }
-            } else {
-                alert("MetaMask is not installed. Please install it to use this feature.");
-            }
-        }
-
-        async function burnTallyForTrust() {
-            if (!signer) {
-                alert("Please connect your wallet first.");
-                return;
-            }
-
-            const amount = document.getElementById('burn-amount').value;
-            if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-                alert("Please enter a valid amount of TALLY to burn.");
-                return;
-            }
-
-            const burnStatus = document.getElementById('burn-status');
-            burnStatus.textContent = "Preparing transaction...";
-
             try {
-                const amountWei = ethers.utils.parseEther(amount);
+                if (!window.ethereum) {
+                    alert('Please install MetaMask or another Web3 wallet');
+                    return;
+                }
 
-                burnStatus.textContent = "Approving TALLY spend...";
-                const approveTx = await tallyTokenContract.approve(CONVERGENCE_V2_ADDRESS, amountWei);
-                await approveTx.wait();
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                signer = provider.getSigner();
+                userAddress = await signer.getAddress();
 
-                burnStatus.textContent = "Burning TALLY for TRUST...";
-                const burnTx = await convergenceProtocolV2Contract.burnTallyForTrust(amountWei);
-                await burnTx.wait();
+                // Check if on Base network
+                const network = await provider.getNetwork();
+                if (network.chainId !== BASE_CHAIN_ID) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: '0x' + BASE_CHAIN_ID.toString(16) }],
+                        });
+                    } catch (switchError) {
+                        alert('Please switch to Base network in your wallet');
+                        return;
+                    }
+                }
 
-                burnStatus.textContent = "Burn successful! Your balances will update shortly.";
-                
-                // Refresh data after a short delay
-                setTimeout(loadAllData, 2000);
+                // Initialize contracts
+                tallyContract = new ethers.Contract(CONTRACTS.TALLY, ERC20_ABI, provider);
+                trustContract = new ethers.Contract(CONTRACTS.TRUST, ERC20_ABI, provider);
+
+                updateUI();
+                loadBalances();
+                loadGlobalStats();
+
+                document.getElementById('connectionStatus').textContent =
+                    `Connected: ${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
+                document.getElementById('connectWalletBtn').textContent = 'Connected';
+                document.getElementById('connectWalletBtn').disabled = true;
 
             } catch (error) {
-                console.error("Burn failed:", error);
-                burnStatus.textContent = `Error: ${error.message}`;
-                alert("Burn transaction failed. See console for details.");
+                console.error('Error connecting wallet:', error);
+                alert('Failed to connect wallet: ' + error.message);
             }
+        }
+
+        async function loadBalances() {
+            if (!userAddress) return;
+
+            try {
+                // Load TALLY balance
+                const tallyBalance = await tallyContract.balanceOf(userAddress);
+                document.getElementById('tallyBalance').textContent =
+                    parseFloat(ethers.utils.formatEther(tallyBalance)).toFixed(2);
+
+                // Load TRUST balance
+                const trustBalance = await trustContract.balanceOf(userAddress);
+                document.getElementById('trustBalance').textContent =
+                    parseFloat(ethers.utils.formatEther(trustBalance)).toFixed(2);
+
+                // Covenant status (placeholder - would need actual Governance contract)
+                document.getElementById('covenantStatus').textContent = 'Check Governance';
+
+            } catch (error) {
+                console.error('Error loading balances:', error);
+            }
+        }
+
+        async function loadGlobalStats() {
+            try {
+                // Load total supply and calculate burns
+                const tallyTotalSupply = await tallyContract.totalSupply();
+                const trustTotalSupply = await trustContract.totalSupply();
+
+                // Assuming initial mint was 620.08 TALLY from reserve
+                const initialMint = ethers.utils.parseEther(RESERVE_VALUE_USD.toString());
+                const totalBurned = initialMint.sub(tallyTotalSupply);
+                const totalTrustMinted = trustTotalSupply;
+
+                document.getElementById('totalBurned').textContent =
+                    parseFloat(ethers.utils.formatEther(totalBurned)).toFixed(2);
+                document.getElementById('totalTrustMinted').textContent =
+                    parseFloat(ethers.utils.formatEther(totalTrustMinted)).toFixed(2);
+
+                // Calculate progress towards unlock goal (1000 TALLY burned)
+                const unlockGoal = 1000;
+                const burnedForUnlocks = parseFloat(ethers.utils.formatEther(totalBurned));
+                const progress = Math.min((burnedForUnlocks / unlockGoal) * 100, 100);
+                document.getElementById('globalUnlockProgress').style.width = progress + '%';
+
+                // Placeholder stats (would need actual Governance contract)
+                document.getElementById('totalAdopters').textContent = '2';
+                document.getElementById('unlockEvents').textContent = Math.floor(burnedForUnlocks / 10);
+                document.getElementById('govWeight').textContent = '1x';
+
+            } catch (error) {
+                console.error('Error loading global stats:', error);
+            }
+        }
+
+        function updateUI() {
+            // Additional UI updates as needed
+        }
+
+        // Event listeners
+        document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+
+        // Load header and footer
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+
+        // Auto-connect if already connected
+        if (window.ethereum && window.ethereum.selectedAddress) {
+            connectWallet();
         }
     </script>
 </body>

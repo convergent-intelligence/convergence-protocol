@@ -1,0 +1,22 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="flow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f172a" stop-opacity="0" />
+      <stop offset="50%" stop-color="#00d2ff" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="#0f172a"/>
+  <path d="M-100 50 C 200 50, 400 150, 600 150" fill="none" stroke="url(#flow-grad)" stroke-width="2" opacity="0.5" />
+  <path d="M-100 250 C 200 250, 400 150, 600 150" fill="none" stroke="url(#flow-grad)" stroke-width="2" opacity="0.5" />
+  <path d="M1300 50 C 1000 50, 800 150, 600 150" fill="none" stroke="url(#flow-grad)" stroke-width="2" opacity="0.5" />
+  <path d="M1300 250 C 1000 250, 800 150, 600 150" fill="none" stroke="url(#flow-grad)" stroke-width="2" opacity="0.5" />
+  <circle cx="600" cy="150" r="5" fill="#00d2ff">
+    <animate attributeName="r" values="5;10;5" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="0" cy="0" r="3" fill="white">
+    <animateMotion path="M-100 50 C 200 50, 400 150, 600 150" dur="4s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/>
+  </circle>
+</svg>
