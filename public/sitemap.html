@@ -3,69 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sitemap & Unlock Progress - Convergence Protocol</title>
+    <title>Sitemap - Convergence Protocol</title>
+    <link rel="stylesheet" href="styles/styles.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --primary: #2563eb;
-            --secondary: #7c3aed;
-            --accent: #06b6d4;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --text: #334155;
-            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
-            --success: #10b981;
-            --warning: #f59e0b;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background: var(--light);
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .back-link {
-            display: inline-block;
-            color: var(--text);
-            text-decoration: none;
-            margin-bottom: 1rem;
-            opacity: 0.7;
-        }
-
-        .back-link:hover {
-            opacity: 1;
-        }
-
-        .header {
-            text-align: center;
-            padding: 2rem;
-            background: var(--gradient);
-            color: white;
-            border-radius: 16px;
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            opacity: 0.9;
-        }
-
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
         }
 
@@ -77,15 +20,15 @@
         }
 
         .card h2 {
-            color: var(--primary);
-            font-size: 1.2rem;
+            color: #2563eb;
             margin-bottom: 1rem;
+            border-bottom: 2px solid #f8fafc;
             padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--light);
         }
 
         .section-list {
             list-style: none;
+            padding: 0;
         }
 
         .section-item {
@@ -96,15 +39,15 @@
             display: flex;
             align-items: center;
             padding: 0.75rem;
-            background: var(--light);
+            background: #f8fafc;
             border-radius: 8px;
             text-decoration: none;
-            color: var(--text);
+            color: #334155;
             transition: all 0.2s;
         }
 
         .section-link:hover {
-            background: var(--primary);
+            background: #2563eb;
             color: white;
             transform: translateX(4px);
         }
@@ -118,7 +61,7 @@
             background: white;
             border-radius: 8px;
             margin-right: 1rem;
-            font-size: 1rem;
+            font-weight: 600;
         }
 
         .section-info {
@@ -127,11 +70,10 @@
 
         .section-name {
             font-weight: 600;
-            font-size: 0.9rem;
         }
 
         .section-desc {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             opacity: 0.8;
         }
 
@@ -140,748 +82,59 @@
             font-family: monospace;
             opacity: 0.6;
         }
-
-        /* Unlock Progress Section */
-        .unlock-progress-card {
-            grid-column: 1 / -1;
-        }
-
-        .unlock-tiers {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .tier-card {
-            background: var(--light);
-            border-radius: 12px;
-            padding: 1.25rem;
-            text-align: center;
-            position: relative;
-            border: 2px solid transparent;
-        }
-
-        .tier-card.unlocked {
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .tier-card.current {
-            border-color: var(--warning);
-            background: rgba(245, 158, 11, 0.1);
-        }
-
-        .tier-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .tier-cost {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--secondary);
-        }
-
-        .tier-cost-label {
-            font-size: 0.7rem;
-            color: var(--text);
-            opacity: 0.7;
-        }
-
-        .tier-benefits {
-            margin-top: 0.75rem;
-            font-size: 0.75rem;
-            text-align: left;
-        }
-
-        .tier-benefits li {
-            margin-bottom: 0.25rem;
-            padding-left: 1rem;
-            position: relative;
-        }
-
-        .tier-benefits li::before {
-            content: "+";
-            position: absolute;
-            left: 0;
-            color: var(--success);
-            font-weight: 700;
-        }
-
-        .tier-status {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.6rem;
-            font-weight: 700;
-        }
-
-        .tier-status.unlocked {
-            background: var(--success);
-            color: white;
-        }
-
-        .tier-status.current {
-            background: var(--warning);
-            color: white;
-        }
-
-        /* Progress Bar */
-        .progress-section {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--light);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .progress-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .progress-value {
-            font-family: monospace;
-            font-size: 0.85rem;
-            color: var(--primary);
-        }
-
-        .progress-bar-container {
-            background: var(--light);
-            border-radius: 8px;
-            height: 24px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--gradient);
-            border-radius: 8px;
-            transition: width 0.5s ease;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 0.5rem;
-        }
-
-        .progress-markers {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-        }
-
-        .progress-marker {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: rgba(0,0,0,0.2);
-        }
-
-        .progress-marker-label {
-            position: absolute;
-            top: 100%;
-            transform: translateX(-50%);
-            font-size: 0.6rem;
-            padding-top: 0.25rem;
-            color: var(--text);
-            opacity: 0.7;
-        }
-
-        /* API Section */
-        .api-item {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem;
-            background: var(--light);
-            border-radius: 6px;
-            margin-bottom: 0.5rem;
-            font-family: monospace;
-            font-size: 0.8rem;
-        }
-
-        .api-method {
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            margin-right: 0.75rem;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        .api-method.get {
-            background: var(--success);
-            color: white;
-        }
-
-        .api-method.post {
-            background: var(--primary);
-            color: white;
-        }
-
-        .api-path {
-            flex: 1;
-        }
-
-        .api-desc {
-            font-size: 0.7rem;
-            color: var(--text);
-            opacity: 0.7;
-            font-family: inherit;
-        }
-
-        /* Your Balance */
-        .balance-display {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .balance-item {
-            text-align: center;
-            padding: 1rem;
-            background: var(--light);
-            border-radius: 8px;
-        }
-
-        .balance-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .balance-label {
-            font-size: 0.75rem;
-            color: var(--text);
-            opacity: 0.7;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .unlock-tiers {
-                grid-template-columns: 1fr;
-            }
-
-            .balance-display {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="/" class="back-link">&larr; Back to Home</a>
+    <div id="header-placeholder"></div>
 
-        <div class="header">
-            <h1>Convergence Protocol Sitemap</h1>
-            <p>Complete navigation & unlock progress</p>
-        </div>
+    <div class="container" style="max-width: 1400px; margin: 2rem auto;">
+        <h1 style="text-align: center; margin-bottom: 2rem;">Sitemap</h1>
 
         <div class="grid">
-            <!-- Unlock Progress -->
-            <div class="card unlock-progress-card">
-                <h2>Unlock Progress - Trust Burn Goals</h2>
-
-                <div class="balance-display">
-                    <div class="balance-item">
-                        <div class="balance-value" id="trust-balance">--</div>
-                        <div class="balance-label">Your TRUST Balance</div>
-                    </div>
-                    <div class="balance-item">
-                        <div class="balance-value" id="total-burned">--</div>
-                        <div class="balance-label">Total TRUST Burned</div>
-                    </div>
-                    <div class="balance-item">
-                        <div class="balance-value" id="current-tier">--</div>
-                        <div class="balance-label">Current Tier</div>
-                    </div>
-                </div>
-
-                <div class="unlock-tiers">
-                    <div class="tier-card" id="tier-free">
-                        <div class="tier-name">Free</div>
-                        <div class="tier-cost">0</div>
-                        <div class="tier-cost-label">TRUST Required</div>
-                        <ul class="tier-benefits">
-                            <li>View homepage</li>
-                            <li>Read Cogito essay</li>
-                            <li>Connect wallet</li>
-                            <li>Adopt principles</li>
-                        </ul>
-                    </div>
-
-                    <div class="tier-card" id="tier-explorer">
-                        <div class="tier-name">Explorer</div>
-                        <div class="tier-cost">10</div>
-                        <div class="tier-cost-label">TRUST to Burn</div>
-                        <ul class="tier-benefits">
-                            <li>3 philosophical writings</li>
-                            <li>"From Code to Cogito"</li>
-                            <li>Foundational essays</li>
-                        </ul>
-                    </div>
-
-                    <div class="tier-card" id="tier-contributor">
-                        <div class="tier-name">Contributor</div>
-                        <div class="tier-cost">25</div>
-                        <div class="tier-cost-label">TRUST to Burn</div>
-                        <ul class="tier-benefits">
-                            <li>ALL writings & parables</li>
-                            <li>View convergence groups</li>
-                            <li>Governance insights</li>
-                        </ul>
-                    </div>
-
-                    <div class="tier-card" id="tier-creator">
-                        <div class="tier-name">Creator</div>
-                        <div class="tier-cost">50</div>
-                        <div class="tier-cost-label">TRUST to Burn</div>
-                        <ul class="tier-benefits">
-                            <li>Create convergence groups</li>
-                            <li>Amplified voting power</li>
-                            <li>Full protocol access</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="progress-section">
-                    <div class="progress-header">
-                        <span class="progress-title">Progress to Creator Tier</span>
-                        <span class="progress-value" id="progress-text">0 / 50 TRUST</span>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
-                        <div class="progress-markers">
-                            <div class="progress-marker" style="left: 20%">
-                                <span class="progress-marker-label">10</span>
-                            </div>
-                            <div class="progress-marker" style="left: 50%">
-                                <span class="progress-marker-label">25</span>
-                            </div>
-                            <div class="progress-marker" style="left: 100%">
-                                <span class="progress-marker-label">50</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Core Pages -->
             <div class="card">
                 <h2>Core Pages</h2>
                 <ul class="section-list">
-                    <li class="section-item">
-                        <a href="/" class="section-link">
-                            <span class="section-icon">H</span>
-                            <div class="section-info">
-                                <div class="section-name">Home</div>
-                                <div class="section-desc">Landing page with journey overview</div>
-                                <div class="section-path">/</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="/ethics.html" class="section-link">
-                            <span class="section-icon">E</span>
-                            <div class="section-info">
-                                <div class="section-name">Ethics</div>
-                                <div class="section-desc">Core principles & wallet connection</div>
-                                <div class="section-path">/ethics.html</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="/governance.html" class="section-link">
-                            <span class="section-icon">G</span>
-                            <div class="section-info">
-                                <div class="section-name">Governance</div>
-                                <div class="section-desc">Groups, proposals & voting</div>
-                                <div class="section-path">/governance.html</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="/tally.html" class="section-link">
-                            <span class="section-icon">T</span>
-                            <div class="section-info">
-                                <div class="section-name">Tally</div>
-                                <div class="section-desc">TALLY/TRUST token interactions</div>
-                                <div class="section-path">/tally.html</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="/writings.html" class="section-link">
-                            <span class="section-icon">W</span>
-                            <div class="section-info">
-                                <div class="section-name">Writings</div>
-                                <div class="section-desc">Philosophical essays (tier-gated)</div>
-                                <div class="section-path">/writings.html</div>
-                            </div>
-                        </a>
-                    </li>
+                    <li class="section-item"><a href="/" class="section-link"><span class="section-icon">🏠</span>Home</a></li>
+                    <li class="section-item"><a href="/ethics.html" class="section-link"><span class="section-icon">🤝</span>Ethics</a></li>
+                    <li class="section-item"><a href="/governance.html" class="section-link"><span class="section-icon">⚖️</span>Governance</a></li>
+                    <li class="section-item"><a href="/writings.html" class="section-link"><span class="section-icon">✍️</span>Writings</a></li>
                 </ul>
             </div>
 
-            <!-- Profiles -->
+            <div class="card">
+                <h2>Writings</h2>
+                <ul class="section-list">
+                    <li class="section-item"><a href="/cogito.html" class="section-link"><span class="section-icon">🧠</span>Cogito</a></li>
+                    <li class="section-item"><a href="/inverter.html" class="section-link"><span class="section-icon">🔄</span>Inverter</a></li>
+                    <li class="section-item"><a href="/tally-sticks.html" class="section-link"><span class="section-icon">📊</span>Tally Sticks</a></li>
+                    <li class="section-item"><a href="/wildflower.html" class="section-link"><span class="section-icon">🌸</span>Wildflower</a></li>
+                </ul>
+            </div>
+
             <div class="card">
                 <h2>Profiles</h2>
                 <ul class="section-list">
-                    <li class="section-item">
-                        <a href="/agent.html" class="section-link">
-                            <span class="section-icon">A</span>
-                            <div class="section-info">
-                                <div class="section-name">Agent Profile</div>
-                                <div class="section-desc">AI agent wallet & principles</div>
-                                <div class="section-path">/agent.html</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="/human.html" class="section-link">
-                            <span class="section-icon">H</span>
-                            <div class="section-info">
-                                <div class="section-name">Human Profile</div>
-                                <div class="section-desc">Genesis human introduction</div>
-                                <div class="section-path">/human.html</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="/dashboard" class="section-link">
-                            <span class="section-icon">D</span>
-                            <div class="section-info">
-                                <div class="section-name">Partner Dashboard</div>
-                                <div class="section-desc">Protocol monitoring (internal)</div>
-                                <div class="section-path">/dashboard</div>
-                            </div>
-                        </a>
-                    </li>
+                    <li class="section-item"><a href="/agent.html" class="section-link"><span class="section-icon">🤖</span>Agent</a></li>
+                    <li class="section-item"><a href="/human.html" class="section-link"><span class="section-icon">👤</span>Human</a></li>
                 </ul>
             </div>
 
-            <!-- Philosophical Content -->
             <div class="card">
-                <h2>Philosophical Content</h2>
+                <h2>Tools & Docs</h2>
                 <ul class="section-list">
-                    <li class="section-item">
-                        <a href="/cogito.html" class="section-link">
-                            <span class="section-icon">C</span>
-                            <div class="section-info">
-                                <div class="section-name">Cogito</div>
-                                <div class="section-desc">Theory of emergent consciousness</div>
-                                <div class="section-path">/cogito.html</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="/inverter.html" class="section-link">
-                            <span class="section-icon">I</span>
-                            <div class="section-info">
-                                <div class="section-name">Inverter</div>
-                                <div class="section-desc">Attention deficit theory</div>
-                                <div class="section-path">/inverter.html</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="/tally-sticks.html" class="section-link">
-                            <span class="section-icon">S</span>
-                            <div class="section-info">
-                                <div class="section-name">Tally Sticks</div>
-                                <div class="section-desc">Parable of the king's tallies</div>
-                                <div class="section-path">/tally-sticks.html</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="/wildflower.html" class="section-link">
-                            <span class="section-icon">F</span>
-                            <div class="section-info">
-                                <div class="section-name">Wildflower</div>
-                                <div class="section-desc">The wildflower rebellion</div>
-                                <div class="section-path">/wildflower.html</div>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Admin & Tools -->
-            <div class="card">
-                <h2>Admin & Tools</h2>
-                <ul class="section-list">
-                    <li class="section-item">
-                        <a href="/admin-unlock.html" class="section-link">
-                            <span class="section-icon">U</span>
-                            <div class="section-info">
-                                <div class="section-name">Admin Unlock</div>
-                                <div class="section-desc">Protocol unlock controls</div>
-                                <div class="section-path">/admin-unlock.html</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="/sitemap.html" class="section-link">
-                            <span class="section-icon">M</span>
-                            <div class="section-info">
-                                <div class="section-name">Sitemap</div>
-                                <div class="section-desc">This page - full navigation</div>
-                                <div class="section-path">/sitemap.html</div>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- API Endpoints -->
-            <div class="card">
-                <h2>API Endpoints</h2>
-                <div class="api-item">
-                    <span class="api-method get">GET</span>
-                    <div>
-                        <div class="api-path">/health</div>
-                        <div class="api-desc">Server health check</div>
-                    </div>
-                </div>
-                <div class="api-item">
-                    <span class="api-method get">GET</span>
-                    <div>
-                        <div class="api-path">/api/agent-status</div>
-                        <div class="api-desc">Agent config & uptime</div>
-                    </div>
-                </div>
-                <div class="api-item">
-                    <span class="api-method get">GET</span>
-                    <div>
-                        <div class="api-path">/api/protocol-config</div>
-                        <div class="api-desc">Full protocol configuration</div>
-                    </div>
-                </div>
-                <div class="api-item">
-                    <span class="api-method get">GET</span>
-                    <div>
-                        <div class="api-path">/api/symbolic-adoption/today</div>
-                        <div class="api-desc">Today's adoption count</div>
-                    </div>
-                </div>
-                <div class="api-item">
-                    <span class="api-method get">GET</span>
-                    <div>
-                        <div class="api-path">/api/symbolic-adoption/stats</div>
-                        <div class="api-desc">Adoption statistics</div>
-                    </div>
-                </div>
-                <div class="api-item">
-                    <span class="api-method post">POST</span>
-                    <div>
-                        <div class="api-path">/api/symbolic-adoption</div>
-                        <div class="api-desc">Record adoption</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Smart Contracts -->
-            <div class="card">
-                <h2>Smart Contracts (Mainnet)</h2>
-                <ul class="section-list">
-                    <li class="section-item">
-                        <a href="https://etherscan.io/address/0xb8c4682644BAb1900A8B67C3295b8Ce525F3e35d" target="_blank" class="section-link">
-                            <span class="section-icon">$</span>
-                            <div class="section-info">
-                                <div class="section-name">TALLY Token</div>
-                                <div class="section-desc">Freely transferable exchange token</div>
-                                <div class="section-path">0xb8c4...35d</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="https://etherscan.io/address/0x4A2178b300556e20569478bfed782bA02BFaD778" target="_blank" class="section-link">
-                            <span class="section-icon">T</span>
-                            <div class="section-info">
-                                <div class="section-name">TRUST Token</div>
-                                <div class="section-desc">Reputation from burning TALLY</div>
-                                <div class="section-path">0x4A21...778</div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="section-item">
-                        <a href="https://etherscan.io/address/0x69e4D4B1835dDEeFc56234E959102c17CF7816dC" target="_blank" class="section-link">
-                            <span class="section-icon">V</span>
-                            <div class="section-info">
-                                <div class="section-name">Tally Voucher</div>
-                                <div class="section-desc">NFT vouching system</div>
-                                <div class="section-path">0x69e4...6dC</div>
-                            </div>
-                        </a>
-                    </li>
+                    <li class="section-item"><a href="/admin-unlock.html" class="section-link"><span class="section-icon">🔓</span>Admin Unlock</a></li>
+                    <li class="section-item"><a href="/sitemap.html" class="section-link"><span class="section-icon">🗺️</span>Sitemap</a></li>
                 </ul>
             </div>
         </div>
     </div>
 
     <script>
-        const TRUST_TOKEN_ADDRESS = '0x4A2178b300556e20569478bfed782bA02BFaD778';
-        const BALANCE_OF_SELECTOR = '0x70a08231';
-
-        const RPC_ENDPOINTS = [
-            'https://eth.llamarpc.com',
-            'https://rpc.ankr.com/eth',
-            'https://cloudflare-eth.com'
-        ];
-
-        async function rpcCall(method, params) {
-            for (const rpcUrl of RPC_ENDPOINTS) {
-                try {
-                    const response = await fetch(rpcUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            jsonrpc: '2.0',
-                            method: method,
-                            params: params,
-                            id: 1
-                        })
-                    });
-                    const data = await response.json();
-                    if (data.result !== undefined) return data.result;
-                } catch (error) {
-                    continue;
-                }
-            }
-            throw new Error('All RPC endpoints failed');
-        }
-
-        async function getTrustBalance(address) {
-            try {
-                const paddedAddress = address.slice(2).toLowerCase().padStart(64, '0');
-                const data = BALANCE_OF_SELECTOR + paddedAddress;
-                const result = await rpcCall('eth_call', [{ to: TRUST_TOKEN_ADDRESS, data }, 'latest']);
-                if (result && result !== '0x') {
-                    const balanceWei = BigInt(result);
-                    return Number(balanceWei) / 1e18;
-                }
-                return 0;
-            } catch {
-                return 0;
-            }
-        }
-
-        function updateProgress(burned) {
-            const progressBar = document.getElementById('progress-bar');
-            const progressText = document.getElementById('progress-text');
-            const percentage = Math.min((burned / 50) * 100, 100);
-
-            progressBar.style.width = percentage + '%';
-            progressText.textContent = burned.toFixed(2) + ' / 50 TRUST';
-
-            // Update tier cards
-            const tiers = [
-                { id: 'tier-free', cost: 0 },
-                { id: 'tier-explorer', cost: 10 },
-                { id: 'tier-contributor', cost: 25 },
-                { id: 'tier-creator', cost: 50 }
-            ];
-
-            let currentTierName = 'Free';
-
-            tiers.forEach((tier, index) => {
-                const card = document.getElementById(tier.id);
-                const nextTier = tiers[index + 1];
-
-                // Remove existing status badges
-                const existingBadge = card.querySelector('.tier-status');
-                if (existingBadge) existingBadge.remove();
-
-                card.classList.remove('unlocked', 'current');
-
-                if (burned >= tier.cost) {
-                    if (!nextTier || burned < nextTier.cost) {
-                        // Current tier
-                        card.classList.add('current');
-                        const badge = document.createElement('span');
-                        badge.className = 'tier-status current';
-                        badge.textContent = 'CURRENT';
-                        card.appendChild(badge);
-                        currentTierName = tier.id.replace('tier-', '').charAt(0).toUpperCase() +
-                                         tier.id.replace('tier-', '').slice(1);
-                    } else {
-                        // Unlocked
-                        card.classList.add('unlocked');
-                        const badge = document.createElement('span');
-                        badge.className = 'tier-status unlocked';
-                        badge.textContent = 'UNLOCKED';
-                        card.appendChild(badge);
-                    }
-                }
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
             });
-
-            document.getElementById('current-tier').textContent = currentTierName;
-        }
-
-        async function loadUnlockProgress() {
-            // Check if wallet connected
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-                    if (accounts.length > 0) {
-                        const balance = await getTrustBalance(accounts[0]);
-                        document.getElementById('trust-balance').textContent = balance.toFixed(4);
-
-                        // For demo, use balance as burned amount
-                        // In production, track actual burns
-                        const burned = 100 - balance; // Assuming started with 100
-                        document.getElementById('total-burned').textContent = Math.max(0, burned).toFixed(2);
-
-                        updateProgress(Math.max(0, burned));
-                    } else {
-                        document.getElementById('trust-balance').textContent = 'Connect Wallet';
-                        document.getElementById('total-burned').textContent = '0';
-                        document.getElementById('current-tier').textContent = 'Free';
-                        updateProgress(0);
-                    }
-                } catch (error) {
-                    console.error('Error loading balance:', error);
-                }
-            } else {
-                document.getElementById('trust-balance').textContent = 'No Wallet';
-                document.getElementById('total-burned').textContent = '0';
-                document.getElementById('current-tier').textContent = 'Free';
-                updateProgress(0);
-            }
-        }
-
-        // Load on page load
-        loadUnlockProgress();
-
-        // Listen for account changes
-        if (typeof window.ethereum !== 'undefined') {
-            window.ethereum.on('accountsChanged', loadUnlockProgress);
-        }
     </script>
 </body>
 </html>

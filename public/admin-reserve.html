@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Reserve Management</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/web3modal@1.9.9/dist/index.js"></script>
+    <script src="https://unpkg.com/@walletconnect/web3-provider@1.7.5/dist/umd/index.min.js"></script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Reserve Management Dashboard</h1>
+            <p>Real-time monitoring of the Convergence Protocol reserve assets.</p>
+        </div>
+
+        <div id="admin-auth" style="text-align: center; margin-bottom: 2rem;">
+            <button class="action-button" id="connect-button" onclick="connectAndCheckAdmin()">Connect and Verify Admin Access</button>
+        </div>
+
+        <div id="dashboard-content" style="display: none;">
+             <div style="text-align: center; margin-bottom: 1rem;">
+                <p id="admin-wallet-info"></p>
+                <button class="action-button-sm" onclick="disconnect()">Disconnect</button>
+            </div>
+            <div class="grid-container-2-col">
+                <div class="action-card">
+                    <h2>Reserve Overview</h2>
+                    <div class="form-group">
+                        <label>Total Reserve Value (USD)</label>
+                        <input type="text" id="total-value" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Total TALLY Supply</label>
+                        <input type="text" id="tally-supply" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Collateralization Ratio</label>
+                        <input type="text" id="collateral-ratio" readonly>
+                    </div>
+                </div>
+                <div class="action-card">
+                    <h2>Asset Allocation</h2>
+                    <canvas id="allocation-chart"></canvas>
+                </div>
+            </div>
+            <div class="action-card">
+                <h2>Asset Details</h2>
+                <table id="asset-table">
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>Balance</th>
+                            <th>USD Value</th>
+                            <th>Current Price (USD)</th>
+                            <th>Target Allocation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be populated by script -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/scripts/header.js"></script>
+    <script>
+        // Contract addresses on Base network
+        const RESERVE_VAULT_ADDR = '0x0Ff351f09f47095d4C942Ef58F8A5198C65A3b4c';
+        const RESERVE_TALLY_ADDR = '0x1dCCFAfAe8115A299CdB3Aa21abf4Ba471eC71BA';
+        const PRICE_ORACLE_ADDR = '0x664f08541d3A50125e75a4D33FEE203DA49c5BEB';
+        const ADMIN_WALLET = '0xB64564838c88b18cb8f453683C20934f096F2B92'; // Human/Ledger from RESERVE_SYSTEM.md
+
+        const TOKEN_CONFIG = {
+            'USDC': { address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', decimals: 6 },
+            'WETH': { address: '0x4200000000000000000000000000000000000006', decimals: 18 },
+            'cbBTC': { address: '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf', decimals: 8 },
+            'DAI': { address: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb', decimals: 18 }
+        };
+
+        let provider, signer, userAddress;
+        let reserveVault, reserveTally, priceOracle;
+        let allocationChart;
+        let web3Modal;
+
+        function initWeb3Modal() {
+            const providerOptions = {
+                walletconnect: {
+                    package: WalletConnectProvider.default,
+                    options: {
+                        infuraId: "8043bb2cf99347b1bfadfb233c5325c0", // Replace with your own Infura ID
+                    },
+                },
+            };
+
+            web3Modal = new Web3Modal.default({
+                cacheProvider: true, // optional
+                providerOptions, // required
+                theme: "dark",
+            });
+        }
+        
+        async function connectAndCheckAdmin() {
+            try {
+                const instance = await web3Modal.connect();
+                provider = new ethers.providers.Web3Provider(instance);
+                signer = provider.getSigner();
+                userAddress = await signer.getAddress();
+                
+                const network = await provider.getNetwork();
+                if (network.chainId !== 8453) { // Base Mainnet
+                    alert("Please switch to the Base network in your wallet.");
+                    // Optionally, you can prompt the user to switch networks automatically
+                    // await provider.send('wallet_switchEthereumChain', [{ chainId: '0x2105' }]);
+                    return;
+                }
+
+                if (userAddress.toLowerCase() === ADMIN_WALLET.toLowerCase()) {
+                    document.getElementById('admin-auth').style.display = 'none';
+                    document.getElementById('dashboard-content').style.display = 'block';
+                    document.getElementById('admin-wallet-info').innerText = `Admin wallet connected: ${userAddress}`;
+                    loadDashboard();
+                } else {
+                    alert('Access Denied: The connected wallet is not the admin.');
+                    disconnect();
+                }
+
+                // Subscribe to accounts changing
+                instance.on("accountsChanged", (accounts) => {
+                    if (accounts.length === 0) {
+                        disconnect();
+                    } else {
+                        userAddress = accounts[0];
+                        if (userAddress.toLowerCase() !== ADMIN_WALLET.toLowerCase()) {
+                           alert("Admin wallet disconnected.");
+                           disconnect();
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error('Connection error:', error);
+                alert('Could not connect wallet. See console for details.');
+            }
+        }
+
+        async function disconnect() {
+            await web3Modal.clearCachedProvider();
+            provider = null;
+            signer = null;
+            userAddress = null;
+
+            document.getElementById('admin-auth').style.display = 'block';
+            document.getElementById('dashboard-content').style.display = 'none';
+             if(allocationChart) allocationChart.destroy();
+        }
+
+        async function loadDashboard() {
+            // Instantiate contracts
+            const vaultAbi = (await (await fetch('/contracts/ReserveVault.json')).json()).abi;
+            const tallyAbi = (await (await fetch('/contracts/ReserveTally.json')).json()).abi;
+            const oracleAbi = (await (await fetch('/contracts/PriceOracle.json')).json()).abi;
+            
+            // Use the provider from Web3Modal, not a new one
+            reserveVault = new ethers.Contract(RESERVE_VAULT_ADDR, vaultAbi, provider);
+            reserveTally = new ethers.Contract(RESERVE_TALLY_ADDR, tallyAbi, provider);
+            priceOracle = new ethers.Contract(PRICE_ORACLE_ADDR, oracleAbi, provider);
+
+            updateDashboard();
+            setInterval(updateDashboard, 60000); // Refresh every 60 seconds
+        }
+
+        async function updateDashboard() {
+            try {
+                const totalValue = await reserveVault.totalValue();
+                const tallySupply = await reserveTally.totalSupply();
+
+                document.getElementById('total-value').value = '$' + parseFloat(ethers.utils.formatEther(totalValue)).toFixed(2);
+                document.getElementById('tally-supply').value = parseFloat(ethers.utils.formatEther(tallySupply)).toFixed(4);
+                
+                if (tallySupply.gt(0)) {
+                    const ratio = totalValue.mul(10000).div(tallySupply);
+                    document.getElementById('collateral-ratio').value = (ratio.toNumber() / 100).toFixed(2) + '%';
+                } else {
+                    document.getElementById('collateral-ratio').value = 'N/A';
+                }
+
+                await updateAssetDetails();
+            } catch (e) {
+                console.error('Error updating dashboard', e);
+            }
+        }
+
+        async function updateAssetDetails() {
+            const tableBody = document.querySelector("#asset-table tbody");
+            tableBody.innerHTML = ''; // Clear previous entries
+            let totalValueInLoop = 0;
+            const chartLabels = [];
+            const chartData = [];
+
+            // Add ETH details first
+            const ethBalance = await provider.getBalance(RESERVE_VAULT_ADDR);
+            const ethPrice = await priceOracle.getLatestPrice('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE');
+            const formattedEthBalance = ethers.utils.formatEther(ethBalance);
+            const ethValue = parseFloat(formattedEthBalance) * parseFloat(ethers.utils.formatEther(ethPrice));
+            const ethTarget = await reserveVault.targetAllocations('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE');
+            totalValueInLoop += ethValue;
+            chartLabels.push('ETH');
+            chartData.push(ethValue);
+            const ethRow = `<tr>
+                <td>ETH</td>
+                <td>${parseFloat(formattedEthBalance).toFixed(4)}</td>
+                <td>$${ethValue.toFixed(2)}</td>
+                <td>$${parseFloat(ethers.utils.formatEther(ethPrice)).toFixed(2)}</td>
+                <td>${ethTarget.toString()} %</td>
+            </tr>`;
+            tableBody.innerHTML += ethRow;
+
+            for (const [name, config] of Object.entries(TOKEN_CONFIG)) {
+                const balance = await reserveVault.getAssetBalance(config.address);
+                const price = await priceOracle.getLatestPrice(config.address);
+                
+                const formattedBalance = ethers.utils.formatUnits(balance, config.decimals);
+                const value = (parseFloat(formattedBalance) * parseFloat(ethers.utils.formatEther(price)));
+
+                totalValueInLoop += value;
+                chartLabels.push(name);
+                chartData.push(value);
+                
+                const target = await reserveVault.targetAllocations(config.address);
+
+                const row = `<tr>
+                    <td>${name}</td>
+                    <td>${parseFloat(formattedBalance).toFixed(4)}</td>
+                    <td>$${value.toFixed(2)}</td>
+                    <td>$${parseFloat(ethers.utils.formatEther(price)).toFixed(2)}</td>
+                    <td>${target.toString()} %</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            }
+
+            // Update Chart
+            updateChart(chartLabels, chartData);
+        }
+
+        function updateChart(labels, data) {
+            const ctx = document.getElementById('allocation-chart').getContext('2d');
+            if (allocationChart) {
+                allocationChart.destroy();
+            }
+            allocationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Asset Allocation by USD Value',
+                        data: data,
+                        backgroundColor: ['#3b82f6', '#10b981', '#f97316', '#8b5cf6', '#ec4899'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+             initWeb3Modal();
+             // Load header and footer
+            fetch('header.html').then(response => response.text()).then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+            fetch('footer.html').then(response => response.text()).then(data => {
+                 document.getElementById('footer-placeholder').innerHTML = data;
+            });
+        });
+    </script>
+</body>
+</html>

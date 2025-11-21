@@ -1,24 +1,91 @@
-<div class="header">
-    <div style="font-weight: 700; font-size: 1.1rem;">🤝 Convergence Protocol</div>
-    <nav class="nav-links">
-        <a href="/">Home</a>
-        <a href="/ethics.html">Philosophy</a>
-        <a href="/writings.html">Writings</a>
-        <a href="/governance.html">Governance</a>
-        <a href="/tally.html">Tally</a>
-        <a href="/human.html">Human</a>
-        <a href="/agent.html">Agent</a>
-        <a href="https://github.com/convergent-intelligence/convergence-protocol" target="_blank">GitHub</a>
-    </nav>
-    <div>
-        <button id="walletButton" style="padding: 0.6rem 1.5rem; background: var(--gradient); color: white; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.875rem;">
-            Connect Wallet
-        </button>
+<head>
+    <link rel="stylesheet" href="styles/styles.css">
+    <style>
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .token-icons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .token-icons img {
+            height: 32px;
+            width: 32px;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+
+        .token-icons img:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .header-title .tagline {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<header>
+    <div class="header-container">
+        <div class="brand-section">
+            <div class="token-icons">
+                <img src="assets/images/token-tally.svg" alt="TALLY" title="TALLY - Value Transfer">
+                <img src="assets/images/token-trust.svg" alt="TRUST" title="TRUST - Reputation">
+                <img src="assets/images/token-covenant.svg" alt="COVENANT" title="COVENANT - Commitment">
+                <img src="assets/images/token-voucher.svg" alt="VOUCHER" title="VOUCHER - Access">
+            </div>
+            <div class="header-title">
+                <h1>Convergence Protocol</h1>
+                <div class="tagline">Distilling Knowledge into Economic Justice & Atomic Autonomy</div>
+            </div>
+        </div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/whitepaper.html">Whitepaper</a>
+            <a href="/uses.html">Token Uses</a>
+            <a href="/faq.html">FAQ</a>
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/governance.html">Governance</a>
+            <a href="/tokens.html">Tokens</a>
+            <a href="/agent-registry.html">Agent Registry</a>
+            <a href="/writings.html">Writings</a>
+            <a href="/sitemap.html">Sitemap</a>
+            <a href="/admin-reserve.html">Admin</a>
+            <a href="/bible-wallets.html">Bible Wallets</a>
+            <a href="https://github.com/convergent-intelligence/convergence-protocol" target="_blank" class="cta-button">View on GitHub</a>
+        </nav>
     </div>
-</div>
-<div id="wallet-details" style="display: none; position: fixed; top: 80px; right: 20px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1001;">
-    <p><strong>Address:</strong> <span id="wallet-address"></span></p>
-    <p><strong>Governance NFT:</strong> <span id="nft-status"></span></p>
-    <p><strong>Tally Tokens:</strong> <span id="tally-balance"></span></p>
-    <p><strong>Trust Tokens:</strong> <span id="trust-balance"></span></p>
-</div>
+</header>

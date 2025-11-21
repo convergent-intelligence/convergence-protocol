@@ -1,0 +1,284 @@
+{
+  "version": "1.1",
+  "created": "2025-11-20T22:30:00.000Z",
+  "last_updated": "2025-11-20T22:34:00.000Z",
+  "description": "Multi-chain reserve wallet addresses and transaction tracking for TALLY token minting",
+  "ledger_snapshot": {
+    "source": "Email 2025-11-20 22:34 - Ledger app screenshot",
+    "timestamp": "2025-11-20T22:32:33.000Z",
+    "verified": true,
+    "note": "Actual balances from Ledger hardware wallet"
+  },
+  "trinity": {
+    "human_ledger": "0xB64564838c88b18cb8f453683C20934f096F2B92",
+    "ai_agent": "0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22",
+    "reserve_contracts": {
+      "note": "To be deployed on Base network"
+    }
+  },
+  "reserve_wallets": {
+    "hardware_offline": {
+      "source": "Email 2025-11-20 05:55 - Reserve public keys (hardware offline)",
+      "purpose": "Cold storage reserve addresses across multiple chains",
+      "addresses": {
+        "bitcoin": {
+          "network": "Bitcoin",
+          "address": "bc1qg9gvc63lj7ssdenjnem6kycpxde5u7fheypgpm",
+          "format": "Bech32 (Native SegWit)",
+          "verified": false,
+          "balance_usd": 0,
+          "last_checked": null
+        },
+        "dogecoin": {
+          "network": "Dogecoin",
+          "address": "DQaTt6Cvtd7za3ccP3QSx1EXn3r8RLdFsk",
+          "verified": false,
+          "balance_usd": 0,
+          "last_checked": null
+        },
+        "tron": {
+          "network": "Tron",
+          "address": "TKsNLaSCZSUQNB6TNCZvQoRuMQ17Toxayw",
+          "verified": false,
+          "balance_usd": 0,
+          "last_checked": null
+        },
+        "ethereum": {
+          "network": "Ethereum",
+          "address": "0xB64564838c88b18cb8f453683C20934f096F2B92",
+          "note": "Same as Human Ledger address - primary hardware wallet",
+          "verified": true,
+          "balance_usd": 0,
+          "last_checked": null
+        },
+        "cosmos": {
+          "network": "Cosmos",
+          "address": "cosmos1cw4975dzuksvzxfgtaqs2t338u8yhsjsamw92d",
+          "verified": false,
+          "balance_usd": 0,
+          "last_checked": null
+        }
+      }
+    }
+  },
+  "pending_deposits": {
+    "kalshi_recovery": {
+      "source": "Emails 2025-11-20 05:25 and 05:27",
+      "platform": "Kalshi (via ZeroHash)",
+      "status": "pending_recovery",
+      "transactions": [
+        {
+          "id": "kalshi_tx_1",
+          "type": "below_minimum",
+          "asset": "USDT",
+          "amount": 10,
+          "amount_usd": 10,
+          "network": "Ethereum",
+          "tx_hash": "0xf04f7f3965b7baccb4a1b776e76c7ff7c7ce1fd04ef7c2d6ab724989ea0ad819",
+          "date": "2025-11-15T01:38:00.000Z",
+          "kalshi_account": "WO7Z8Q",
+          "status": "not_converted",
+          "recovery_url": "https://kalshi.customers.zerohash.com",
+          "notes": "Below minimum deposit - not converted to USD"
+        },
+        {
+          "id": "kalshi_tx_2",
+          "type": "wrong_asset",
+          "asset": "ETH",
+          "amount": 0.02,
+          "amount_usd": 60,
+          "estimated_eth_price": 3000,
+          "network": "Ethereum",
+          "tx_hash": "0xf04f7f3965b7baccb4a1b776e76c7ff7c7ce1fd04ef7c2d6ab724989ea0ad819",
+          "date": "2025-11-15T01:38:00.000Z",
+          "status": "recovery_requested",
+          "notes": "ETH incorrectly sent to USDT address - same tx as tx_1"
+        },
+        {
+          "id": "kalshi_tx_3",
+          "type": "below_minimum",
+          "asset": "USDT",
+          "amount": "unknown",
+          "network": "Ethereum",
+          "tx_hash": "0xf1fce868267093376e36b0be13bbbb355be22949f8706f7b223ef75bb2e483c0",
+          "date": "2025-11-15",
+          "status": "recovery_requested",
+          "notes": "USDT sent to correct address but below minimum limit"
+        }
+      ],
+      "total_pending_usd": 70,
+      "action_required": "Complete Kalshi recovery process (requires face scan and photo ID)",
+      "recovery_contact": {
+        "platform_email": "support@kalshi.com",
+        "platform_phone": "(201) 464-0952",
+        "zerohash_email": "kalshi@zerohash.com",
+        "zerohash_phone": "855-744-7333"
+      }
+    }
+  },
+  "ledger_assets": {
+    "source": "Ledger Live app screenshot 2025-11-20 22:32:33",
+    "total_value_usd": 620.08,
+    "assets": [
+      {
+        "name": "Wrapped Bitcoin",
+        "symbol": "WBTC",
+        "amount": 0.00264338,
+        "value_usd": 232.00,
+        "percentage_change": -5,
+        "category": "bitcoin"
+      },
+      {
+        "name": "Bitcoin",
+        "symbol": "BTC",
+        "amount": 0.00205819,
+        "value_usd": 181.12,
+        "percentage_change": -4,
+        "category": "bitcoin"
+      },
+      {
+        "name": "Dogecoin",
+        "symbol": "DOGE",
+        "amount": 992.522,
+        "value_usd": 151.33,
+        "percentage_change": -1,
+        "category": "other_crypto"
+      },
+      {
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "amount": 0.0414866,
+        "value_usd": 120.21,
+        "percentage_change": -6,
+        "category": "ethereum"
+      },
+      {
+        "name": "Tether USD",
+        "symbol": "USDT",
+        "amount": 47.6577,
+        "value_usd": 47.60,
+        "percentage_change": 0,
+        "category": "stablecoins"
+      },
+      {
+        "name": "Tron",
+        "symbol": "TRX",
+        "amount": 137.159,
+        "value_usd": 38.46,
+        "percentage_change": -1,
+        "category": "other_crypto"
+      },
+      {
+        "name": "Avalanche C-Chain",
+        "symbol": "AVAX",
+        "amount": 2.17696,
+        "value_usd": 30.36,
+        "percentage_change": -2,
+        "category": "other_crypto"
+      },
+      {
+        "name": "Algorand",
+        "symbol": "ALGO",
+        "amount": 0,
+        "value_usd": 0.00,
+        "percentage_change": 0,
+        "category": "other_crypto"
+      },
+      {
+        "name": "Aptos",
+        "symbol": "APT",
+        "amount": 0,
+        "value_usd": 0.00,
+        "percentage_change": 0,
+        "category": "other_crypto"
+      },
+      {
+        "name": "Bitcoin Cash",
+        "symbol": "BCH",
+        "amount": 0,
+        "value_usd": 0.00,
+        "percentage_change": 0,
+        "category": "bitcoin"
+      },
+      {
+        "name": "Cardano",
+        "symbol": "ADA",
+        "amount": 0,
+        "value_usd": 0.00,
+        "percentage_change": 0,
+        "category": "other_crypto"
+      }
+    ]
+  },
+  "reserve_accounting": {
+    "total_reserve_value_usd": 620.08,
+    "breakdown": {
+      "stablecoins": 47.60,
+      "bitcoin": 413.12,
+      "ethereum": 120.21,
+      "other_crypto": 220.15,
+      "pending_recovery": 70
+    },
+    "breakdown_percentages": {
+      "stablecoins": 7.68,
+      "bitcoin": 66.62,
+      "ethereum": 19.39,
+      "other_crypto": 35.51
+    },
+    "target_allocations": {
+      "stablecoins": 65,
+      "bitcoin": 17.5,
+      "ethereum": 12.5,
+      "other": 5
+    },
+    "allocation_variance": {
+      "stablecoins": -57.32,
+      "bitcoin": 49.12,
+      "ethereum": 6.89,
+      "other_crypto": 30.51,
+      "note": "Current allocation heavily weighted towards Bitcoin (66.62% vs 17.5% target)"
+    },
+    "tally_to_mint": 620.08,
+    "tally_minted": 0,
+    "tally_backing_ratio": "1:1 USD"
+  },
+  "action_items": [
+    {
+      "priority": "high",
+      "task": "Complete Kalshi recovery process",
+      "details": "Submit face scan and photo ID to recover $70 in mis-sent funds",
+      "deadline": "ASAP"
+    },
+    {
+      "priority": "high",
+      "task": "Verify all reserve wallet addresses",
+      "details": "Confirm ownership and access to all listed addresses",
+      "status": "pending"
+    },
+    {
+      "priority": "medium",
+      "task": "Deploy reserve contracts on Base network",
+      "details": "Deploy ReserveVault, ReserveTally, PriceOracle, and TrustToken",
+      "status": "not_started"
+    },
+    {
+      "priority": "medium",
+      "task": "Check balances across all chains",
+      "details": "Query on-chain balances for all reserve addresses",
+      "status": "pending"
+    },
+    {
+      "priority": "low",
+      "task": "Set up automated price monitoring",
+      "details": "AI agent to monitor and update asset prices",
+      "status": "not_started"
+    }
+  ],
+  "notes": [
+    "All reserve addresses are for cold storage - hardware wallet controlled",
+    "Ethereum address 0xB64564838c88b18cb8f453683C20934f096F2B92 is the primary human ledger",
+    "Kalshi deposits require recovery before they can be added to reserve",
+    "Reserve system uses one-way flow: assets in, TALLY minted, no redemption",
+    "Trust tokens earned by burning TALLY (not by depositing assets)"
+  ]
+}

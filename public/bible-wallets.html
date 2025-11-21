@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Wallet Management</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        #bible-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        #bible-table th, #bible-table td {
+            border: 1px solid #334155;
+            padding: 8px 12px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        #bible-table th {
+            background-color: #1e293b;
+        }
+        #bible-table tbody tr:nth-child(even) {
+            background-color: #0f172a;
+        }
+        .action-container {
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Bible Wallet Management</h1>
+            <p>View and manage the collection of wallets derived from the EXODUS seed.</p>
+        </div>
+
+        <div class="action-card">
+            <h2>Wallet Overview</h2>
+            <div class="action-container">
+                <button class="action-button" onclick="loadWalletData()">Load/Refresh Wallet Data</button>
+                <input type="text" id="sweep-address" placeholder="Sweep Destination Address" style="width: 350px;">
+                <button class="action-button" onclick="sweepFunds('ETH')">Sweep All ETH</button>
+            </div>
+            <table id="bible-table">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Derivation Path</th>
+                        <th>Address</th>
+                        <th>ETH Balance</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS will populate this -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/scripts/header.js"></script>
+    <script>
+        const BIBLE_ADDRESSES_URL = '/deployments/bible-book-addresses.json';
+
+        let provider;
+        let bibleWallets = [];
+
+        async function init() {
+            try {
+                if (typeof window.ethereum !== 'undefined') {
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                } else {
+                    // Use a default provider if no wallet is connected
+                    // Note: This provider is read-only.
+                    provider = new ethers.providers.JsonRpcProvider('https://mainnet.base.org');
+                }
+                await loadAndDisplayBibleAddresses();
+            } catch (e) {
+                console.error("Initialization error:", e);
+                alert("Could not initialize the page. Check the console.");
+            }
+        }
+
+        async function loadAndDisplayBibleAddresses() {
+            try {
+                const response = await fetch(BIBLE_ADDRESSES_URL);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                bibleWallets = data.books;
+                const tableBody = document.querySelector("#bible-table tbody");
+                tableBody.innerHTML = ''; // Clear previous data
+
+                for (const wallet of bibleWallets) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${wallet.book}</td>
+                        <td>${wallet.path}</td>
+                        <td id="addr-${wallet.index}">${wallet.address}</td>
+                        <td id="bal-${wallet.index}">-</td>
+                        <td><button class="action-button-sm" onclick="checkBalance(${wallet.index})">Check</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            } catch (error) {
+                console.error('Error loading bible addresses:', error);
+            }
+        }
+        
+        async function loadWalletData() {
+            try {
+                const response = await fetch(BIBLE_ADDRESSES_URL);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                bibleWallets = data.books;
+                const tableBody = document.querySelector("#bible-table tbody");
+                tableBody.innerHTML = ''; // Clear previous data
+
+                for (const wallet of bibleWallets) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${wallet.book}</td>
+                        <td>${wallet.path}</td>
+                        <td id="addr-${wallet.index}">${wallet.address}</td>
+                        <td id="bal-${wallet.index}">-</td>
+                        <td><button class="action-button-sm" onclick="checkBalance(${wallet.index})">Check</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            } catch (error) {
+                console.error('Error loading bible addresses:', error);
+            }
+        }
+
+        async function checkBalance(index) {
+            if (!provider) {
+                alert("Ethers provider not initialized.");
+                return;
+            }
+            const wallet = bibleWallets.find(w => w.index === index);
+            if (!wallet) return;
+
+            const balanceCell = document.getElementById(`bal-${index}`);
+            balanceCell.textContent = 'Loading...';
+            try {
+                const balance = await provider.getBalance(wallet.address);
+                balanceCell.textContent = `${ethers.utils.formatEther(balance)} ETH`;
+            } catch (error) {
+                console.error(`Could not get balance for ${wallet.address}:`, error);
+                balanceCell.textContent = 'Error';
+            }
+        }
+
+        async function sweepFunds(asset) {
+            const destinationAddress = document.getElementById('sweep-address').value;
+            if (!ethers.utils.isAddress(destinationAddress)) {
+                alert("Please enter a valid destination address.");
+                return;
+            }
+
+            alert(`This is a placeholder for sweeping all ${asset}. In a real scenario, this would require securely managed private keys to sign transactions for all ${bibleWallets.length} addresses. This action is not implemented in this demo for security reasons.`);
+            
+            // Conceptual logic (would require private keys):
+            // for (const wallet of bibleWallets) {
+            //     const walletWithSigner = new ethers.Wallet(privateKeyFor(wallet.path), provider);
+            //     const balance = await provider.getBalance(wallet.address);
+            //     if (balance.gt(0)) {
+            //         const tx = await walletWithSigner.sendTransaction({
+            //             to: destinationAddress,
+            //             value: balance.sub(someGasAmount) 
+            //         });
+            //         console.log(`Sweeping from ${wallet.address}, tx: ${tx.hash}`);
+            //         await tx.wait();
+            //     }
+            // }
+        }
+
+        window.addEventListener('load', () => {
+            init();
+            // Load header and footer after the main content is set up
+            fetch('header.html').then(response => response.text()).then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+            fetch('footer.html').then(response => response.text()).then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+        });
+    </script>
+</body>
+</html>

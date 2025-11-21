@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Vision for Tally & Trust - Convergence Protocol</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <style>
+        .vision-container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .vision-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 16px;
+        }
+        .vision-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .vision-section h2 img {
+            width: 50px;
+            height: 50px;
+        }
+        .vision-section p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+        .highlight {
+            color: #38bdf8; /* light blue */
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="vision-container">
+        <div class="page-header" style="text-align: center; margin-bottom: 4rem;">
+            <h1>Beyond Currency: A New Economy of Trust</h1>
+            <p style="font-size: 1.5rem; max-width: 700px; margin: 1rem auto; opacity: 0.9;">The Convergence Protocol's tokens are not merely assets for speculation. They are fundamental building blocks for a more trustworthy, collaborative, and purpose-driven digital world.</p>
+        </div>
+
+        <div class="vision-section">
+            <h2>
+                <img src="/assets/images/token-tally.svg" alt="Tally Token Icon">
+                The Role of Tally (TALLY): The Engine of Value
+            </h2>
+            <p>
+                The Tally token represents the flow of economic energy into the Convergence ecosystem. It is a measure of tangible value, but its ultimate purpose is to serve as the gateway to something more profound: influence and reputation.
+            </p>
+            <ul>
+                <li>
+                    <p><strong>Fueling the Collective Reserve:</strong> When you deposit assets to mint TALLY, you are contributing to a permanent, un-ruggable treasury. This act strengthens the economic foundation for every participant and signals a commitment to the collective good over individual extraction.</p>
+                </li>
+                <li>
+                    <p><strong>The "Proof of Sacrifice":</strong> In our ecosystem, a voice is not given; it is earned. TALLY is the exclusive pathway to acquiring TRUST. To gain influence, one must first contribute value and then "sacrifice" the claim on that value by burning TALLY. This ensures that those who govern have skin in the game.</p>
+                </li>
+            </ul>
+        </div>
+
+        <div class="vision-section">
+            <h2>
+                <img src="/assets/images/token-trust.svg" alt="Trust Token Icon">
+                The Role of Trust (TRUST): The Currency of Reputation
+            </h2>
+            <p>
+                If TALLY is the engine, TRUST is the steering wheel. It is the protocol's native reputation token, designed to quantify and reward long-term commitment and positive action.
+            </p>
+            <ul>
+                <li>
+                    <p><strong>Decentralized Governance:</strong> The primary function of TRUST is to empower community governance. TRUST holders can create and vote on proposals that shape the future of the protocol—from approving new reserve assets and managing the treasury to funding community-led projects. It is the mechanism by which we achieve collective stewardship.</p>
+                </li>
+                <li>
+                    <p><strong>A Verifiable Record of Commitment:</strong> Because TRUST is earned by burning TALLY, your TRUST balance is a transparent, on-chain record of your commitment to the protocol. It proves you have contributed value and are invested in the long-term success of the ecosystem, not just short-term gains.</p>
+                </li>
+                <li>
+                    <p><strong>The Future of Access & Identity:</strong> As the ecosystem grows, TRUST will evolve into a digital passport for our community. It will be used to grant access to private channels, assign roles and responsibilities, and verify identity in a world of digital anonymity. It is a tool for building a true web of trust.</p>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="vision-section" style="background-color: #1e293b;">
+            <h2>The Symbiotic Loop: Value meets Vision</h2>
+            <p>
+                TALLY and TRUST exist in a powerful symbiotic relationship. <span class="highlight">TALLY measures the inflow of economic value, while TRUST measures the outflow of individual commitment.</span> One cannot exist meaningfully without the other. This cycle ensures that as the protocol's treasury grows, the power to direct it flows to those who have proven their dedication to the project's core principles. This is how we move beyond speculation and build an economy where value and values converge.
+            </p>
+        </div>
+
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/scripts/header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('header.html').then(response => response.text()).then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+            fetch('footer.html').then(response => response.text()).then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+        });
+    </script>
+</body>
+</html>

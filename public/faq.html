@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Convergence Protocol</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <style>
+        .faq-container {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+        .faq-item {
+            margin-bottom: 1.5rem;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+        }
+        .faq-question {
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+        }
+        .faq-question::after {
+            content: '+';
+            position: absolute;
+            right: 0;
+            font-size: 2rem;
+            color: #38bdf8;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            border-top: 1px solid transparent;
+            margin-top: 0;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 300px; /* Adjust as needed */
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top-color: #334155;
+        }
+        .faq-item.active .faq-question::after {
+            content: '−';
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="faq-container">
+        <div class="page-header">
+            <h1>Frequently Asked Questions</h1>
+        </div>
+
+        <div class="faq-item">
+            <h3 class="faq-question">What is the Convergence Protocol?</h3>
+            <div class="faq-answer">
+                <p>The Convergence Protocol is a new digital ecosystem designed to create a verifiable system of trust and governance. It combines a unique economic model with a soulbound NFT identity system to reward long-term commitment and collective stewardship over short-term speculation.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <h3 class="faq-question">What is the difference between TALLY and TRUST tokens?</h3>
+            <div class="faq-answer">
+                <p><strong>TALLY (`ReserveTally`)</strong> is the economic token of the protocol. You receive it by depositing assets into the permanent reserve. It represents your share of the economic energy you've contributed.</p>
+                <p><strong>TRUST (`Convergence Trust`)</strong> is the governance and reputation token. You can only get TRUST by burning TALLY. It represents your commitment and gives you voting power within the protocol's DAO.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <h3 class="faq-question">How do I get TALLY tokens?</h3>
+            <div class="faq-answer">
+                <p>You can mint TALLY tokens by depositing other crypto assets (like ETH or USDC) into the Reserve Vault on the `tokens.html` page. TALLY is minted at a 1:1 ratio to the USD value of your deposit at the time of the transaction.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <h3 class="faq-question">Can I get my deposited assets back?</h3>
+            <div class="faq-answer">
+                <p>No. The Reserve Vault is a one-way system. All deposits are permanent. This is a critical security feature that prevents "bank runs" and ensures that every TALLY token remains fully backed by the assets in the reserve. The way to "exit" your position is to burn your TALLY for TRUST or sell your TALLY on a decentralized exchange (DEX).</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <h3 class="faq-question">What is a Covenant NFT?</h3>
+            <div class="faq-answer">
+                <p>The Covenant NFT is your identity and passport within the Convergence ecosystem. It's a "soulbound" token, meaning it is permanently tied to your wallet and cannot be transferred or sold. Holding it grants you the right to participate in governance and proves your commitment to the protocol's principles.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <h3 class="faq-question">What network is the protocol on?</h3>
+            <div class="faq-answer">
+                <p>The core economic system of the Convergence Protocol operates on the <strong>Base</strong> network, which is a Layer 2 scaling solution for Ethereum. This ensures that transactions are fast, cheap, and secure.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <h3 class="faq-question">Is the protocol safe?</h3>
+            <div class="faq-answer">
+                <p>The protocol is designed with a security-first mindset, utilizing a one-way reserve to prevent bank runs and leveraging battle-tested OpenZeppelin contracts. However, like any smart contract system, there are inherent risks. We are committed to undergoing regular third-party security audits to ensure the safety of user funds.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <h3 class="faq-question">How is the protocol governed?</h3>
+            <div class="faq-answer">
+                <p>The protocol is governed by holders of the TRUST token. Over time, all critical administrative functions will be transitioned to a fully decentralized autonomous organization (DAO), where TRUST holders can propose, debate, and vote on all aspects of the protocol's future.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/scripts/header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // FAQ accordion logic
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                });
+            });
+
+            // Load header and footer
+            fetch('header.html').then(response => response.text()).then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+            fetch('footer.html').then(response => response.text()).then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+        });
+    </script>
+</body>
+</html>

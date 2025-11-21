@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
 
 /**
  * @title ReserveTally
@@ -45,6 +46,36 @@ contract ReserveTally is ERC20, ERC20Burnable, Ownable {
 
     constructor() ERC20("Reserve Tally", "TALLY") Ownable(msg.sender) {}
 
+    // ============ URI Function ============
+
+    /**
+     * @notice Returns the URI for the token metadata.
+     * @dev The metadata is generated on-chain and includes the token's name, description, and an embedded SVG image.
+     */
+    function tokenURI() public pure returns (string memory) {
+        string memory svg = Base64.encode(bytes(string(abi.encodePacked(
+            '<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">',
+            '<defs><filter id="glow-tally" x="-50%" y="-50%" width="200%" height="200%">',
+            '<feGaussianBlur stdDeviation="2.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/>',
+            '<feMergeNode in="SourceGraphic"/></feMerge></filter></defs>',
+            '<circle cx="100" cy="100" r="90" fill="#0f172a" stroke="#334155" stroke-width="2" />',
+            '<g fill="#00d2ff" filter="url(#glow-tally)"><rect x="60" y="50" width="10" height="100" rx="2" opacity="0.8" />',
+            '<rect x="80" y="50" width="10" height="100" rx="2" opacity="0.8" />',
+            '<rect x="100" y="50" width="10" height="100" rx="2" opacity="0.8" />',
+            '<rect x="120" y="50" width="10" height="100" rx="2" opacity="0.8" /></g>',
+            '<line x1="40" y1="130" x2="150" y2="70" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-dasharray="150" stroke-dashoffset="150" filter="url(#glow-tally)">',
+            '<animate attributeName="stroke-dashoffset" from="150" to="0" dur="1.5s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1" repeatCount="indefinite" /></line></svg>'
+        ))));
+
+        string memory json = Base64.encode(bytes(string(abi.encodePacked(
+            '{"name": "Reserve Tally",',
+            '"description": "A reserve-backed token minted 1:1 against assets deposited into the Convergence Protocol reserve.",',
+            '"image": "data:image/svg+xml;base64,', svg, '"}'
+        ))));
+
+        return string(abi.encodePacked("data:application/json;base64,", json));
+    }
+    
     // ============ Modifiers ============
 
     modifier onlyMinter() {
