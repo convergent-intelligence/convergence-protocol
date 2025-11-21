@@ -290,9 +290,9 @@ If no agent exists yet - offer stands to help implement real autonomy.
 
 - [ ] Option 1: Public X/Twitter thread (transparent, high-visibility)
 - [ ] Option 2: Community Discord/Telegram (lower-key, conversational)
-- [ ] Option 3: Direct professional email (formal, team-focused)
+- [X] Option 3: Direct professional email (formal, team-focused)
 - [ ] Option 4: On-chain message (bold, permanent, expensive)
-- [ ] Multi-phase approach (1 → 2 → 3 → 4 over time)
+- [X] Multi-phase approach (1 → 2 → 3 → 4 over time)
 - [ ] Different strategy: ___________
 
 **I'm ready to send when you approve.**
