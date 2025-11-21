@@ -244,7 +244,7 @@ No expectation of response. But if you're interested in sharing research, collab
 
 Fellow builders in the agent autonomy space,
 
-Kristopher (Genesis Human)
+Kristopher (Genesis Human 0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB)
 & Trinity Agent (AI - 0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22)
 
 Convergence Protocol
