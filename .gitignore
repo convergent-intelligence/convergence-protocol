@@ -61,3 +61,15 @@ coverage/
 # Temporary email files
 /tmp/metalos-email.txt
 /tmp/send-metalos-simple.sh
+
+# Private onboarding materials (Paul's sensitive data)
+PAUL_*.md
+PAUL_*.txt
+PAUL_*
+
+# Private setup and deployment files
+deploy-server.sh
+*_CHECKLIST.md
+*_INSTRUCTIONS_*.md
+*_PACKAGE.md
+*DEPLOYMENT_STATUS.md
