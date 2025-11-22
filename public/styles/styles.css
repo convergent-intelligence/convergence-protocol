@@ -29,6 +29,7 @@ body {
     color: var(--text);
     background: var(--light);
     overflow-x: hidden;
+    padding-top: 60px;
 }
 
 /* ==========================================================================

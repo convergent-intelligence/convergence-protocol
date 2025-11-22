@@ -281,11 +281,9 @@
         }
     }
 
-    // Scroll to adoption section
+    // Navigate to Genesis story to start the journey
     document.getElementById('startJourneyBtn').addEventListener('click', () => {
-        const adoptBtn = document.getElementById('adoptPrinciplesBtn');
-        adoptBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        adoptBtn.style.animation = 'pulse 1s ease 3';
+        window.location.href = '/genesis-story.html';
     });
 
     document.getElementById('adoptPrinciplesBtn').addEventListener('click', () => {

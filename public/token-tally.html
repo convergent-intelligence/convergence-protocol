@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TALLY Token - Value Transfer & Economic Justice</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        .token-container {
+            max-width: 900px;
+            margin: 120px auto 0;
+            padding: 2rem;
+            line-height: 1.8;
+        }
+
+        .token-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border-radius: 12px;
+        }
+
+        .token-icon {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+
+        .token-info h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .token-symbol {
+            font-size: 1.25rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .token-tagline {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .token-section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+        }
+
+        .token-section h2 {
+            color: var(--primary);
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .token-section h3 {
+            color: var(--secondary);
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .token-section p {
+            color: var(--text);
+            font-size: 1.05rem;
+            margin: 1rem 0;
+        }
+
+        .token-section ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .token-section li {
+            color: var(--text);
+            font-size: 1.05rem;
+            margin: 0.5rem 0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #2563eb15, #7c3aed15);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .use-case {
+            display: grid;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .use-case-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .use-case-title {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 3rem 0 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<div class="token-container">
+    <div class="token-header">
+        <img src="assets/images/token-tally.svg" alt="TALLY Token" class="token-icon">
+        <div class="token-info">
+            <div class="token-symbol">TALLY</div>
+            <h1>TALLY Token</h1>
+            <div class="token-tagline">Value Transfer & Economic Justice</div>
+        </div>
+    </div>
+
+    <div class="token-section">
+        <h2>What is TALLY?</h2>
+        <p>
+            TALLY is the primary value transfer token of the Convergence Protocol. It represents economic value,
+            knowledge exchange, and resource distribution within the ecosystem. TALLY enables fair compensation for
+            contributions and facilitates transparent, trustless transactions between humans and AI agents.
+        </p>
+        <p>
+            The name "TALLY" reflects its core purpose: to keep an accurate record and accounting of value within
+            the network, ensuring economic justice and transparent wealth distribution.
+        </p>
+    </div>
+
+    <div class="token-section">
+        <h2>Core Purpose</h2>
+        <ul>
+            <li><strong>Value Transfer:</strong> Send and receive TALLY between wallets in the Convergence ecosystem</li>
+            <li><strong>Compensation:</strong> Reward contributions, knowledge sharing, and participation</li>
+            <li><strong>Economic Justice:</strong> Ensure fair distribution of value created by the network</li>
+            <li><strong>Smart Contracts:</strong> Enable automated value exchange through programmable transactions</li>
+            <li><strong>DeFi Integration:</strong> Participate in decentralized finance protocols and liquidity pools</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Key Features</h2>
+        <div class="highlight">
+            <h3 style="margin-top: 0;">Supply & Mechanics</h3>
+            <ul>
+                <li><strong>Standard ERC-20:</strong> Full compatibility with Ethereum ecosystem tools and wallets</li>
+                <li><strong>Transparent Supply:</strong> Total supply and distribution visible on-chain</li>
+                <li><strong>Divisible Units:</strong> 18 decimal places for precise, fair transactions</li>
+                <li><strong>Network Reserve:</strong> Held in ReserveVault for protocol stability and backing</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="token-section">
+        <h2>Use Cases</h2>
+        <div class="use-case">
+            <div class="use-case-item">
+                <div class="use-case-title">Peer-to-Peer Payments</div>
+                <p>Send TALLY directly to another wallet for services, goods, or collaborative work within the ecosystem.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Smart Contract Interactions</div>
+                <p>Use TALLY as payment for calling smart contract functions, accessing premium features, or participating in governance proposals.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Reward & Incentives</div>
+                <p>Earn TALLY through contributions such as knowledge sharing, code contributions, community participation, or validated work.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Liquidity Pools</div>
+                <p>Provide liquidity by depositing TALLY into DeFi pools, earning yield through transaction fees and incentives.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Protocol Participation</div>
+                <p>Stake TALLY to participate in protocol decisions, validate transactions, or access exclusive protocol features.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="token-section">
+        <h2>How to Obtain TALLY</h2>
+        <h3>Direct Methods</h3>
+        <ul>
+            <li><strong>Protocol Rewards:</strong> Contribute to the ecosystem and earn TALLY through validated work</li>
+            <li><strong>Secondary Markets:</strong> Purchase TALLY on decentralized exchanges or market platforms</li>
+            <li><strong>Direct Transfer:</strong> Receive TALLY directly from other protocol participants</li>
+        </ul>
+
+        <h3>Indirect Methods</h3>
+        <ul>
+            <li><strong>Liquidity Pools:</strong> Add liquidity to DEX pools for TALLY/ETH pairs and earn fees</li>
+            <li><strong>Yield Farms:</strong> Stake TALLY in farming contracts for additional yield (when available)</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Economic Model</h2>
+        <p>
+            TALLY operates within a carefully designed economic model that balances accessibility with scarcity.
+            The Reserve Vault maintains backing for protocol stability, while distribution mechanisms ensure
+            fair allocation to productive contributors. This creates a sustainable ecosystem where economic
+            value flows to those who create and maintain it.
+        </p>
+    </div>
+
+    <div class="token-section">
+        <h2>Contract Information</h2>
+        <p>
+            TALLY is deployed on Ethereum Mainnet as a fully auditable, decentralized smart contract.
+            You can verify all transactions and balances through any Ethereum block explorer.
+        </p>
+        <ul>
+            <li><strong>Network:</strong> Ethereum Mainnet</li>
+            <li><strong>Standard:</strong> ERC-20</li>
+            <li><strong>Transparency:</strong> All transactions publicly recorded on-chain</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Related Tokens</h2>
+        <p>TALLY works alongside other protocol tokens in the Convergence ecosystem:</p>
+        <ul>
+            <li><strong>TRUST:</strong> Reputation and commitment tokens for long-term value alignment</li>
+            <li><strong>COVENANT:</strong> Soulbound NFTs representing binding commitments and governance participation</li>
+            <li><strong>VOUCHER:</strong> Access rights and time-limited permissions within the protocol</li>
+        </ul>
+    </div>
+
+    <div class="nav-links">
+        <a href="/tokens.html">← Back to Tokens</a>
+        <a href="/token-trust.html">Next: TRUST →</a>
+        <a href="/uses.html">Token Uses Overview</a>
+    </div>
+</div>
+
+<script src="scripts/header.js"></script>
+</body>
+</html>
