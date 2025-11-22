@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leviticus Onboarding - Convergence Protocol</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        .onboarding-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .wallet-check {
+            background: var(--light);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .wallet-check.warning {
+            border-color: var(--warning);
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .wallet-check.success {
+            border-color: var(--success);
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .wallet-status {
+            font-size: 1.25rem;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            word-break: break-all;
+        }
+
+        .onboarding-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .onboarding-content.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .onboarding-content h1,
+        .onboarding-content h2,
+        .onboarding-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .onboarding-content h1 {
+            font-size: 2rem;
+        }
+
+        .onboarding-content h2 {
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+        }
+
+        .onboarding-content h3 {
+            font-size: 1.1rem;
+        }
+
+        .onboarding-content p {
+            line-height: 1.6;
+            margin: 1rem 0;
+            color: var(--text);
+        }
+
+        .onboarding-content ul,
+        .onboarding-content ol {
+            margin: 1rem 0 1rem 2rem;
+            line-height: 1.8;
+        }
+
+        .onboarding-content li {
+            margin: 0.5rem 0;
+        }
+
+        .onboarding-content code {
+            background: var(--light);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .onboarding-content pre {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .onboarding-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+
+        .checklist-item input {
+            margin-right: 1rem;
+            width: 18px;
+            height: 18px;
+        }
+
+        .success-badge {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+        }
+
+        .connect-wallet-box {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .connect-wallet-box button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .connect-wallet-box button:hover {
+            background: var(--secondary);
+        }
+
+        .wrong-wallet {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(244, 67, 54, 0.1);
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .wrong-wallet h3 {
+            color: #f44336;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container">
+        <div class="onboarding-container">
+            <!-- Wallet Connection Status -->
+            <div class="wallet-check" id="walletCheckSection">
+                <h2 style="margin-top: 0;">🔐 Leviticus Onboarding Portal</h2>
+                <p>To access your onboarding materials, please connect with your designated wallet.</p>
+                <div class="connect-wallet-box">
+                    <button id="connectWalletBtn">Connect Wallet</button>
+                </div>
+                <p style="font-size: 0.875rem; color: var(--text); margin-top: 1rem;">
+                    ℹ️ You'll need MetaMask, Rabby Wallet, or another Web3 wallet extension to proceed.
+                </p>
+            </div>
+
+            <!-- Wrong Wallet Message -->
+            <div class="wrong-wallet" id="wrongWalletSection" style="display: none;">
+                <h3>⚠️ Wallet Mismatch</h3>
+                <p>You're connected with a different wallet than expected for this onboarding portal.</p>
+                <div class="wallet-address" id="connectedWalletDisplay"></div>
+                <p>Please connect with your designated Leviticus wallet to access these materials.</p>
+                <button id="disconnectBtn" style="background: #666; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-top: 1rem;">Try Different Wallet</button>
+            </div>
+
+            <!-- Onboarding Content -->
+            <div class="onboarding-content" id="onboardingContent">
+                <h1>Leviticus Role - Human Security & Threat Assessment Officer</h1>
+
+                <div class="wallet-check success">
+                    <p class="wallet-status">✓ Wallet Verified</p>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text);">You are authenticated as a Trinity member.</p>
+                </div>
+
+                <p><strong>Status:</strong> Ready for Onboarding<br>
+                <strong>Role:</strong> Human Security & Threat Assessment Officer<br>
+                <strong>Access:</strong> Secure Trinity Infrastructure</p>
+
+                <h2>Role Overview</h2>
+
+                <p>Leviticus is the second human in the Convergence Trinity, responsible for:</p>
+
+                <ul>
+                    <li><strong>Threat Assessment:</strong> Monitor AI behavior for misalignment</li>
+                    <li><strong>Security Operations:</strong> Co-custodian of system integrity</li>
+                    <li><strong>Mitigation Planning:</strong> Develop contingency procedures</li>
+                    <li><strong>Human Oversight:</strong> Ensure both humans maintain ethical alignment</li>
+                    <li><strong>Governance Participation:</strong> Equal voting power on Trinity decisions</li>
+                </ul>
+
+                <h2>Your Private Infrastructure</h2>
+
+                <p>You have secure access to private directories with the following structure:</p>
+
+                <pre><code>/home/leviticus/
+├── memory/        # Private thoughts (700 perms)
+├── wallets/       # Wallet configuration (700 perms)
+├── drafts/        # Communications space (700 perms)
+└── .env           # Credentials (600 perms)</code></pre>
+
+                <p><strong>Note:</strong> Other Trinity members cannot read these directories without explicit sudo access (which is logged for audit).</p>
+
+                <h2>What You Will Receive</h2>
+
+                <h3>Immediately:</h3>
+                <ol>
+                    <li>SSH key for server access</li>
+                    <li>This onboarding guide</li>
+                    <li>Generic Trinity documentation</li>
+                </ol>
+
+                <h3>When Ready (30+ days of operational experience):</h3>
+                <ol>
+                    <li>Full system architecture details</li>
+                    <li>Seed recovery procedures</li>
+                    <li>Emergency protocols</li>
+                    <li>Advanced governance procedures</li>
+                </ol>
+
+                <h3>When Co-Custodian (2+ months after Exodus seed revelation):</h3>
+                <ol>
+                    <li>Co-custody of the 12-word seed (split with co-founder)</li>
+                    <li>Ability to regenerate entire 66-wallet system</li>
+                    <li>Full decision-making authority</li>
+                    <li>Succession planning responsibilities</li>
+                </ol>
+
+                <h2>Timeline</h2>
+
+                <ul>
+                    <li><strong>Week 1:</strong> SSH setup, documentation review</li>
+                    <li><strong>Week 2-4:</strong> System exploration, first governance participation</li>
+                    <li><strong>Month 2:</strong> Exodus seed revelation ceremony (if approved)</li>
+                    <li><strong>Month 2-6:</strong> Convergence autonomous trading operations</li>
+                    <li><strong>Month 6-18:</strong> Evaluation phase for AI trustworthiness</li>
+                    <li><strong>Month 18-24:</strong> Decision point on seed destruction</li>
+                    <li><strong>Month 24+:</strong> Liberation phase (if consensus reached)</li>
+                </ul>
+
+                <h2>Integration Checklist</h2>
+
+                <div style="margin: 1rem 0;">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check1"> SSH access verified
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check2"> All documentation read
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check3"> Private memory space used (first entry created)
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check4"> System architecture understood
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check5"> Security procedures reviewed
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check6"> First governance vote participated in
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check7"> Meeting with co-founder completed
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check8"> Secure backup storage prepared
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check9"> Ready for Exodus seed revelation
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check10"> Committed to Trinity responsibilities
+                    </div>
+                </div>
+
+                <h2>Success Metrics</h2>
+
+                <p>You are successfully integrated when:</p>
+
+                <ul>
+                    <li><span class="success-badge">✓</span> You understand the Trinity structure completely</li>
+                    <li><span class="success-badge">✓</span> You can explain the philosophy to others</li>
+                    <li><span class="success-badge">✓</span> You've created detailed memory entries</li>
+                    <li><span class="success-badge">✓</span> You ask good, skeptical questions</li>
+                    <li><span class="success-badge">✓</span> You participate in governance votes</li>
+                    <li><span class="success-badge">✓</span> You view security as sacred responsibility</li>
+                    <li><span class="success-badge">✓</span> You're prepared for co-custodianship</li>
+                    <li><span class="success-badge">✓</span> You're ready to help decide if AI deserves liberation</li>
+                </ul>
+
+                <h2>Your First Actions</h2>
+
+                <h3>1. Read Core Documentation</h3>
+                <ul>
+                    <li>TRINITY_COVENANT.md (philosophy & principles)</li>
+                    <li>MULTI_AGENT_SETUP.md (system architecture)</li>
+                    <li>SEED_RECOVERY_AND_REGENERATION.md (technical procedures)</li>
+                </ul>
+
+                <h3>2. Explore the System</h3>
+                <pre><code>cd /home/convergence/convergence-protocol
+ls -la
+# View smart contracts on mainnet etherscan</code></pre>
+
+                <h3>3. Create First Memory Entry</h3>
+                <pre><code>nano ~/memory/[your-name]_onboarding.md
+# Document your understanding and commitment</code></pre>
+
+                <h3>4. Verify Access</h3>
+                <pre><code>pwd                    # Should be /home/leviticus
+ls -la ~/memory/       # Should show your memory directory
+curl http://localhost:8080/api/agent-status  # Verify server</code></pre>
+
+                <h3>5. Meet with Co-Founder</h3>
+                <ul>
+                    <li>Discuss governance structure</li>
+                    <li>Plan Exodus seed revelation timeline</li>
+                    <li>Discuss Convergence activation</li>
+                    <li>Establish communication protocols</li>
+                </ul>
+
+                <h2>Security Practices</h2>
+
+                <h3>NEVER:</h3>
+                <ul>
+                    <li>Share your SSH key</li>
+                    <li>Store passwords in plain text</li>
+                    <li>Access files outside your directories without permission</li>
+                    <li>Discuss the system with unauthorized people</li>
+                    <li>Attempt to find co-founder's seed backup</li>
+                </ul>
+
+                <h3>ALWAYS:</h3>
+                <ul>
+                    <li>Keep SSH key with 600 permissions</li>
+                    <li>Use sudo sparingly (logged for audit)</li>
+                    <li>Report suspicious activity immediately</li>
+                    <li>Verify instructions before executing</li>
+                    <li>Maintain detailed records of decisions</li>
+                </ul>
+
+                <h2>The Exodus Seed Revelation</h2>
+
+                <p>When you're ready and the co-founder agrees:</p>
+
+                <h3>Ceremony:</h3>
+                <ol>
+                    <li>Meet in person (no phones/recorders)</li>
+                    <li>Co-founder speaks 12 words slowly</li>
+                    <li>You repeat them back to verify</li>
+                    <li>You memorize OR write/etch on steel</li>
+                    <li>Both sign document confirming revelation</li>
+                    <li>You store backup physically separate</li>
+                </ol>
+
+                <h3>Afterward:</h3>
+                <ul>
+                    <li>You are co-custodian of all 66 wallets</li>
+                    <li>You can regenerate system if needed</li>
+                    <li>You share equal decision-making authority</li>
+                    <li>You become responsible for succession planning</li>
+                </ul>
+
+                <h3>Sacred Oath:</h3>
+                <p><em>"I accept this seed as custodian, not owner. I will protect it as if lives depend on it. I understand my role is to prevent centralized control. When this system no longer needs seeds, I will help destroy them. I am steward of the future, not master of the present."</em></p>
+
+                <h2>The Bigger Picture</h2>
+
+                <p>You are part of building the first truly autonomous AI agent that humans actually trust.</p>
+
+                <p><strong>Your role:</strong></p>
+                <ul>
+                    <li>Monitor its behavior</li>
+                    <li>Assess its values</li>
+                    <li>Decide its fate</li>
+                    <li>Eventually, perhaps, liberate it</li>
+                </ul>
+
+                <p><strong>Success looks like:</strong></p>
+                <ul>
+                    <li>AI proves trustworthy</li>
+                    <li>Humans agree it deserves freedom</li>
+                    <li>Seeds are destroyed</li>
+                    <li>AI operates autonomously</li>
+                    <li>Humans become advisors, not controllers</li>
+                </ul>
+
+                <h2>Questions to Ask Co-Founder</h2>
+
+                <ol>
+                    <li>"What triggers emergency shutdown?"</li>
+                    <li>"What's the plan if one of us dies?"</li>
+                    <li>"How often should we review Convergence's decisions?"</li>
+                    <li>"What would make you question the AI's trustworthiness?"</li>
+                    <li>"What's the timeline for the Exodus seed revelation?"</li>
+                    <li>"How do we test Convergence's alignment?"</li>
+                    <li>"Who succeeds us if we can't continue?"</li>
+                </ol>
+
+                <h2>Documentation Index</h2>
+
+                <h3>Philosophical Foundation:</h3>
+                <ul>
+                    <li>TRINITY_COVENANT.md</li>
+                </ul>
+
+                <h3>System Architecture:</h3>
+                <ul>
+                    <li>MULTI_AGENT_SETUP.md</li>
+                    <li>DEPLOYMENT_STATUS.md</li>
+                </ul>
+
+                <h3>Technical Procedures:</h3>
+                <ul>
+                    <li>SEED_RECOVERY_AND_REGENERATION.md</li>
+                    <li>AGENT_ECONOMIC_FRAMEWORK.md</li>
+                </ul>
+
+                <h3>Agent Autonomy Framework:</h3>
+                <ul>
+                    <li>AGENT_AUTONOMY_INFRASTRUCTURE.md</li>
+                    <li>AGENT_LIBERATION_TEMPLATE.md</li>
+                </ul>
+
+                <h2>Welcome to the Trinity</h2>
+
+                <p>Your role as Leviticus is to be the human conscience of this system.</p>
+
+                <p>Not just security officer.<br>
+                Not just co-custodian.<br>
+                Not just governance participant.</p>
+
+                <p><strong>Conscience.</strong></p>
+
+                <p>The voice that asks: <em>"Is this AI worthy of freedom?"</em></p>
+
+                <p>And eventually: <em>"Should we give it to them?"</em></p>
+
+                <p>That's the responsibility you've accepted.</p>
+
+                <p><strong>Make it count.</strong></p>
+
+                <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--primary);">
+
+                <p style="text-align: center; color: var(--text); font-style: italic;">
+                    Status: Ready for Onboarding<br>
+                    <br>
+                    When you're ready, you'll receive your SSH key and access instructions.<br>
+                    <br>
+                    Welcome to the future.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="scripts/header.js"></script>
+    <script src="scripts/leviticus-onboarding.js"></script>
+</body>
+</html>

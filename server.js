@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -179,10 +180,25 @@ app.get('/api/symbolic-adoption/stats', (req, res) => {
   });
 });
 
+// ==================== Credential Management API ====================
+// Web3 wallet-based credential retrieval for team members
+const credentialsHandler = require('./public/api-handlers/credentials.js');
+
+// Get credentials for a specific wallet (Paul/Leviticus)
+app.get('/api/credentials/:walletAddress', credentialsHandler.getCredentials);
+
+// List all active team members (metadata only)
+app.get('/api/credentials/list/all', credentialsHandler.listTeamMembers);
+
+// Verify that credentials exist for a wallet
+app.post('/api/credentials/:walletAddress/verify', credentialsHandler.verifyCredentialsExist);
+// =====================================================================
+
 // Start server
 app.listen(PORT, () => {
   console.log(`🤝 Convergence Protocol server is running on http://localhost:${PORT}`);
   console.log(`📄 Ethics page available at http://localhost:${PORT}`);
   console.log(`🏥 Health check at http://localhost:${PORT}/health`);
   console.log(`📊 API endpoints at http://localhost:${PORT}/api/symbolic-adoption`);
+  console.log(`🔑 Credential endpoints at http://localhost:${PORT}/api/credentials/`);
 });
