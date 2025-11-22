@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOUCHER Token - Time-Limited Access Rights</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        .token-container {
+            max-width: 900px;
+            margin: 120px auto 0;
+            padding: 2rem;
+            line-height: 1.8;
+        }
+
+        .token-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border-radius: 12px;
+        }
+
+        .token-icon {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+
+        .token-info h1 {
+            font-size: 2.5rem;
+            color: #f59e0b;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .token-symbol {
+            font-size: 1.25rem;
+            color: #06b6d4;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .token-tagline {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .token-section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+        }
+
+        .token-section h2 {
+            color: #f59e0b;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .token-section h3 {
+            color: #06b6d4;
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .token-section p {
+            color: var(--text);
+            font-size: 1.05rem;
+            margin: 1rem 0;
+        }
+
+        .token-section ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .token-section li {
+            color: var(--text);
+            font-size: 1.05rem;
+            margin: 0.5rem 0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #f59e0b15, #06b6d415);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .use-case {
+            display: grid;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .use-case-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .use-case-title {
+            font-weight: 600;
+            color: #f59e0b;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 3rem 0 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            padding: 0.75rem 1.5rem;
+            background: #f59e0b;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<div class="token-container">
+    <div class="token-header">
+        <img src="assets/images/token-voucher.svg" alt="VOUCHER Token" class="token-icon">
+        <div class="token-info">
+            <div class="token-symbol">VOUCHER</div>
+            <h1>VOUCHER Token</h1>
+            <div class="token-tagline">Time-Limited Access Rights & Temporary Permissions</div>
+        </div>
+    </div>
+
+    <div class="token-section">
+        <h2>What is VOUCHER?</h2>
+        <p>
+            VOUCHER tokens represent temporary, time-limited access rights within the Convergence Protocol.
+            Unlike TALLY (which is permanent value) or COVENANT (which is permanent identity), VOUCHER tokens
+            expire after a set period, making them ideal for granting temporary permissions, trial access,
+            or time-bound benefits.
+        </p>
+        <p>
+            Think of VOUCHER tokens like concert tickets, coupon codes, or limited-time passes — they grant
+            specific rights for a defined period and then expire. This makes them perfect for managing temporary
+            access, promotional offers, and ephemeral protocol features.
+        </p>
+    </div>
+
+    <div class="token-section">
+        <h2>Core Purpose</h2>
+        <ul>
+            <li><strong>Trial Access:</strong> Grant time-limited access to premium features or beta programs</li>
+            <li><strong>Promotional Rewards:</strong> Issue temporary vouchers as incentives or bonuses for activities</li>
+            <li><strong>Ephemeral Permissions:</strong> Grant specific temporary rights (attend an event, access a resource for 30 days)</li>
+            <li><strong>Onboarding Tokens:</strong> New users receive VOUCHER tokens to access learning resources and tutorials</li>
+            <li><strong>Staking Flexibility:</strong> Use VOUCHER tokens in temporary staking arrangements or liquidity pools</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>How VOUCHER Works</h2>
+        <div class="highlight">
+            <h3 style="margin-top: 0;">Lifecycle</h3>
+            <p>
+                Each VOUCHER token has a defined lifespan:
+            </p>
+            <ul>
+                <li><strong>Issue Date:</strong> When the VOUCHER is created and issued to a wallet</li>
+                <li><strong>Expiration Date:</strong> When the VOUCHER automatically expires and stops granting access</li>
+                <li><strong>Grace Period (Optional):</strong> Final opportunity to use the VOUCHER before full expiration</li>
+                <li><strong>Expired State:</strong> Post-expiration, VOUCHER becomes inactive but remains on-chain as historical record</li>
+            </ul>
+        </div>
+
+        <h3>Key Mechanics</h3>
+        <ul>
+            <li><strong>Tradeable:</strong> Can be bought/sold/transferred before expiration (unlike COVENANT)</li>
+            <li><strong>Time-based:</strong> Smart contract tracks expiration time and validates access</li>
+            <li><strong>Composable:</strong> Can be used in DeFi contracts that check expiration</li>
+            <li><strong>Stackable:</strong> Hold multiple VOUCHER tokens for compound access or extended periods</li>
+            <li><strong>Renewable:</strong> Expiring vouchers can sometimes be renewed or extended</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Voucher Types</h2>
+        <p>The protocol supports various VOUCHER types:</p>
+
+        <h3>Duration-Based</h3>
+        <ul>
+            <li><strong>7-Day Voucher:</strong> One week of access (good for trying features)</li>
+            <li><strong>30-Day Voucher:</strong> One month of access (standard trial period)</li>
+            <li><strong>90-Day Voucher:</strong> Three months of access (extended evaluation)</li>
+            <li><strong>Annual Voucher:</strong> 365 days of access (long-term commitment)</li>
+        </ul>
+
+        <h3>Feature-Based</h3>
+        <ul>
+            <li><strong>API Voucher:</strong> Temporary access to protocol APIs and data feeds</li>
+            <li><strong>Premium Analytics Voucher:</strong> Access to advanced dashboards and reporting</li>
+            <li><strong>Agent Integration Voucher:</strong> Temporary permission to deploy custom AI agents</li>
+            <li><strong>Priority Support Voucher:</strong> Time-limited priority customer support access</li>
+        </ul>
+
+        <h3>Event-Based</h3>
+        <ul>
+            <li><strong>Conference Voucher:</strong> Access to event content and networking features</li>
+            <li><strong>Hackathon Voucher:</strong> Special tools and rewards for hackathon participants</li>
+            <li><strong>Learning Path Voucher:</strong> Access to time-limited educational content</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Use Cases</h2>
+        <div class="use-case">
+            <div class="use-case-item">
+                <div class="use-case-title">Feature Trials</div>
+                <p>Try advanced features risk-free for 30 days. Upgrade to TRUST ownership if you love them.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Onboarding Incentives</div>
+                <p>New users automatically receive a 7-day VOUCHER to explore the entire platform with full feature access.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Promotional Rewards</div>
+                <p>Earn VOUCHER tokens through referrals, social sharing, or completing micro-tasks.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Temporary Governance</div>
+                <p>Hold a temporary VOUCHER to vote on time-sensitive proposals or participate in seasonal governance.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Resource Vouchers</div>
+                <p>Use VOUCHER tokens to temporarily reserve protocol resources (compute, bandwidth, storage).</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Partner Programs</div>
+                <p>Issue custom VOUCHER tokens to partner organizations for collaborative feature access.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="token-section">
+        <h2>VOUCHER vs Other Tokens</h2>
+        <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+            <thead>
+                <tr style="border-bottom: 2px solid #f59e0b;">
+                    <th style="text-align: left; padding: 0.75rem;">Token</th>
+                    <th style="text-align: left; padding: 0.75rem;">Type</th>
+                    <th style="text-align: left; padding: 0.75rem;">Expires?</th>
+                    <th style="text-align: left; padding: 0.75rem;">Transferable?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #334155;">
+                    <td style="padding: 0.75rem;"><strong>TALLY</strong></td>
+                    <td style="padding: 0.75rem;">Value</td>
+                    <td style="padding: 0.75rem;">No</td>
+                    <td style="padding: 0.75rem;">Yes</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #334155;">
+                    <td style="padding: 0.75rem;"><strong>TRUST</strong></td>
+                    <td style="padding: 0.75rem;">Reputation</td>
+                    <td style="padding: 0.75rem;">No</td>
+                    <td style="padding: 0.75rem;">No (locked)</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #334155;">
+                    <td style="padding: 0.75rem;"><strong>COVENANT</strong></td>
+                    <td style="padding: 0.75rem;">Identity (NFT)</td>
+                    <td style="padding: 0.75rem;">No</td>
+                    <td style="padding: 0.75rem;">No (soulbound)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem;"><strong>VOUCHER</strong></td>
+                    <td style="padding: 0.75rem;">Temporary Access</td>
+                    <td style="padding: 0.75rem;">Yes</td>
+                    <td style="padding: 0.75rem;">Yes</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="token-section">
+        <h2>Path to Permanent Access</h2>
+        <p>
+            VOUCHER tokens are intentionally temporary. If you find you love using the protocol, here's your path
+            to permanent access:
+        </p>
+        <ul>
+            <li><strong>Earn TRUST:</strong> Contribute to the protocol and accumulate TRUST tokens</li>
+            <li><strong>Become a Member:</strong> Once you have sufficient TRUST, join as a full protocol member</li>
+            <li><strong>Permanent Features:</strong> Enjoy all features permanently (no expiration worries)</li>
+            <li><strong>Governance Role:</strong> With higher TRUST, become an active voice in protocol decisions</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Related Tokens</h2>
+        <p>VOUCHER works alongside other protocol tokens:</p>
+        <ul>
+            <li><strong>TALLY:</strong> Permanent value transfer token</li>
+            <li><strong>TRUST:</strong> Permanent reputation token</li>
+            <li><strong>COVENANT:</strong> Permanent identity/role tokens (NFTs)</li>
+        </ul>
+    </div>
+
+    <div class="nav-links">
+        <a href="/token-covenant.html">← Previous: COVENANT</a>
+        <a href="/tokens.html">Back to Tokens</a>
+        <a href="/uses.html">Token Uses Overview</a>
+    </div>
+</div>
+
+<script src="scripts/header.js"></script>
+</body>
+</html>

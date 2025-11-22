@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVENANT Token - Soulbound Commitments & Governance NFTs</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        .token-container {
+            max-width: 900px;
+            margin: 120px auto 0;
+            padding: 2rem;
+            line-height: 1.8;
+        }
+
+        .token-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border-radius: 12px;
+        }
+
+        .token-icon {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+
+        .token-info h1 {
+            font-size: 2.5rem;
+            color: #7c3aed;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .token-symbol {
+            font-size: 1.25rem;
+            color: #06b6d4;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .token-tagline {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .token-section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border-left: 4px solid #7c3aed;
+            border-radius: 8px;
+        }
+
+        .token-section h2 {
+            color: #7c3aed;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .token-section h3 {
+            color: #06b6d4;
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .token-section p {
+            color: var(--text);
+            font-size: 1.05rem;
+            margin: 1rem 0;
+        }
+
+        .token-section ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .token-section li {
+            color: var(--text);
+            font-size: 1.05rem;
+            margin: 0.5rem 0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #7c3aed15, #06b6d415);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #7c3aed;
+        }
+
+        .use-case {
+            display: grid;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .use-case-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            border-left: 3px solid #7c3aed;
+        }
+
+        .use-case-title {
+            font-weight: 600;
+            color: #7c3aed;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 3rem 0 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            padding: 0.75rem 1.5rem;
+            background: #7c3aed;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: #6d28d9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<div class="token-container">
+    <div class="token-header">
+        <img src="assets/images/token-covenant.svg" alt="COVENANT Token" class="token-icon">
+        <div class="token-info">
+            <div class="token-symbol">COVENANT</div>
+            <h1>COVENANT Token</h1>
+            <div class="token-tagline">Soulbound NFTs & Binding Commitments (SOULBOUND)</div>
+        </div>
+    </div>
+
+    <div class="token-section">
+        <h2>What is COVENANT?</h2>
+        <p>
+            COVENANT tokens are <strong>soulbound NFTs</strong> — unique digital assets permanently bound to your
+            wallet that represent binding commitments, roles, and governance participation within the Convergence
+            Protocol. Unlike tradeable tokens, COVENANT tokens cannot be transferred, sold, or gifted. They stay
+            with you and only you, making them uniquely suited for representing non-transferable rights, roles,
+            and verified memberships.
+        </p>
+        <p>
+            Each COVENANT is a distinct NFT with its own metadata, issuance date, and associated permissions.
+            They represent a deep, personal commitment to the protocol and the values it embodies.
+        </p>
+    </div>
+
+    <div class="token-section">
+        <h2>Core Purpose</h2>
+        <ul>
+            <li><strong>Soulbound Identity:</strong> Prove membership, roles, and affiliations that are permanently yours</li>
+            <li><strong>Governance Participation:</strong> Hold the right to participate in critical protocol decisions</li>
+            <li><strong>Access Rights:</strong> Unlock exclusive features, content, and protocol layers based on COVENANT holdings</li>
+            <li><strong>Verified Credentials:</strong> Demonstrate verifiable commitments (W3C credentials) without central authority</li>
+            <li><strong>Historical Record:</strong> Create an immutable record of your contributions and roles over time</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Key Characteristics</h2>
+        <div class="highlight">
+            <h3 style="margin-top: 0;">Soulbound Properties</h3>
+            <ul>
+                <li><strong>Non-transferable:</strong> Cannot be sold, gifted, or moved to another wallet</li>
+                <li><strong>Unique Identity:</strong> Each COVENANT is a distinct NFT with individual ID and metadata</li>
+                <li><strong>Permanent Record:</strong> Once issued, remains on your address permanently</li>
+                <li><strong>Verifiable On-chain:</strong> Instantly verifiable by any smart contract or application</li>
+                <li><strong>Revocable:</strong> Issuer can revoke (you lose rights), but transaction is publicly visible</li>
+            </ul>
+        </div>
+
+        <h3>Types of COVENANT</h3>
+        <ul>
+            <li><strong>Genesis Covenant:</strong> Granted to original protocol founders and contributors</li>
+            <li><strong>Role Covenant:</strong> Represents a specific role or responsibility (validator, moderator, etc.)</li>
+            <li><strong>Membership Covenant:</strong> Confirms participation in a community or working group</li>
+            <li><strong>Achievement Covenant:</strong> Proves completion of significant milestones or accomplishments</li>
+            <li><strong>Governance Covenant:</strong> Grants voting power in specific governance domains</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Use Cases</h2>
+        <div class="use-case">
+            <div class="use-case-item">
+                <div class="use-case-title">Verifiable Credentials</div>
+                <p>Use COVENANT NFTs as W3C-compliant credentials to prove identity, qualifications, and roles without revealing personal data.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Governance Rights</div>
+                <p>Hold specific COVENANT tokens to earn voting rights in governance decisions affecting their domain.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Role Assignment</div>
+                <p>Protocol assigns COVENANT tokens to network validators, moderators, stewards, and other key roles.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Achievement Badges</div>
+                <p>Earn COVENANT NFTs as proof of completing significant achievements, contributions, or learning milestones.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Community Membership</div>
+                <p>Join specific working groups, communities, or circles by receiving a unique COVENANT token for that group.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Smart Contract Gates</div>
+                <p>Smart contracts can check for COVENANT ownership to gate access to specific functions, features, or protocols.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="token-section">
+        <h2>W3C Verifiable Credentials Integration</h2>
+        <p>
+            COVENANT tokens integrate with the W3C Verifiable Credentials Data Model, enabling:
+        </p>
+        <ul>
+            <li><strong>Decentralized Identity:</strong> Prove facts about yourself without relying on central authorities</li>
+            <li><strong>Privacy Preservation:</strong> Selective disclosure — reveal only what's necessary</li>
+            <li><strong>Interoperability:</strong> Compatible with other blockchain and identity systems</li>
+            <li><strong>Instant Verification:</strong> Any party can verify COVENANT credentials instantly on-chain</li>
+            <li><strong>User Controlled:</strong> You control your COVENANT tokens; they never move from your wallet</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Why Soulbound?</h2>
+        <p>
+            Soulbound NFTs solve a critical problem in blockchain: how do you verify something non-transferable?
+            Traditional NFTs can be traded, stolen, or faked as "proof" by different holders. Soulbound tokens
+            permanently bind to an address, ensuring that when you see someone holds a COVENANT token, it means
+            that person actually has that role, achievement, or commitment — not just that they bought it on the market.
+        </p>
+        <p>
+            This makes COVENANT tokens perfect for:
+        </p>
+        <ul>
+            <li>Governance roles that shouldn't be tradeable</li>
+            <li>Professional credentials and qualifications</li>
+            <li>Verified group memberships</li>
+            <li>Non-transferable achievements and milestones</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>COVENANT & Genesis NFTs</h2>
+        <p>
+            The Genesis NFT (COVENANT token ID #1) is the most prestigious COVENANT, representing original founders
+            and core contributors. Genesis holders have special voting rights and access within the protocol.
+        </p>
+        <p>
+            Check if you hold a Genesis NFT in the wallet details section of the header when connected!
+        </p>
+    </div>
+
+    <div class="token-section">
+        <h2>Related Tokens</h2>
+        <p>COVENANT complements other protocol tokens:</p>
+        <ul>
+            <li><strong>TALLY:</strong> Tradeable value token for transactions</li>
+            <li><strong>TRUST:</strong> Reputation token for governance weight</li>
+            <li><strong>VOUCHER:</strong> Temporary access rights (time-limited)</li>
+        </ul>
+    </div>
+
+    <div class="nav-links">
+        <a href="/token-trust.html">← Previous: TRUST</a>
+        <a href="/tokens.html">Back to Tokens</a>
+        <a href="/token-voucher.html">Next: VOUCHER →</a>
+    </div>
+</div>
+
+<script src="scripts/header.js"></script>
+</body>
+</html>

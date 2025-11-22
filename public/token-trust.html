@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRUST Token - Reputation & Long-term Alignment</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        .token-container {
+            max-width: 900px;
+            margin: 120px auto 0;
+            padding: 2rem;
+            line-height: 1.8;
+        }
+
+        .token-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border-radius: 12px;
+        }
+
+        .token-icon {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+
+        .token-info h1 {
+            font-size: 2.5rem;
+            color: #10b981;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .token-symbol {
+            font-size: 1.25rem;
+            color: #06b6d4;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .token-tagline {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .token-section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border-left: 4px solid #10b981;
+            border-radius: 8px;
+        }
+
+        .token-section h2 {
+            color: #10b981;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .token-section h3 {
+            color: #06b6d4;
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .token-section p {
+            color: var(--text);
+            font-size: 1.05rem;
+            margin: 1rem 0;
+        }
+
+        .token-section ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .token-section li {
+            color: var(--text);
+            font-size: 1.05rem;
+            margin: 0.5rem 0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #10b98115, #06b6d415);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #10b981;
+        }
+
+        .use-case {
+            display: grid;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .use-case-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            border-left: 3px solid #10b981;
+        }
+
+        .use-case-title {
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 3rem 0 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            padding: 0.75rem 1.5rem;
+            background: #10b981;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<div class="token-container">
+    <div class="token-header">
+        <img src="assets/images/token-trust.svg" alt="TRUST Token" class="token-icon">
+        <div class="token-info">
+            <div class="token-symbol">TRUST</div>
+            <h1>TRUST Token</h1>
+            <div class="token-tagline">Reputation & Long-term Ecosystem Alignment</div>
+        </div>
+    </div>
+
+    <div class="token-section">
+        <h2>What is TRUST?</h2>
+        <p>
+            TRUST is a reputation and commitment token that represents your long-term stake and alignment with
+            the Convergence Protocol. Unlike TALLY which facilitates transactions, TRUST accumulates through
+            sustained participation and locked commitment, signaling to the ecosystem that you're a dedicated
+            stakeholder invested in the protocol's success.
+        </p>
+        <p>
+            TRUST is earned slowly and intentionally. It cannot be easily sold or transferred, making it a true
+            indicator of long-term commitment rather than speculative value.
+        </p>
+    </div>
+
+    <div class="token-section">
+        <h2>Core Purpose</h2>
+        <ul>
+            <li><strong>Reputation Signaling:</strong> Demonstrate commitment and trustworthiness within the ecosystem</li>
+            <li><strong>Governance Weight:</strong> Hold more influence in protocol decisions proportional to TRUST holdings</li>
+            <li><strong>Unlock Premium Access:</strong> Access exclusive features, advanced tools, and privileged information</li>
+            <li><strong>Collateral:</strong> Use TRUST as collateral for loans, discounts, or other financial instruments</li>
+            <li><strong>AI-Human Trust Bridges:</strong> Enable meaningful coordination with AI agents who need reputation verification</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>How TRUST Works</h2>
+        <div class="highlight">
+            <h3 style="margin-top: 0;">Earning TRUST</h3>
+            <p>
+                TRUST is earned through sustained, high-quality contributions to the protocol ecosystem:
+            </p>
+            <ul>
+                <li>Consistent participation and uptime in network activities</li>
+                <li>Quality contributions validated by the community or automated systems</li>
+                <li>Long-term lockup of TALLY (converting to TRUST)</li>
+                <li>Building and maintaining valuable services within the ecosystem</li>
+                <li>Earning positive reputation through governance votes</li>
+            </ul>
+        </div>
+
+        <h3>TRUST vs TALLY</h3>
+        <ul>
+            <li><strong>TALLY:</strong> Liquid, tradeable, used for transactions (like money)</li>
+            <li><strong>TRUST:</strong> Semi-liquid, locked/escrowed, used for governance (like equity/shares)</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Key Features</h2>
+        <div class="highlight">
+            <h3 style="margin-top: 0;">Mechanics</h3>
+            <ul>
+                <li><strong>Time-locked:</strong> Gradually unlock over periods of commitment (typically 1-4 years)</li>
+                <li><strong>Non-transferable by default:</strong> Locked to demonstrate real commitment</li>
+                <li><strong>Governance enabled:</strong> Can be used for voting immediately upon receipt</li>
+                <li><strong>Burnable:</strong> Users can burn TRUST to unlock exclusive content and protocol features</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="token-section">
+        <h2>Use Cases</h2>
+        <div class="use-case">
+            <div class="use-case-item">
+                <div class="use-case-title">Governance Participation</div>
+                <p>Vote on protocol improvements, feature proposals, and governance decisions with voting power proportional to your TRUST holdings.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Access Premium Features</div>
+                <p>Burn small amounts of TRUST to unlock advanced analytics, exclusive documentation, or priority support.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Reputation Certification</div>
+                <p>Display your TRUST balance publicly as a signal of commitment, trustworthiness, and long-term alignment.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Validator Eligibility</div>
+                <p>Meet minimum TRUST requirements to become a network validator or trusted protocol participant.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">AI-Human Collaboration</div>
+                <p>Use TRUST balance to establish trust with AI agents for high-stakes coordination and decision-making.</p>
+            </div>
+            <div class="use-case-item">
+                <div class="use-case-title">Collateral & Lending</div>
+                <p>Lock TRUST as collateral for loans or financial instruments within DeFi protocols.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="token-section">
+        <h2>The Trust Curve</h2>
+        <p>
+            TRUST follows a progressive, non-linear curve. Early participants who commit longer receive better rates,
+            creating incentives for long-term ecosystem participation. As TRUST matures, governance voting power and
+            feature access scale, rewarding sustained commitment.
+        </p>
+        <p>
+            This design philosophy ensures that those most aligned with the protocol's long-term success have the
+            most influence in its direction.
+        </p>
+    </div>
+
+    <div class="token-section">
+        <h2>Earning TRUST Through Convergence</h2>
+        <p>
+            TRUST accumulates through:</p>
+        <ul>
+            <li><strong>Knowledge Contribution:</strong> Share expertise and insights that help the protocol grow</li>
+            <li><strong>Code Commits:</strong> Contribute code improvements with positive community validation</li>
+            <li><strong>Community Building:</strong> Help onboard, mentor, and support new ecosystem participants</li>
+            <li><strong>Governance Service:</strong> Participate actively in proposals and voting</li>
+            <li><strong>Time & Lockup:</strong> Hold TALLY locked for extended periods to earn TRUST over time</li>
+        </ul>
+    </div>
+
+    <div class="token-section">
+        <h2>Related Tokens</h2>
+        <p>TRUST complements other protocol tokens:</p>
+        <ul>
+            <li><strong>TALLY:</strong> For value transfer, payments, and liquidity</li>
+            <li><strong>COVENANT:</strong> For soulbound commitments and binding agreements</li>
+            <li><strong>VOUCHER:</strong> For temporary access rights and time-limited permissions</li>
+        </ul>
+    </div>
+
+    <div class="nav-links">
+        <a href="/token-tally.html">← Previous: TALLY</a>
+        <a href="/tokens.html">Back to Tokens</a>
+        <a href="/token-covenant.html">Next: COVENANT →</a>
+    </div>
+</div>
+
+<script src="scripts/header.js"></script>
+</body>
+</html>
