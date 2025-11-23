@@ -1,0 +1,56 @@
+{
+  "label": "OG Hott Wallet",
+  "created_at": "2025-11-23T00:10:28.852353+00:00",
+  "networks": {
+    "bitcoin": {
+      "account_0": {
+        "path": "m/44'/0'/0'/0/0",
+        "public_key": "N/A"
+      },
+      "account_1": {
+        "path": "m/44'/0'/0'/0/1",
+        "public_key": "N/A"
+      }
+    },
+    "ethereum": {
+      "account_0": {
+        "path": "m/44'/60'/0'/0/0",
+        "public_key": "N/A"
+      },
+      "account_1": {
+        "path": "m/44'/60'/0'/0/1",
+        "public_key": "N/A"
+      }
+    },
+    "litecoin": {
+      "account_0": {
+        "path": "m/44'/2'/0'/0/0",
+        "public_key": "N/A"
+      },
+      "account_1": {
+        "path": "m/44'/2'/0'/0/1",
+        "public_key": "N/A"
+      }
+    },
+    "dogecoin": {
+      "account_0": {
+        "path": "m/44'/3'/0'/0/0",
+        "public_key": "N/A"
+      },
+      "account_1": {
+        "path": "m/44'/3'/0'/0/1",
+        "public_key": "N/A"
+      }
+    },
+    "bch": {
+      "account_0": {
+        "path": "m/44'/145'/0'/0/0",
+        "public_key": "N/A"
+      },
+      "account_1": {
+        "path": "m/44'/145'/0'/0/1",
+        "public_key": "N/A"
+      }
+    }
+  }
+}

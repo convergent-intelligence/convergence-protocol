@@ -5,7 +5,17 @@
   "scripts": {
     "test": "hardhat test",
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "generate-partner-seed": "node scripts/governance/generate-partner-seed.js",
+    "partner-status": "node scripts/governance/generate-partner-seed.js status",
+    "partner-security-log": "node scripts/governance/generate-partner-seed.js security-log",
+    "partner-declarations": "node scripts/governance/generate-partner-seed.js intent-declarations",
+    "show-partner-seed": "node scripts/governance/show-partner-seed.js",
+    "show-seed-plain": "node scripts/governance/show-partner-seed.js $npm_config_wallet plain",
+    "show-seed-numbered": "node scripts/governance/show-partner-seed.js $npm_config_wallet numbered",
+    "show-seed-grid": "node scripts/governance/show-partner-seed.js $npm_config_wallet grid",
+    "show-seed-etch": "node scripts/governance/show-partner-seed.js $npm_config_wallet etch",
+    "show-seed-all": "node scripts/governance/show-partner-seed.js $npm_config_wallet all"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +24,7 @@
   "dependencies": {
     "@uniswap/sdk-core": "^7.9.0",
     "@uniswap/v3-sdk": "^3.26.0",
+    "bip39": "^3.1.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "mongodb": "^6.20.0",

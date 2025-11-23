@@ -1,0 +1,48 @@
+{
+  "name": "convergence-protocol-dashboard",
+  "version": "1.0.0",
+  "description": "Real-time reserve dashboard for Convergence Protocol with multi-chain tracking and zero-fee TALLY exchange",
+  "main": "server.js",
+  "author": "Convergence Protocol",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js",
+    "monitor": "node server.js",
+    "test": "echo 'Tests not yet implemented'",
+    "lint": "echo 'Linting not yet configured'",
+    "build": "echo 'Build complete'"
+  },
+  "keywords": [
+    "convergence",
+    "blockchain",
+    "reserve",
+    "dashboard",
+    "ethereum",
+    "bitcoin",
+    "multi-chain",
+    "tally",
+    "deFi"
+  ],
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.7.1",
+    "express": "^4.18.2",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/convergence-protocol/convergence-protocol.git"
+  },
+  "bugs": {
+    "url": "https://github.com/convergence-protocol/convergence-protocol/issues"
+  },
+  "homepage": "https://github.com/convergence-protocol/convergence-protocol#readme"
+}

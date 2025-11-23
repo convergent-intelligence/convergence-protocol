@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convergence Protocol - Reserve Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.1/dist/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1>🔷 Convergence Protocol Reserve Dashboard</h1>
+                <div class="header-info">
+                    <span class="status-indicator" id="connectionStatus">●  Connecting...</span>
+                    <span class="timestamp" id="lastUpdate">Last updated: --:--:--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="dashboard-nav">
+            <button class="nav-tab active" data-tab="overview">Reserve Overview</button>
+            <button class="nav-tab" data-tab="tally">TALLY Metrics</button>
+            <button class="nav-tab" data-tab="donate">Donate</button>
+            <button class="nav-tab" data-tab="exchange">Exchange TALLY</button>
+            <button class="nav-tab" data-tab="burn">Burn for Services</button>
+            <button class="nav-tab" data-tab="transactions">Transactions</button>
+            <button class="nav-tab" data-tab="nfts">Holdings</button>
+            <button class="nav-tab" data-tab="operator">Operator Control</button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="dashboard-content">
+
+            <!-- 1. RESERVE OVERVIEW TAB -->
+            <section id="overview-tab" class="tab-content active">
+                <div class="overview-grid">
+                    <!-- Total Reserve Value -->
+                    <div class="metric-card large">
+                        <h2>Total Reserve Value</h2>
+                        <div class="metric-value" id="totalReserveUSD">$0.00</div>
+                        <div class="metric-detail">USD Value (All Chains)</div>
+                        <div class="metric-trend" id="reserveTrend">↑ +$0 (0%) 24h</div>
+                    </div>
+
+                    <!-- TALLY Circulation -->
+                    <div class="metric-card large">
+                        <h2>TALLY in Circulation</h2>
+                        <div class="metric-value" id="tallyCirculation">0</div>
+                        <div class="metric-detail">Active TALLY Tokens</div>
+                        <div class="metric-trend" id="tallyTrend">↑ +0 (0%) 24h</div>
+                    </div>
+
+                    <!-- TALLY Price -->
+                    <div class="metric-card large">
+                        <h2>TALLY Price</h2>
+                        <div class="metric-value" id="tallyPrice">$0.00</div>
+                        <div class="metric-detail">USD per TALLY</div>
+                        <div class="metric-trend" id="priceTrend">↑ +$0.00 (0%) 24h</div>
+                    </div>
+
+                    <!-- Backing Ratio -->
+                    <div class="metric-card">
+                        <h2>Backing Ratio</h2>
+                        <div class="metric-value" id="backingRatio">0%</div>
+                        <div class="metric-detail">USD Reserve per TALLY</div>
+                    </div>
+
+                    <!-- Health Status -->
+                    <div class="metric-card">
+                        <h2>Reserve Health</h2>
+                        <div class="metric-value health-status" id="healthStatus">●  Calculating...</div>
+                        <div class="metric-detail" id="healthDetail">Initializing...</div>
+                    </div>
+
+                    <!-- Last Slippage -->
+                    <div class="metric-card">
+                        <h2>Recent Slippage</h2>
+                        <div class="metric-value" id="lastSlippage">0.00%</div>
+                        <div class="metric-detail">Last Mint Operation</div>
+                    </div>
+                </div>
+
+                <!-- Reserve by Chain -->
+                <div class="reserve-breakdown">
+                    <h2>Reserve Breakdown by Chain</h2>
+                    <div class="chain-cards">
+                        <div class="chain-card">
+                            <div class="chain-icon">₿</div>
+                            <h3>Bitcoin</h3>
+                            <div class="chain-value" id="bitcoinValue">$0.00</div>
+                            <div class="chain-amount" id="bitcoinAmount">0 BTC</div>
+                            <div class="chain-percentage" id="bitcoinPercent">0%</div>
+                        </div>
+
+                        <div class="chain-card">
+                            <div class="chain-icon">Ξ</div>
+                            <h3>Ethereum</h3>
+                            <div class="chain-value" id="ethereumValue">$0.00</div>
+                            <div class="chain-amount" id="ethereumAmount">0 ETH</div>
+                            <div class="chain-percentage" id="ethereumPercent">0%</div>
+                        </div>
+
+                        <div class="chain-card">
+                            <div class="chain-icon">🔗</div>
+                            <h3>Tron</h3>
+                            <div class="chain-value" id="tronValue">$0.00</div>
+                            <div class="chain-amount" id="tronAmount">0 TRX</div>
+                            <div class="chain-percentage" id="tronPercent">0%</div>
+                        </div>
+
+                        <div class="chain-card">
+                            <div class="chain-icon">◎</div>
+                            <h3>Solana</h3>
+                            <div class="chain-value" id="solanaValue">$0.00</div>
+                            <div class="chain-amount" id="solanaAmount">0 SOL</div>
+                            <div class="chain-percentage" id="solanaPercent">0%</div>
+                        </div>
+
+                        <div class="chain-card">
+                            <div class="chain-icon">⚛</div>
+                            <h3>Cosmos</h3>
+                            <div class="chain-value" id="cosmosValue">$0.00</div>
+                            <div class="chain-amount" id="cosmosAmount">0 ATOM</div>
+                            <div class="chain-percentage" id="cosmosPercent">0%</div>
+                        </div>
+
+                        <div class="chain-card">
+                            <div class="chain-icon">🐕</div>
+                            <h3>Dogecoin</h3>
+                            <div class="chain-value" id="dogecoinValue">$0.00</div>
+                            <div class="chain-amount" id="dogecoinAmount">0 DOGE</div>
+                            <div class="chain-percentage" id="dogecoinPercent">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reserve Composition Chart -->
+                <div class="chart-container">
+                    <h2>Reserve Composition (24h)</h2>
+                    <canvas id="reserveChart"></canvas>
+                </div>
+            </section>
+
+            <!-- 2. TALLY METRICS TAB -->
+            <section id="tally-tab" class="tab-content">
+                <div class="metrics-grid">
+                    <div class="metric-card large">
+                        <h2>TALLY Supply</h2>
+                        <div class="metric-value" id="tallySupply">0</div>
+                        <div class="metric-detail">Total TALLY Issued</div>
+                    </div>
+
+                    <div class="metric-card large">
+                        <h2>TALLY Burned</h2>
+                        <div class="metric-value" id="tallyBurned">0</div>
+                        <div class="metric-detail">TALLY Destroyed for Services</div>
+                    </div>
+
+                    <div class="metric-card large">
+                        <h2>Burn Rewards This Week</h2>
+                        <div class="metric-value" id="burnRewards">0 TRUST</div>
+                        <div class="metric-detail">TRUST Distributed</div>
+                    </div>
+                </div>
+
+                <!-- TALLY Price History -->
+                <div class="chart-container">
+                    <h2>TALLY Price History (24h)</h2>
+                    <canvas id="tallyPriceChart"></canvas>
+                </div>
+
+                <!-- Burn Rewards Breakdown -->
+                <div class="burn-breakdown">
+                    <h2>Burn Service Types</h2>
+                    <div class="burn-types">
+                        <div class="burn-type">
+                            <h3>Governance Vote</h3>
+                            <p class="burn-rate">1 TALLY = 1 TRUST</p>
+                            <p class="burn-desc">Vote on protocol decisions</p>
+                        </div>
+                        <div class="burn-type">
+                            <h3>Premium NFT Eval</h3>
+                            <p class="burn-rate">1 TALLY = 5 TRUST</p>
+                            <p class="burn-desc">Priority AI evaluation (12h)</p>
+                        </div>
+                        <div class="burn-type">
+                            <h3>Accelerated Yield</h3>
+                            <p class="burn-rate">1 TALLY = 2 TRUST</p>
+                            <p class="burn-desc">2x yield for 30 days</p>
+                        </div>
+                        <div class="burn-type">
+                            <h3>Proposal Creation</h3>
+                            <p class="burn-rate">1 TALLY = 10 TRUST</p>
+                            <p class="burn-desc">Create governance proposal</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. DONATION PORTAL TAB -->
+            <section id="donate-tab" class="tab-content">
+                <div class="donation-intro">
+                    <h2>Donate to Convergence Protocol</h2>
+                    <p>Support our multi-chain treasury. Your donation is instantly converted to TALLY tokens at current exchange rate.</p>
+                </div>
+
+                <div class="network-selector">
+                    <h3>Select Network</h3>
+                    <div class="network-buttons">
+                        <button class="network-btn active" data-network="bitcoin">
+                            <span class="network-icon">₿</span> Bitcoin
+                        </button>
+                        <button class="network-btn" data-network="ethereum">
+                            <span class="network-icon">Ξ</span> Ethereum
+                        </button>
+                        <button class="network-btn" data-network="tron">
+                            <span class="network-icon">🔗</span> Tron
+                        </button>
+                        <button class="network-btn" data-network="solana">
+                            <span class="network-icon">◎</span> Solana
+                        </button>
+                        <button class="network-btn" data-network="cosmos">
+                            <span class="network-icon">⚛</span> Cosmos
+                        </button>
+                        <button class="network-btn" data-network="dogecoin">
+                            <span class="network-icon">🐕</span> Dogecoin
+                        </button>
+                    </div>
+                </div>
+
+                <div class="donation-display" id="donationDisplay">
+                    <div class="donation-qr">
+                        <h3 id="donationNetworkName">Bitcoin Donation Address</h3>
+                        <div id="qrCode" class="qr-code-container"></div>
+                    </div>
+
+                    <div class="donation-info">
+                        <div class="donation-field">
+                            <label>Address</label>
+                            <div class="address-display">
+                                <input type="text" id="donationAddress" readonly class="address-input">
+                                <button class="copy-btn" onclick="copyToClipboard('donationAddress')">📋 Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="donation-field">
+                            <label>Direct Link</label>
+                            <div class="address-display">
+                                <input type="text" id="donationLink" readonly class="address-input">
+                                <button class="copy-btn" onclick="copyToClipboard('donationLink')">📋 Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="donation-estimator">
+                            <label>You send</label>
+                            <input type="number" id="donationAmount" placeholder="0.00" class="amount-input">
+                            <select id="donationCurrency" class="currency-select">
+                                <option value="USD">USD</option>
+                                <option value="native">Native</option>
+                            </select>
+                        </div>
+
+                        <div class="donation-result">
+                            <div class="result-line">
+                                <span>Fee (0%):</span>
+                                <span id="donationFee">$0.00</span>
+                            </div>
+                            <div class="result-line">
+                                <span>You receive TALLY:</span>
+                                <span id="donationTallyReceive" class="highlight">0 TALLY</span>
+                            </div>
+                            <div class="result-line">
+                                <span>Price at donation:</span>
+                                <span id="donationPriceAtDonation">$0.00/TALLY</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="donation-faq">
+                    <h3>FAQ</h3>
+                    <div class="faq-item">
+                        <strong>How long does it take to receive TALLY?</strong>
+                        <p>Typically 1-3 minutes after blockchain confirmation. We update in real-time to minimize slippage.</p>
+                    </div>
+                    <div class="faq-item">
+                        <strong>Is there a fee?</strong>
+                        <p>No! Donations are 0% fee. 100% of your donation converts to TALLY.</p>
+                    </div>
+                    <div class="faq-item">
+                        <strong>What happens to my donation?</strong>
+                        <p>Added to our multi-chain treasury. View reserves in real-time above. Every chain manages your funds with military-grade security.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. EXCHANGE TAB -->
+            <section id="exchange-tab" class="tab-content">
+                <div class="exchange-container">
+                    <h2>TALLY Exchange (0% Fees)</h2>
+                    <p class="exchange-subtitle">Buy or sell TALLY at current market rate with zero trading fees</p>
+
+                    <div class="exchange-box">
+                        <!-- Buy TALLY -->
+                        <div class="exchange-side buy-side">
+                            <h3>Buy TALLY</h3>
+                            <div class="exchange-input-group">
+                                <label>Send (Stablecoin)</label>
+                                <div class="input-with-max">
+                                    <input type="number" id="buyAmount" placeholder="0.00" class="exchange-amount-input">
+                                    <select id="buyStablecoin" class="stablecoin-select">
+                                        <option>USDC</option>
+                                        <option>USDT</option>
+                                        <option>BUSD</option>
+                                    </select>
+                                </div>
+                                <button class="max-btn">MAX</button>
+                            </div>
+
+                            <div class="exchange-arrow">↓</div>
+
+                            <div class="exchange-input-group">
+                                <label>Receive (TALLY)</label>
+                                <input type="text" id="buyReceive" readonly placeholder="0.00" class="exchange-amount-input readonly">
+                            </div>
+
+                            <div class="exchange-details">
+                                <div class="detail-line">
+                                    <span>Price:</span>
+                                    <span id="exchangePrice">$0.00</span>
+                                </div>
+                                <div class="detail-line">
+                                    <span>Fee:</span>
+                                    <span>0%</span>
+                                </div>
+                                <div class="detail-line">
+                                    <span>You save:</span>
+                                    <span id="buySavings">$0.00</span>
+                                </div>
+                            </div>
+
+                            <button class="exchange-btn buy-btn">Connect Wallet & Buy</button>
+                        </div>
+
+                        <!-- Sell TALLY -->
+                        <div class="exchange-side sell-side">
+                            <h3>Sell TALLY</h3>
+                            <div class="exchange-input-group">
+                                <label>Send (TALLY)</label>
+                                <div class="input-with-max">
+                                    <input type="number" id="sellAmount" placeholder="0.00" class="exchange-amount-input">
+                                </div>
+                                <button class="max-btn">MAX</button>
+                            </div>
+
+                            <div class="exchange-arrow">↓</div>
+
+                            <div class="exchange-input-group">
+                                <label>Receive (Stablecoin)</label>
+                                <div class="input-with-max">
+                                    <input type="text" id="sellReceive" readonly placeholder="0.00" class="exchange-amount-input readonly">
+                                    <select id="sellStablecoin" class="stablecoin-select">
+                                        <option>USDC</option>
+                                        <option>USDT</option>
+                                        <option>BUSD</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="exchange-details">
+                                <div class="detail-line">
+                                    <span>Price:</span>
+                                    <span id="sellExchangePrice">$0.00</span>
+                                </div>
+                                <div class="detail-line">
+                                    <span>Fee:</span>
+                                    <span>0%</span>
+                                </div>
+                                <div class="detail-line">
+                                    <span>You save:</span>
+                                    <span id="sellSavings">$0.00</span>
+                                </div>
+                            </div>
+
+                            <button class="exchange-btn sell-btn">Connect Wallet & Sell</button>
+                        </div>
+                    </div>
+
+                    <!-- Exchange Stats -->
+                    <div class="exchange-stats">
+                        <div class="stat">
+                            <h4>24h Volume</h4>
+                            <p id="exchangeVolume">$0.00</p>
+                        </div>
+                        <div class="stat">
+                            <h4>Buy/Sell Ratio</h4>
+                            <p id="buySellRatio">50/50</p>
+                        </div>
+                        <div class="stat">
+                            <h4>Liquidity</h4>
+                            <p id="liquidity">$0.00</p>
+                        </div>
+                        <div class="stat">
+                            <h4>Slippage</h4>
+                            <p id="slippagePercent" class="good">0.00%</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. BURN SERVICES TAB -->
+            <section id="burn-tab" class="tab-content">
+                <div class="burn-container">
+                    <h2>Burn TALLY for Services & TRUST</h2>
+                    <p class="burn-subtitle">Burn TALLY to unlock premium features and earn TRUST governance tokens</p>
+
+                    <div class="burn-services">
+                        <!-- Governance Vote -->
+                        <div class="burn-service-card">
+                            <h3>🗳️ Governance Vote</h3>
+                            <p class="service-desc">Participate in protocol decisions</p>
+                            <div class="burn-details">
+                                <div class="detail">
+                                    <span>Burn:</span>
+                                    <input type="number" id="burnGov" placeholder="0" class="burn-amount-input" min="1">
+                                    <span>TALLY</span>
+                                </div>
+                                <div class="detail">
+                                    <span>Earn:</span>
+                                    <span id="govReward" class="reward-amount">0</span>
+                                    <span>TRUST</span>
+                                </div>
+                            </div>
+                            <p class="burn-rate">Rate: 1 TALLY = 1 TRUST</p>
+                            <button class="burn-service-btn">Burn for Votes</button>
+                        </div>
+
+                        <!-- Premium NFT Evaluation -->
+                        <div class="burn-service-card">
+                            <h3>🎨 Premium NFT Eval</h3>
+                            <p class="service-desc">Priority AI evaluation (12h turnaround)</p>
+                            <div class="burn-details">
+                                <div class="detail">
+                                    <span>Burn:</span>
+                                    <input type="number" id="burnPremium" placeholder="0" class="burn-amount-input" min="1">
+                                    <span>TALLY</span>
+                                </div>
+                                <div class="detail">
+                                    <span>Earn:</span>
+                                    <span id="premiumReward" class="reward-amount">0</span>
+                                    <span>TRUST</span>
+                                </div>
+                            </div>
+                            <p class="burn-rate">Rate: 1 TALLY = 5 TRUST</p>
+                            <button class="burn-service-btn">Burn for Eval</button>
+                        </div>
+
+                        <!-- Accelerated Yield -->
+                        <div class="burn-service-card">
+                            <h3>📈 Accelerated Yield</h3>
+                            <p class="service-desc">2x yield farming for 30 days</p>
+                            <div class="burn-details">
+                                <div class="detail">
+                                    <span>Burn:</span>
+                                    <input type="number" id="burnAccel" placeholder="0" class="burn-amount-input" min="1">
+                                    <span>TALLY</span>
+                                </div>
+                                <div class="detail">
+                                    <span>Earn:</span>
+                                    <span id="accelReward" class="reward-amount">0</span>
+                                    <span>TRUST</span>
+                                </div>
+                            </div>
+                            <p class="burn-rate">Rate: 1 TALLY = 2 TRUST</p>
+                            <button class="burn-service-btn">Burn for Yield</button>
+                        </div>
+
+                        <!-- Create Proposal -->
+                        <div class="burn-service-card">
+                            <h3>💡 Create Proposal</h3>
+                            <p class="service-desc">Propose protocol changes</p>
+                            <div class="burn-details">
+                                <div class="detail">
+                                    <span>Burn:</span>
+                                    <input type="number" id="burnProposal" placeholder="0" class="burn-amount-input" min="1">
+                                    <span>TALLY</span>
+                                </div>
+                                <div class="detail">
+                                    <span>Earn:</span>
+                                    <span id="proposalReward" class="reward-amount">0</span>
+                                    <span>TRUST</span>
+                                </div>
+                            </div>
+                            <p class="burn-rate">Rate: 1 TALLY = 10 TRUST</p>
+                            <button class="burn-service-btn">Burn & Create</button>
+                        </div>
+                    </div>
+
+                    <!-- Burn History -->
+                    <div class="burn-history">
+                        <h3>Your Burn History (This Week)</h3>
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Service</th>
+                                    <th>TALLY Burned</th>
+                                    <th>TRUST Earned</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="burnHistoryBody">
+                                <tr>
+                                    <td colspan="5" class="no-data">No burns yet. Start burning to earn TRUST!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. TRANSACTIONS TAB -->
+            <section id="transactions-tab" class="tab-content">
+                <div class="transactions-container">
+                    <h2>Transaction History</h2>
+                    <div class="tx-filters">
+                        <input type="text" id="txSearch" placeholder="Search by address or hash..." class="search-input">
+                        <select id="txType" class="filter-select">
+                            <option value="">All Transactions</option>
+                            <option value="mint">TALLY Mints</option>
+                            <option value="burn">Burns</option>
+                            <option value="exchange">Exchanges</option>
+                            <option value="donation">Donations</option>
+                        </select>
+                        <select id="txChain" class="filter-select">
+                            <option value="">All Chains</option>
+                            <option value="bitcoin">Bitcoin</option>
+                            <option value="ethereum">Ethereum</option>
+                            <option value="tron">Tron</option>
+                            <option value="solana">Solana</option>
+                            <option value="cosmos">Cosmos</option>
+                            <option value="dogecoin">Dogecoin</option>
+                        </select>
+                    </div>
+
+                    <table class="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Type</th>
+                                <th>Chain</th>
+                                <th>Details</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Link</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsBody">
+                            <tr>
+                                <td colspan="7" class="no-data">Loading transactions...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 7. NFT HOLDINGS TAB -->
+            <section id="nfts-tab" class="tab-content">
+                <div class="nfts-container">
+                    <h2>NFT Holdings</h2>
+                    <div class="nft-filters">
+                        <input type="text" id="nftSearch" placeholder="Search by collection..." class="search-input">
+                        <select id="nftChain" class="filter-select">
+                            <option value="">All Chains</option>
+                            <option value="ethereum">Ethereum</option>
+                            <option value="tron">Tron</option>
+                            <option value="solana">Solana</option>
+                        </select>
+                        <select id="nftSort" class="filter-select">
+                            <option value="recent">Recently Added</option>
+                            <option value="value">Value High to Low</option>
+                            <option value="name">Name A-Z</option>
+                        </select>
+                    </div>
+
+                    <div class="nft-grid" id="nftGrid">
+                        <div class="nft-placeholder">
+                            <p>No NFTs in collection yet.</p>
+                            <p class="placeholder-sub">Donate NFTs to support Convergence Protocol!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. OPERATOR CONTROL TAB -->
+            <section id="operator-tab" class="tab-content operator-section">
+                <div class="operator-warning">
+                    ⚠️ <strong>Operator Only</strong> - This section requires hardware wallet authentication
+                </div>
+
+                <div class="operator-container">
+                    <h2>Operator Control Panel</h2>
+                    <p class="operator-subtitle">Hardware Wallet Integration: bc1qg9gvc63lj7ssdenjnem6kycpxde5u7fheypgpm</p>
+
+                    <div class="operator-auth">
+                        <button class="auth-btn" id="operatorAuthBtn">🔐 Connect Hardware Wallet</button>
+                        <span id="operatorAuthStatus" class="auth-status">Not connected</span>
+                    </div>
+
+                    <div class="operator-controls" id="operatorControls" style="display: none;">
+                        <!-- Update Reserve Balances -->
+                        <div class="operator-card">
+                            <h3>Update Reserve Balances</h3>
+                            <p>Update all chain reserves from hardware wallet data</p>
+                            <div class="operator-form">
+                                <div class="form-group">
+                                    <label>Bitcoin (BTC)</label>
+                                    <input type="number" id="opBTC" placeholder="0.00" step="0.00000001">
+                                </div>
+                                <div class="form-group">
+                                    <label>Ethereum (ETH)</label>
+                                    <input type="number" id="opETH" placeholder="0.00" step="0.00000001">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tron (TRX)</label>
+                                    <input type="number" id="opTRX" placeholder="0.00" step="0.00000001">
+                                </div>
+                                <div class="form-group">
+                                    <label>Solana (SOL)</label>
+                                    <input type="number" id="opSOL" placeholder="0.00" step="0.00000001">
+                                </div>
+                                <div class="form-group">
+                                    <label>Cosmos (ATOM)</label>
+                                    <input type="number" id="opATOM" placeholder="0.00" step="0.00000001">
+                                </div>
+                                <div class="form-group">
+                                    <label>Dogecoin (DOGE)</label>
+                                    <input type="number" id="opDOGE" placeholder="0.00" step="0.00000001">
+                                </div>
+                                <button class="operator-action-btn">🔄 Update All Reserves</button>
+                            </div>
+                        </div>
+
+                        <!-- Record Mint Operation -->
+                        <div class="operator-card">
+                            <h3>Record Mint Operation</h3>
+                            <p>Log a donation → TALLY mint with slippage tracking</p>
+                            <div class="operator-form">
+                                <div class="form-group">
+                                    <label>Recipient Address</label>
+                                    <input type="text" id="opRecipient" placeholder="0x...">
+                                </div>
+                                <div class="form-group">
+                                    <label>Donation Amount (USD)</label>
+                                    <input type="number" id="opDonationUSD" placeholder="1000.00">
+                                </div>
+                                <div class="form-group">
+                                    <label>TALLY Minted</label>
+                                    <input type="number" id="opTallyMinted" placeholder="0">
+                                </div>
+                                <button class="operator-action-btn">📝 Record Mint</button>
+                            </div>
+                        </div>
+
+                        <!-- Monitor Slippage -->
+                        <div class="operator-card">
+                            <h3>Slippage Monitoring</h3>
+                            <p>Real-time slippage detection and alerts</p>
+                            <div class="slippage-monitor">
+                                <div class="monitor-item">
+                                    <span>Current Slippage:</span>
+                                    <span id="opCurrentSlippage" class="slippage-value">0.00%</span>
+                                </div>
+                                <div class="monitor-item">
+                                    <span>Slippage Threshold:</span>
+                                    <input type="number" id="opThreshold" value="1.00" step="0.01" class="threshold-input">
+                                    <span>%</span>
+                                </div>
+                                <div class="monitor-item">
+                                    <span>Status:</span>
+                                    <span id="opSlippageStatus" class="status-good">● HEALTHY</span>
+                                </div>
+                                <button class="operator-action-btn">🚨 Set Threshold</button>
+                            </div>
+                        </div>
+
+                        <!-- Emergency Controls -->
+                        <div class="operator-card danger">
+                            <h3>⚠️ Emergency Controls</h3>
+                            <p>Critical operations (requires 2-of-3 multi-sig)</p>
+                            <div class="operator-form">
+                                <button class="operator-action-btn danger">🔴 Emergency Pause</button>
+                                <button class="operator-action-btn danger">🔒 Lock All Minting</button>
+                                <button class="operator-action-btn danger">📊 Trigger Full Audit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <p>Convergence Protocol © 2025 | Real-time reserve tracking | Multi-chain treasury | Community powered</p>
+            <p class="footer-links">
+                <a href="#" target="_blank">Documentation</a> |
+                <a href="#" target="_blank">GitHub</a> |
+                <a href="#" target="_blank">Discord</a> |
+                <a href="#" target="_blank">Status Page</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/dashboard.js"></script>
+    <script src="js/reserve-tracker.js"></script>
+    <script src="js/exchange-panel.js"></script>
+    <script src="js/donation-portal.js"></script>
+    <script src="js/monitoring.js"></script>
+</body>
+</html>
