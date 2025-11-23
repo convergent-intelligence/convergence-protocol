@@ -6,8 +6,8 @@
 const WALLET_IDENTITIES = {
     // Format: 'walletaddress': { identity, role, sshKeyFile, permissions }
 
-    // Example entries (replace with actual wallet addresses)
-    '0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB'.toLowerCase(): {
+    // Genesis Human - Deviation 2 (Active as of 2025-11-23)
+    '0x79Ed185e745084fBEf8A1FE837554dB372a74218'.toLowerCase(): {
         identity: 'genesis',
         role: 'founder',
         displayName: 'Genesis Human',
@@ -16,6 +16,10 @@ const WALLET_IDENTITIES = {
         hasAdmin: true,
         permissions: ['read_public', 'write_public', 'admin']
     },
+
+    // Genesis Human - Deviation 1 (Original - DEPRECATED as of 2025-11-23)
+    // Old address: 0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB
+    // Keys rotated to Deviation 2 due to security precautions
 
     // EXODUS - Daily Operations User
     // TODO: Replace with actual exodus wallet address

@@ -85,9 +85,11 @@ function requireWalletMatch(req, res, next) {
 
 /**
  * Check if wallet is Genesis Human (from config)
+ * Updated to Deviation 2 address as of 2025-11-23
  */
 function isGenesisHuman(walletAddress) {
-  return walletAddress.toLowerCase() === '0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB'.toLowerCase();
+  return walletAddress.toLowerCase() === '0x79Ed185e745084fBEf8A1FE837554dB372a74218'.toLowerCase();
+  // Previous Deviation 1: '0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB'
 }
 
 /**
