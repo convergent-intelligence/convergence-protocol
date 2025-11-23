@@ -1,9 +1,11 @@
 /**
  * Credentials API Handler
  * Serves encrypted team member credentials to authenticated users
+ * SECURITY: All endpoints now require EIP-191 signature verification
  */
 
 const CredentialManager = require('../../scripts/utils/credential-manager.js');
+const { verifySignature } = require('../middleware/web3-auth.js');
 
 let credentialManager;
 
@@ -15,16 +17,18 @@ function initializeCredentialManager() {
 }
 
 /**
- * GET /api/credentials/:walletAddress
+ * POST /api/credentials/:walletAddress
  * Returns encrypted credentials for a team member
+ * REQUIRED: walletAddress (URL param), message (body), signature (body)
  *
- * Query params:
- *   - signature: (optional) EIP-191 signature from wallet
- *   - message: (optional) message that was signed
+ * Body:
+ *   - message: Message that was signed (e.g., "I authorize credential access")
+ *   - signature: EIP-191 signature from wallet
  */
 async function getCredentials(req, res) {
   try {
     const { walletAddress } = req.params;
+    const { message, signature } = req.body;
 
     if (!walletAddress || !walletAddress.match(/^0x[a-f0-9]{40}$/i)) {
       return res.status(400).json({
@@ -32,6 +36,25 @@ async function getCredentials(req, res) {
         code: 'INVALID_WALLET'
       });
     }
+
+    // SECURITY: Require signature verification
+    if (!message || !signature) {
+      return res.status(401).json({
+        error: 'Signature verification required. Provide message and signature in request body.',
+        code: 'MISSING_SIGNATURE'
+      });
+    }
+
+    // Verify the signature matches the wallet
+    if (!verifySignature(message, signature, walletAddress)) {
+      return res.status(401).json({
+        error: 'Invalid signature - signature does not match wallet',
+        code: 'INVALID_SIGNATURE'
+      });
+    }
+
+    // Log access attempt
+    console.log(`[SECURITY] Credentials accessed for ${walletAddress.toLowerCase()}`);
 
     const manager = initializeCredentialManager();
 
@@ -45,7 +68,8 @@ async function getCredentials(req, res) {
       role: credentials.role,
       description: credentials.description,
       credentials: credentials.credentials,
-      verified_at: new Date().toISOString()
+      verified_at: new Date().toISOString(),
+      authenticated: true
     });
 
   } catch (error) {

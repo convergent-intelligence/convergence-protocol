@@ -1,0 +1,14 @@
+{
+  "label": "OG Hott Wallet",
+  "created_at": "2025-11-23T00:10:28.852353+00:00",
+  "seed_phrase_hash": "4ece0987d8aaecb4793b3c44d6d46d637aef5548787b8cd876efbe41ca9867ad",
+  "networks": [
+    "bitcoin",
+    "ethereum",
+    "litecoin",
+    "dogecoin",
+    "bch"
+  ],
+  "accounts_per_network": 2,
+  "filepath": "wallets/exodus/OG Hott Wallet.encrypted"
+}

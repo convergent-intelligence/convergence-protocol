@@ -1,0 +1,37 @@
+{
+  "partnerSeed": "[REDACTED]",
+  "seedCreatedAt": "2025-11-22T19:31:33.101Z",
+  "seedGeneratedBy": "0xdc20d621a88cb8908e8e7042431c55f0e9dac6fb",
+  "maxPartners": 65,
+  "currentPartners": 0,
+  "partnersList": [],
+  "governanceTokenAddress": null,
+  "intentDeclarations": [],
+  "securityLog": [
+    {
+      "eventType": "SEED_GENERATED",
+      "details": {
+        "initiator": "0xdc20d621a88cb8908e8e7042431c55f0e9dac6fb",
+        "timestamp": "2025-11-22T19:31:33.102Z",
+        "wordCount": 12,
+        "message": "Partner Seed generated for 65-partner governance collective"
+      },
+      "timestamp": "2025-11-22T19:31:33.102Z",
+      "severity": "CRITICAL"
+    },
+    {
+      "eventType": "PARTNER_SEED_ACCESSED",
+      "details": {
+        "accessedBy": "0xdc20d621a88cb8908e8e7042431c55f0e9dac6fb",
+        "timestamp": "2025-11-22T19:38:11.134Z"
+      },
+      "timestamp": "2025-11-22T19:38:11.134Z",
+      "severity": "MEDIUM"
+    }
+  ],
+  "distribution": {
+    "pendingDistribution": [],
+    "distributed": [],
+    "revoked": []
+  }
+}

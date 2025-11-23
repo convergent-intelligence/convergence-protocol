@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - Convergent Intelligence</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <style>
+        .settings-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .page-header {
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        .auth-required {
+            display: none;
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .auth-required.active {
+            display: block;
+        }
+
+        .auth-required h2 {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .auth-required p {
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .settings-section {
+            display: none;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .settings-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-card h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .settings-card h3::before {
+            content: '⚙️';
+            font-size: 1.25rem;
+        }
+
+        .settings-card h3.account::before {
+            content: '👤';
+        }
+
+        .settings-card h3.ssh::before {
+            content: '🔑';
+        }
+
+        .settings-card h3.onboarding::before {
+            content: '📖';
+        }
+
+        .settings-field {
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-field:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .field-label {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .field-value {
+            color: var(--text);
+            font-family: 'Monaco', 'Courier New', monospace;
+            word-break: break-all;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .copy-button {
+            padding: 0.4rem 0.8rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .copy-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .ssh-section {
+            background: rgba(37, 99, 235, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            border-radius: 0.3rem;
+            margin: 1rem 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .permission-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.2rem;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-indicator.active {
+            background: #10b981;
+        }
+
+        .status-indicator.inactive {
+            background: #ef4444;
+        }
+
+        .instructions-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0.4rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .instructions-box h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .instructions-box code {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.2rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .instructions-box ol, .instructions-box ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .instructions-box li {
+            margin: 0.5rem 0;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            border-radius: 0.3rem;
+            color: #059669;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            border-radius: 0.3rem;
+            color: #dc2626;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.25rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            color: var(--text);
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab-button:hover {
+            color: var(--primary);
+        }
+
+        .tab-button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body style="margin-top: 60px;">
+    <div id="header-placeholder"></div>
+
+    <main class="settings-container">
+        <div class="page-header">
+            <h1>Account Settings</h1>
+            <p>Manage your account, download SSH keys, and access onboarding guides</p>
+        </div>
+
+        <!-- Authentication Required Message -->
+        <div class="auth-required active" id="authRequired">
+            <h2>Wallet Connection Required</h2>
+            <p>Please connect your wallet to access account settings and download your SSH key.</p>
+            <button class="cta-button primary" id="connectWalletBtn">Connect Wallet</button>
+        </div>
+
+        <!-- Settings Tabs -->
+        <div class="settings-section" id="settingsSection">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="account">Account</button>
+                <button class="tab-button" data-tab="ssh">SSH Keys</button>
+                <button class="tab-button" data-tab="onboarding">Onboarding</button>
+            </div>
+
+            <!-- Account Tab -->
+            <div class="tab-content active" data-content="account">
+                <div class="settings-card account">
+                    <h3>Account Information</h3>
+
+                    <div class="settings-field">
+                        <span class="field-label">Wallet Address</span>
+                        <div class="field-value" id="walletAddressDisplay">-</div>
+                        <button class="copy-button" onclick="copyToClipboard('walletAddressDisplay')">Copy Address</button>
+                    </div>
+
+                    <div class="settings-field">
+                        <span class="field-label">Identity</span>
+                        <div class="field-value" id="identityDisplay">Loading...</div>
+                    </div>
+
+                    <div class="settings-field">
+                        <span class="field-label">Role</span>
+                        <div class="field-value" id="roleDisplay">-</div>
+                    </div>
+
+                    <div class="settings-field">
+                        <span class="field-label">Permissions</span>
+                        <div id="permissionsDisplay" style="padding-top: 0.5rem;">
+                            <span class="status-indicator inactive"></span> Loading permissions...
+                        </div>
+                    </div>
+
+                    <div class="settings-field">
+                        <span class="field-label">Admin Access</span>
+                        <div>
+                            <span class="status-indicator" id="adminStatusIndicator"></span>
+                            <span id="adminStatusText">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>⚙️ Session</h3>
+                    <p style="margin-bottom: 1rem;">You are currently logged in. To disconnect your wallet, use the disconnect button in the header.</p>
+                </div>
+            </div>
+
+            <!-- SSH Keys Tab -->
+            <div class="tab-content" data-content="ssh">
+                <div class="settings-card ssh">
+                    <h3>SSH Key Management</h3>
+
+                    <div class="error-message" id="sshError"></div>
+                    <div class="success-message" id="sshSuccess"></div>
+
+                    <div class="settings-field">
+                        <span class="field-label">Download Your SSH Public Key</span>
+                        <p style="color: var(--text); font-size: 0.95rem; margin: 0.5rem 0;">
+                            Your SSH public key is unique to your account. Use it to authenticate with the Convergence protocol servers.
+                        </p>
+                        <div class="ssh-section">
+                            <p><strong>🔐 Security Note:</strong> The public key is safe to share. Never share the private key.</p>
+                            <button class="btn btn-primary" id="downloadSSHBtn" style="width: 100%; margin-top: 1rem;">
+                                Download SSH Public Key
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-field">
+                        <span class="field-label">SSH Key Preview</span>
+                        <div class="instructions-box">
+                            <p>Unable to preview SSH key. Download it using the button above.</p>
+                            <p style="font-size: 0.85rem; color: #666; margin: 0;">
+                                Your key will be downloaded as <code>convergence-ssh-key.pub</code>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="settings-field">
+                        <span class="field-label">How to Use Your SSH Key</span>
+                        <div class="instructions-box">
+                            <h4>Quick Start:</h4>
+                            <ol>
+                                <li>Download your SSH public key above</li>
+                                <li>Add it to your <code>~/.ssh/authorized_keys</code> on the Convergence server</li>
+                                <li>Set proper permissions: <code>chmod 600 ~/.ssh/authorized_keys</code></li>
+                                <li>Connect using SSH: <code>ssh -i your-private-key user@convergence-server</code></li>
+                            </ol>
+                            <h4>For More Information:</h4>
+                            <p>See the <strong>Onboarding</strong> tab for detailed setup instructions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onboarding Tab -->
+            <div class="tab-content" data-content="onboarding">
+                <div class="settings-card onboarding">
+                    <h3>Getting Started</h3>
+
+                    <div class="settings-field">
+                        <span class="field-label">Welcome to Convergence Protocol</span>
+                        <p style="color: var(--text); margin: 0.5rem 0;">
+                            Use the onboarding guide to set up your development environment and connect to the Convergence protocol infrastructure.
+                        </p>
+                    </div>
+
+                    <div class="instructions-box" style="border-left: 4px solid var(--primary);">
+                        <h4>Setup Checklist:</h4>
+                        <ul>
+                            <li>✓ Connect your wallet (you've done this!)</li>
+                            <li>📥 Download your SSH public key (see SSH Keys tab)</li>
+                            <li>🖥️ Configure your local SSH environment</li>
+                            <li>🔐 Set up Git configuration for commits</li>
+                            <li>📚 Complete the full onboarding guide</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-top: 1.5rem;">
+                        <button class="btn btn-primary" id="startOnboardingBtn" style="width: 100%;">
+                            Open Full Onboarding Guide →
+                        </button>
+                    </div>
+
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-secondary" id="printGuideBtn" style="width: 100%;">
+                            📄 Print Setup Guide
+                        </button>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>💡 Available Resources</h3>
+                    <ul style="color: var(--text); line-height: 1.8;">
+                        <li><strong>Full Onboarding Guide</strong> - Complete setup instructions and best practices</li>
+                        <li><strong>SSH Configuration</strong> - How to set up SSH keys for authentication</li>
+                        <li><strong>Git Workflow</strong> - Team collaboration and commit guidelines</li>
+                        <li><strong>Protocol Overview</strong> - Understanding the Convergence protocol architecture</li>
+                        <li><strong>FAQ</strong> - Common questions and troubleshooting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="scripts/header.js"></script>
+    <script src="config/walletIdentities.js"></script>
+    <script src="scripts/settings.js"></script>
+</body>
+</html>

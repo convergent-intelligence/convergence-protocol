@@ -182,16 +182,131 @@ app.get('/api/symbolic-adoption/stats', (req, res) => {
 
 // ==================== Credential Management API ====================
 // Web3 wallet-based credential retrieval for team members
+// SECURITY: Now requires EIP-191 signature verification
 const credentialsHandler = require('./public/api-handlers/credentials.js');
 
-// Get credentials for a specific wallet (Paul/Leviticus)
-app.get('/api/credentials/:walletAddress', credentialsHandler.getCredentials);
+// Get credentials for a specific wallet - NOW REQUIRES SIGNATURE
+// Changed from GET to POST to require authenticated request body
+app.post('/api/credentials/:walletAddress', credentialsHandler.getCredentials);
 
 // List all active team members (metadata only)
 app.get('/api/credentials/list/all', credentialsHandler.listTeamMembers);
 
 // Verify that credentials exist for a wallet
 app.post('/api/credentials/:walletAddress/verify', credentialsHandler.verifyCredentialsExist);
+// =====================================================================
+
+// ==================== SSH Key Management API =======================
+// Web3 wallet-based SSH public key retrieval for authenticated users
+const sshKeysHandler = require('./public/api-handlers/ssh-keys.js');
+
+// Get SSH public key for a specific wallet
+app.get('/api/ssh-key/:walletAddress', sshKeysHandler.sshKeyHandler);
+// =====================================================================
+
+// ==================== Bible Wallet Management API ====================
+// Guest wallet progression: guest -> user -> partner
+// Bible wallet aliases with key pair generation and credential mapping
+const bibleWalletsHandler = require('./public/api-handlers/bible-wallets.js');
+
+// Register a guest wallet with Bible alias
+app.post('/api/bible-wallets/register', bibleWalletsHandler.registerBibleWallet);
+
+// Get Bible wallet info for a guest wallet
+app.get('/api/bible-wallets/:guestWallet', bibleWalletsHandler.getBibleWallet);
+
+// Get guest wallet info by Bible address
+app.get('/api/bible-wallets/address/:bibleAddress', bibleWalletsHandler.getByBibleAddress);
+
+// Update user status (after ceremony completion and trust burning)
+app.post('/api/bible-wallets/:guestWallet/update-status', bibleWalletsHandler.updateUserStatus);
+
+// Get all Bible seats and current holders
+app.get('/api/bible-wallets/seats/all', bibleWalletsHandler.getBibleSeats);
+
+// Get succession ranking (users ranked by burned trust)
+app.get('/api/bible-wallets/succession/ranking', bibleWalletsHandler.getSuccessionRanking);
+
+// Download private key for Bible wallet
+app.post('/api/bible-wallets/:guestWallet/download-key', bibleWalletsHandler.downloadPrivateKey);
+// =====================================================================
+
+// ==================== USDT Donations & Tally Minting API ==============
+// Users donate USDT (stablecoin) and receive Tally tokens at 1:1 ratio
+const usdtDonationsHandler = require('./public/api-handlers/usdt-donations.js');
+
+// Record a USDT donation
+app.post('/api/usdt-donations/record', usdtDonationsHandler.recordDonation);
+
+// Get donation history for a wallet
+app.get('/api/usdt-donations/:wallet', usdtDonationsHandler.getDonationHistory);
+
+// Get top donors
+app.get('/api/usdt-donations/top-donors', usdtDonationsHandler.getTopDonors);
+
+// Get donation statistics
+app.get('/api/usdt-donations/statistics', usdtDonationsHandler.getStatistics);
+
+// Get reserve contributions
+app.get('/api/usdt-donations/reserve', usdtDonationsHandler.getReserveContributions);
+// =====================================================================
+
+// ==================== API Keys Management =============================
+// Create and manage API keys for agent wallets
+// Supports Gemini, Qwen, Codex, and other AI agents
+const apiKeysHandler = require('./public/api-handlers/api-keys.js');
+
+// Create a new API key
+app.post('/api/keys/create', apiKeysHandler.createAPIKey);
+
+// Verify an API key
+app.post('/api/keys/verify', apiKeysHandler.verifyAPIKey);
+
+// Get all keys for a wallet
+app.get('/api/keys/:walletAddress', apiKeysHandler.getKeysForWallet);
+
+// Revoke an API key
+app.post('/api/keys/:walletAddress/revoke', apiKeysHandler.revokeAPIKey);
+
+// Regenerate an API key
+app.post('/api/keys/:walletAddress/regenerate', apiKeysHandler.regenerateAPIKey);
+
+// Get agent statistics
+app.get('/api/agents/:agentName', apiKeysHandler.getAgentStats);
+
+// Get all agents
+app.get('/api/agents/all', apiKeysHandler.getAllAgents);
+// =====================================================================
+
+// ==================== Partner Governance =============================
+// 65-partner collective covenant commitment and governance
+// 12-word seed shared among human partners only
+// Intent declarations logged for security
+const partnerGovernanceHandler = require('./public/api-handlers/partner-governance.js');
+
+// Generate partner seed (Genesis Human only, one-time)
+app.post('/api/partner-governance/generate-seed', partnerGovernanceHandler.generatePartnerSeed);
+
+// Access partner seed (authorized partners and governance only)
+app.post('/api/partner-governance/get-seed', partnerGovernanceHandler.getPartnerSeed);
+
+// Declare intentions (for humans seeking partnership)
+app.post('/api/partner-governance/declare-intentions', partnerGovernanceHandler.declareIntentions);
+
+// Partner acknowledges receipt of seed
+app.post('/api/partner-governance/acknowledge-seed', partnerGovernanceHandler.acknowledgeSeed);
+
+// Get partnership status (public info)
+app.get('/api/partner-governance/status', partnerGovernanceHandler.getPartnershipStatus);
+
+// Get partners list (public)
+app.get('/api/partner-governance/partners', partnerGovernanceHandler.getPartners);
+
+// Get security log (Genesis/Agent only)
+app.get('/api/partner-governance/security-log', partnerGovernanceHandler.getSecurityLog);
+
+// Get intent declarations (Genesis/Agent only)
+app.get('/api/partner-governance/intent-declarations', partnerGovernanceHandler.getIntentDeclarations);
 // =====================================================================
 
 // Start server

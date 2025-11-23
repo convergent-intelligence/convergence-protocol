@@ -1,0 +1,465 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║              EXODUS SEED WALLET MANAGER - MENU STRUCTURE                   ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                              MAIN MENU LAYOUT
+═══════════════════════════════════════════════════════════════════════════════
+
+                    ┌─────────────────────────────┐
+                    │ EXODUS SEED WALLET MANAGER  │
+                    │                             │
+                    │  [1] Initial Setup          │
+                    │  [2] List All Key Sets      │
+                    │  [3] View Active Keys       │
+                    │  [4] Export Public Keys     │
+                    │  [5] Export Private Key     │
+                    │  [6] Verify Seed Phrase     │
+                    │  [7] Rotate Key Set ⭐      │
+                    │  [8] View Rotation History  │
+                    │  [9] Toggle Active/Inactive │
+                    │  [0] Exit                   │
+                    └─────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                          OPTION DESCRIPTIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+[1] INITIAL SETUP
+───────────────
+Purpose: Configure encryption and create/import your first key set
+Steps:
+  1. Enter encryption password (12+ characters)
+  2. Choose: Import seed or Generate new
+  3. Select networks (Bitcoin, Ethereum, etc)
+  4. Wait for key derivation
+  5. Keys saved encrypted
+Status: Shows "Setup complete" when done
+Files Created: .encrypted, .manifest, .state, _summary.json, .salt
+
+
+[2] LIST ALL KEY SETS
+─────────────────────
+Purpose: See all your saved key sets with details
+Shows:
+  • Key set label/name
+  • Status (✓ ACTIVE or ✗ INACTIVE)
+  • Creation date/time
+  • Networks available
+  • Account count
+Status: Displays list numbered [1], [2], etc
+When to Use: Overview of everything you have
+No Changes Made: Just viewing
+
+
+[3] VIEW ACTIVE KEYS
+────────────────────
+Purpose: See only currently active key sets
+Shows:
+  • Only ACTIVE key sets
+  • Filters out INACTIVE/archived keys
+  • Creation dates
+  • Available networks
+Status: Displays filtered list
+When to Use: Check what's currently in use
+No Changes Made: Just viewing
+
+
+[4] EXPORT PUBLIC KEYS SUMMARY ✅ SAFE
+────────────────────────────────────────
+Purpose: Export addresses (no private keys) - safe to share
+Process:
+  1. Select which key set to export
+  2. Enter password if needed
+  3. Creates JSON file with public addresses
+  4. Shows file location
+When to Use:
+  • Sharing addresses with team
+  • Verification without exposing keys
+  • Backup of addresses
+Security: ✅ No private keys in export
+
+
+[5] EXPORT PRIVATE KEY ⚠️ DANGEROUS
+──────────────────────────────────────
+Purpose: Export a single private key for specific use
+Process:
+  1. See MULTIPLE WARNING MESSAGES
+  2. Confirm you understand risks
+  3. Select key set
+  4. Select network
+  5. Select account number
+  6. Private key displayed
+When to Use:
+  • Migration to another wallet
+  • Single address management
+  • Emergency recovery
+Security: ⚠️ Private key exposed on screen
+          ⚠️ Copy immediately
+          ⚠️ Don't leave on screen
+
+
+[6] VERIFY SEED PHRASE ✅ SAFE
+───────────────────────────────
+Purpose: Confirm you have the correct seed phrase
+Process:
+  1. Select key set to verify
+  2. Enter encryption password
+  3. Enter seed phrase
+  4. Cryptographic comparison
+  5. Shows match or no match
+When to Use:
+  • Before using new seed
+  • Recovery verification
+  • Confirming correct backup
+Security: ✅ Seed is never stored
+          ✅ Hash comparison only
+
+
+[7] ROTATE KEY SET ⭐ NEW FEATURE
+──────────────────────────────────
+Purpose: Create new rotation from existing keys
+Process:
+  1. Select key set to rotate FROM
+  2. Enter rotation reason (important!)
+  3. System creates NEW key set
+  4. OLD key set marked INACTIVE
+  5. NEW key set marked ACTIVE
+  6. Rotation logged with timestamp
+When to Use:
+  • Quarterly compliance rotation
+  • Scheduled key updates
+  • Emergency response
+  • Environment promotion
+Result:
+  ✓ New key set created with timestamp
+  ✓ Old key set preserved but inactive
+  ✓ Reason documented
+  ✓ Timestamp recorded
+  ✓ Complete audit trail maintained
+
+
+[8] VIEW ROTATION HISTORY ⭐ NEW FEATURE
+─────────────────────────────────────────
+Purpose: See all rotations for a key set (audit trail)
+Process:
+  1. Select key set
+  2. Shows complete history:
+     • When rotated
+     • What it rotated to
+     • Reason given
+     • Timestamp
+When to Use:
+  • Compliance audits
+  • Understanding key lifecycle
+  • Verification of changes
+  • Report generation
+Shows:
+  • Number of rotations
+  • Each rotation entry with details
+  • Current status (ACTIVE/INACTIVE)
+  • Creation date
+
+
+[9] ACTIVATE/DEACTIVATE KEY SET ⭐ NEW FEATURE
+───────────────────────────────────────────────
+Purpose: Toggle a key set between active and inactive
+Process:
+  1. See all key sets with current status
+  2. Select which one to toggle
+  3. Automatic state change
+  4. Confirmation shown
+When to Use:
+  • Archive keys without deleting
+  • Reactivate archived keys
+  • Manage active set
+  • Non-destructive cleanup
+Result:
+  ✓ Status updated
+  ✓ Timestamp recorded
+  ✓ No data lost
+  ✓ Can be toggled back anytime
+
+
+[0] EXIT
+────────
+Purpose: Close the program
+Result: Returns to shell prompt
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                          WORKFLOW EXAMPLES
+═══════════════════════════════════════════════════════════════════════════════
+
+WORKFLOW 1: First Time Setup
+─────────────────────────────
+Main Menu
+   ↓
+[1] Initial Setup
+   ├─ Enter password
+   ├─ Import or Generate seed
+   ├─ Select networks
+   └─ Save keys
+   ↓
+[2] List All Key Sets
+   └─ Verify saved
+   ↓
+Exit
+
+
+WORKFLOW 2: Quarterly Rotation for Compliance
+──────────────────────────────────────────────
+Main Menu
+   ↓
+[7] Rotate Key Set
+   ├─ Select old key set
+   ├─ Enter reason: "Q4 Compliance Rotation"
+   └─ New key created & marked ACTIVE
+   ↓
+[8] View Rotation History
+   ├─ See rotation just logged
+   └─ Timestamp & reason verified
+   ↓
+[4] Export Public Keys
+   ├─ Select new key set
+   └─ Export addresses
+   ↓
+Exit
+
+
+WORKFLOW 3: Emergency Key Deactivation
+───────────────────────────────────────
+Main Menu
+   ↓
+[7] Rotate Key Set
+   ├─ Select compromised key
+   ├─ Reason: "EMERGENCY: Key Exposure"
+   └─ New key created (ACTIVE)
+   ↓
+[9] Toggle Active/Inactive
+   ├─ Verify old key is INACTIVE
+   └─ Confirm new key is ACTIVE
+   ↓
+[5] Export Private Key
+   ├─ Get new private key
+   └─ Deploy to system
+   ↓
+Exit
+
+
+WORKFLOW 4: Compliance Audit
+───────────────────────────
+Main Menu
+   ↓
+[2] List All Key Sets
+   ├─ See all sets and status
+   └─ Identify active ones
+   ↓
+[8] View Rotation History
+   ├─ Check each key's history
+   ├─ Document rotations
+   └─ Note reasons & timestamps
+   ↓
+[3] View Active Keys
+   ├─ Verify current active set
+   └─ Confirm status
+   ↓
+[4] Export Public Keys
+   ├─ Export for audit report
+   └─ Attach to compliance docs
+   ↓
+Exit & Compile Report
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                          STATE MACHINE DIAGRAM
+═══════════════════════════════════════════════════════════════════════════════
+
+Key Set Lifecycle:
+
+                   ┌─────────────────┐
+                   │   NEW KEY SET   │
+                   │    CREATED      │
+                   └────────┬────────┘
+                            │
+                            ↓
+                  ┌──────────────────┐
+                  │  ACTIVE          │
+                  │  (In Production)  │
+                  └────────┬─────────┘
+                           │
+                    [7] Rotate
+                    or
+                    [9] Deactivate
+                           │
+                           ↓
+       ┌─────────────────────────────────┐
+       │        INACTIVE                  │
+       │  (Archived/Retired)              │
+       │  Still accessible               │
+       │  In rotation history            │
+       └─────────────────────────────────┘
+                           │
+                    [9] Reactivate
+                           │
+                           ↓
+                  ┌──────────────────┐
+                  │  ACTIVE (AGAIN)  │
+                  │  Back in use     │
+                  └──────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                        KEY STATUS INDICATORS
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ ACTIVE
+  • Currently in use
+  • Shows in [3] View Active Keys
+  • Can be rotated [7]
+  • Can be deactivated [9]
+
+✗ INACTIVE
+  • Archived but not deleted
+  • Shows in [2] List All Key Sets
+  • Not in [3] View Active Keys
+  • Can be reactivated [9]
+  • Full history preserved
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                    DECISION TREE: Which Option to Use?
+═══════════════════════════════════════════════════════════════════════════════
+
+START
+  │
+  ├─ First time? ─→ [1] Initial Setup
+  │
+  ├─ Want to see all keys? ─→ [2] List All Key Sets
+  │
+  ├─ Want to see only active? ─→ [3] View Active Keys
+  │
+  ├─ Need to share addresses? ─→ [4] Export Public Keys Summary
+  │
+  ├─ Need private key? ─→ [5] Export Private Key
+  │                     ⚠️ Be very careful!
+  │
+  ├─ Verifying backup? ─→ [6] Verify Seed Phrase
+  │
+  ├─ Time to rotate? ─→ [7] Rotate Key Set
+  │    • Quarterly?
+  │    • Emergency?
+  │    • Compliance?
+  │
+  ├─ Need audit trail? ─→ [8] View Rotation History
+  │
+  ├─ Archive old key? ─→ [9] Toggle Active/Inactive
+  │
+  └─ Done? ─→ [0] Exit
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                          COMMON SHORTCUTS
+═══════════════════════════════════════════════════════════════════════════════
+
+Quick Check Status:
+  [2] → See all → [0] Exit
+
+Daily Work:
+  [3] → See active → [4] Export if needed → [0] Exit
+
+Compliance:
+  [2] → [8] → [8] → [4] → [0]
+
+Rotation:
+  [7] → [8] → [3] → [0]
+
+Audit:
+  [2] → [8] (for each key) → [4] → [0]
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                          KEYBOARD COMMANDS
+═══════════════════════════════════════════════════════════════════════════════
+
+General:
+  0-9      → Select menu option
+  Enter    → Confirm selection
+  Ctrl+C   → Cancel current operation
+  Enter    → Continue after operation
+
+Password Entry:
+  ••••••   → Hidden for security
+  Enter    → Confirm password
+
+Text Entry:
+  Type     → Enter value (seed phrase, reason, etc)
+  Enter    → Confirm
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                        RECOMMENDED USAGE PATTERNS
+═══════════════════════════════════════════════════════════════════════════════
+
+Daily:
+  Run → [2] List → [0] Exit
+  (Quick status check)
+
+Weekly:
+  Run → [3] View Active → [0] Exit
+  (Verify active set)
+
+Monthly:
+  Run → [2] List → [8] History (for each) → [0] Exit
+  (Audit trail review)
+
+Quarterly:
+  Run → [7] Rotate → [8] History → [4] Export → [0] Exit
+  (Full rotation cycle)
+
+Emergency:
+  Run → [7] Rotate → Reason: "EMERGENCY" → [9] Toggle → [0] Exit
+  (Immediate response)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                            TIPS & TRICKS
+═══════════════════════════════════════════════════════════════════════════════
+
+💡 Password Caching
+   After first password entry, cached for session
+   Means: No need to re-enter for next operations
+   Ends: When you exit program
+
+💡 Clear Naming
+   Use descriptive labels:
+   exodus_prod_2024_q1 ✓ (clear)
+   key1 ✗ (vague)
+
+💡 Rotation Reasons
+   Be specific:
+   "Q4 2024 Compliance Rotation" ✓
+   "rotate" ✗ (not helpful for audit)
+
+💡 Export After Rotation
+   After [7] Rotate → [4] Export
+   Ensures new addresses available
+
+💡 Verify Before Deploy
+   Before using exported keys:
+   [6] Verify Seed → [2] List → Check status
+
+💡 Archive Before Delete
+   Instead of [9] Inactive → Keep history
+   Then [2] List → See old keys when needed
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+                    Ready to manage your keys? 🔐
+
+                  Start with: python3 exodus-seed-manager.py
+
+═══════════════════════════════════════════════════════════════════════════════
