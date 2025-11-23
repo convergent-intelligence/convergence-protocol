@@ -7,7 +7,7 @@ const WALLET_IDENTITIES = {
     // Format: 'walletaddress': { identity, role, sshKeyFile, permissions }
 
     // Genesis Human - Deviation 2 (Active as of 2025-11-23)
-    '0x79Ed185e745084fBEf8A1FE837554dB372a74218'.toLowerCase(): {
+    '0x79ed185e745084fbef8a1fe837554db372a74218': {
         identity: 'genesis',
         role: 'founder',
         displayName: 'Genesis Human',
@@ -23,7 +23,7 @@ const WALLET_IDENTITIES = {
 
     // EXODUS - Daily Operations User
     // TODO: Replace with actual exodus wallet address
-    '0x0000000000000000000000000000000000000001'.toLowerCase(): {
+    '0x0000000000000000000000000000000000000001': {
         identity: 'exodus',
         role: 'operations',
         displayName: 'Exodus (Operations)',
@@ -34,7 +34,7 @@ const WALLET_IDENTITIES = {
     },
 
     // LEVITICUS - Head of Security
-    '0x8ffa5caabe8ee3d9019865120a654464bc4654cd'.toLowerCase(): {
+    '0x8ffa5caabe8ee3d9019865120a654464bc4654cd': {
         identity: 'leviticus',
         role: 'security',
         displayName: 'Leviticus (Head of Security)',
