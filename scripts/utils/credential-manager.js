@@ -216,4 +216,4 @@ class CredentialManager {
   }
 }
 
-module.exports = CredentialManager;
+module.exports = { CredentialManager };
