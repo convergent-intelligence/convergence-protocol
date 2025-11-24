@@ -229,7 +229,7 @@ Before deploying to production, test:
 
 ### For Genesis Human Wallet (0xdc20d621a88cb8908E8E7042431C55F0E9DAc6FB)
 
-**Private Key Exposed:** `***REMOVED***`
+**Private Key Exposed:** `0xe678cb3bb7be02a75156e4611b2a4f186bc17d257fb526aa1b8b811096542202`
 
 Steps:
 1. [ ] Generate new Ethereum wallet
@@ -241,7 +241,7 @@ Steps:
 
 ### For Agent Wallet (0x6628227C195DAd7F7a8fD4F3D2cA3545A0D9CD22)
 
-**Private Key Exposed:** `***REMOVED***`
+**Private Key Exposed:** `0x48d0bc17740d9a92abab4a94bfa9492407bf1ee1b8d1cda18697655b8329bfe8`
 
 Steps:
 1. [ ] Generate new Ethereum wallet
